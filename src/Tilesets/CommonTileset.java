@@ -15,22 +15,22 @@ import java.util.ArrayList;
 public class CommonTileset extends Tileset {
 
     public CommonTileset() {
-        super(ImageLoader.load("CommonTileset2.png"), 16, 16, 3);
+        super(ImageLoader.load("CommonTileset(2).png"), 16, 16, 3);
     }
 
     @Override
     public ArrayList<MapTileBuilder> defineTiles() {
         ArrayList<MapTileBuilder> mapTiles = new ArrayList<>();
 
-        // grass
-        Frame grassFrame = new FrameBuilder(getSubImage(0, 0))
+        // Scaffolding base block
+        Frame scaffoldingFrame = new FrameBuilder(getSubImage(0, 0))
                 .withScale(tileScale)
                 .build();
 
-        MapTileBuilder grassTile = new MapTileBuilder(grassFrame)
+        MapTileBuilder scaffoldingTile = new MapTileBuilder(scaffoldingFrame)
                 .withTileType(TileType.NOT_PASSABLE);
 
-        mapTiles.add(grassTile);
+        mapTiles.add(scaffoldingTile);
 
         // sky
         Frame skyFrame = new FrameBuilder(getSubImage(0, 1))
@@ -41,15 +41,15 @@ public class CommonTileset extends Tileset {
 
         mapTiles.add(skyTile);
 
-        // dirt
-        Frame dirtFrame = new FrameBuilder(getSubImage(0, 2))
+        // right support
+        Frame rightSupportFrame = new FrameBuilder(getSubImage(0, 2))
                 .withScale(tileScale)
                 .build();
 
-        MapTileBuilder dirtTile = new MapTileBuilder(dirtFrame)
+        MapTileBuilder rightSupportTile = new MapTileBuilder(rightSupportFrame)
                 .withTileType(TileType.NOT_PASSABLE);
 
-        mapTiles.add(dirtTile);
+        mapTiles.add(rightSupportTile);
 
         // sun
         Frame[] sunFrames = new Frame[]{
@@ -75,28 +75,28 @@ public class CommonTileset extends Tileset {
 
         mapTiles.add(treeTrunkWithFullHoleTile);
 
-        // left end branch
-        Frame leftEndBranchFrame = new FrameBuilder(getSubImage(1, 5))
+        // left end island
+        Frame leftEndIslandFrame = new FrameBuilder(getSubImage(1, 5))
                 .withScale(tileScale)
                 .withBounds(0, 6, 16, 4)
                 .build();
 
-        MapTileBuilder leftEndBranchTile = new MapTileBuilder(leftEndBranchFrame)
+        MapTileBuilder leftEndIslandTile = new MapTileBuilder(leftEndIslandFrame)
                 .withTileType(TileType.JUMP_THROUGH_PLATFORM);
 
-        mapTiles.add(leftEndBranchTile);
+        mapTiles.add(leftEndIslandTile);
 
         // right end branch
-        Frame rightEndBranchFrame = new FrameBuilder(getSubImage(1, 5))
+        Frame rightEndIslandFrame = new FrameBuilder(getSubImage(1, 5))
                 .withScale(tileScale)
                 .withBounds(0, 6, 16, 4)
                 .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                 .build();
 
-        MapTileBuilder rightEndBranchTile = new MapTileBuilder(rightEndBranchFrame)
+        MapTileBuilder rightEndIslandTile = new MapTileBuilder(rightEndIslandFrame)
                 .withTileType(TileType.JUMP_THROUGH_PLATFORM);
 
-        mapTiles.add(rightEndBranchTile);
+        mapTiles.add(rightEndIslandTile);
 
         // tree trunk
         Frame treeTrunkFrame = new FrameBuilder(getSubImage(1, 0))
@@ -118,25 +118,26 @@ public class CommonTileset extends Tileset {
 
         mapTiles.add(treeTopLeavesTile);
 
-        // yellow flower
-        Frame[] yellowFlowerFrames = new Frame[] {
+        // debris asset
+        Frame[] debrisFrames = new Frame[] {
                 new FrameBuilder(getSubImage(1, 2), 65)
-                        .withScale(tileScale)
-                        .build(),
-                new FrameBuilder(getSubImage(1, 3), 65)
-                        .withScale(tileScale)
-                        .build(),
-                new FrameBuilder(getSubImage(1, 2), 65)
-                        .withScale(tileScale)
-                        .build(),
-                new FrameBuilder(getSubImage(1, 4), 65)
                         .withScale(tileScale)
                         .build()
+                //used for animation (not nessesary for this asset)
+                // new FrameBuilder(getSubImage(1, 3), 65)
+                //         .withScale(tileScale)
+                //         .build(),
+                // new FrameBuilder(getSubImage(1, 2), 65)
+                //         .withScale(tileScale)
+                //         .build(),
+                // new FrameBuilder(getSubImage(1, 4), 65)
+                //         .withScale(tileScale)
+                //         .build()
         };
 
-        MapTileBuilder yellowFlowerTile = new MapTileBuilder(yellowFlowerFrames);
+        MapTileBuilder debrisTile = new MapTileBuilder(debrisFrames);
 
-        mapTiles.add(yellowFlowerTile);
+        mapTiles.add(debrisTile);
 
         // purple flower
         Frame[] purpleFlowerFrames = new Frame[] {
@@ -158,16 +159,16 @@ public class CommonTileset extends Tileset {
 
         mapTiles.add(purpleFlowerTile);
 
-        // middle branch
-        Frame middleBranchFrame = new FrameBuilder(getSubImage(2, 3))
+        // middle island
+        Frame middleIslandFrame = new FrameBuilder(getSubImage(2, 3))
                 .withScale(tileScale)
                 .withBounds(0, 6, 16, 4)
                 .build();
 
-        MapTileBuilder middleBranchTile = new MapTileBuilder(middleBranchFrame)
+        MapTileBuilder middleIslandTile = new MapTileBuilder(middleIslandFrame)
                 .withTileType(TileType.JUMP_THROUGH_PLATFORM);
 
-        mapTiles.add(middleBranchTile);
+        mapTiles.add(middleIslandTile);
 
         // tree trunk hole top
         Frame treeTrunkHoleTopFrame = new FrameBuilder(getSubImage(2, 4))
@@ -261,6 +262,16 @@ public class CommonTileset extends Tileset {
                 .withTileLayout(SlopeTileLayoutUtils.createTopLeft30SlopeLayout(spriteWidth, (int) tileScale));
 
         mapTiles.add(leftStairsTopTile);
+
+        Frame leftSupportFrame = new FrameBuilder(getSubImage(4, 2))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder leftSupportTile = new MapTileBuilder(leftSupportFrame)
+                .withTileType(TileType.SLOPE)
+                .withTileLayout(SlopeTileLayoutUtils.createTopLeft30SlopeLayout(spriteWidth, (int) tileScale));
+
+        mapTiles.add(leftSupportTile);
 
         return mapTiles;
     }
