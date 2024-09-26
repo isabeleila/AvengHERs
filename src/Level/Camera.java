@@ -49,7 +49,7 @@ public class Camera extends Rectangle {
 
     public void update(Player player) {
         updateMapTiles();
-        //updateMapEntities(player);
+        updateMapEntities(player);
     }
 
     private void updateMapTiles() {
