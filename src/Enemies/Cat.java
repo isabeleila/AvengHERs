@@ -111,7 +111,7 @@ public class Cat extends Player {
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         int spriteWidth = 15;
-        int spriteHeight = 24;
+        int spriteHeight = 19;
 
         return new HashMap<String, Frame[]>() {{
             put("STAND_RIGHT", new Frame[] {
