@@ -57,7 +57,7 @@ public abstract class Map {
     protected ArrayList<NPC> npcs;
 
     // if set to false, camera will not move as player moves
-    protected boolean adjustCamera = true;
+    protected boolean adjustCamera = false;
 
     // map tiles in map that are animated
     protected ArrayList<MapTile> animatedMapTiles;
