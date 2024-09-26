@@ -80,7 +80,7 @@ public class Cat extends Player {
                 ballX = Math.round(getX()) + getWidth();
                 movementSpeed = 2.0f;
             } else {
-                ballX = Math.round(getX() - 300);
+                ballX = Math.round(getX() +5);
                 movementSpeed = -2.0f;
             }
 
