@@ -1,5 +1,6 @@
 package Screens;
 
+import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.Screen;
 import Game.GameState;
@@ -8,7 +9,6 @@ import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
-import Players.Cat;
 import Utils.Point;
 
 // This class is for when the platformer game is actually being played
