@@ -30,12 +30,12 @@ public class Cat extends Player {
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y) {
-        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x,y + 10, "STAND_RIGHT"); // Adjust y + 10
-        gravity = .6f;
+        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
+        gravity = 1f;
         terminalVelocityY = 6f;
-        jumpHeight = 14.5f;
-        jumpDegrade = .5f;
-        walkSpeed = 2.3f;
+        jumpHeight = 25f;
+        jumpDegrade = 2f;
+        walkSpeed = 1.9f;
         momentumYIncrease = .5f;
 
         catState = CatState.WALK;
