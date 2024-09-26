@@ -80,15 +80,15 @@ public class Cat extends Player {
                 ballX = Math.round(getX()) + getWidth();
                 movementSpeed = 2.0f;
             } else {
-                ballX = Math.round(getX() - 20);
+                ballX = Math.round(getX() - 300);
                 movementSpeed = -2.0f;
             }
 
             // define where the ball will spawn on the map (y location) relative to cat's location
-            int ballY = Math.round(getY()) + 5;
+            int ballY = Math.round(getY()) + 20;
 
             // create Ball enemy (similar to Fireball but with different properties)
-            Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 50, this);
+            Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this);
 
             // add ball enemy to the map for it to spawn in the level
             map.addEnemy(ball);
