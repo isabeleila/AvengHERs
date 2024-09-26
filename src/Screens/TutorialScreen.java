@@ -10,8 +10,12 @@ import SpriteFont.SpriteFont;
 
 import java.awt.*;
 
-// This class is for the credits screen
-public class CreditsScreen extends Screen {
+//                                                                                                //
+// This is 99% an exact copy of the credit screen. Eventually we will make this into the tutorial //
+//                                                                                                //
+
+// This class is for the tutorial screen
+public class TutorialScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected Map background;
     protected KeyLocker keyLocker = new KeyLocker();
@@ -19,7 +23,7 @@ public class CreditsScreen extends Screen {
     protected SpriteFont createdByLabel;
     protected SpriteFont returnInstructionsLabel;
 
-    public CreditsScreen(ScreenCoordinator screenCoordinator) {
+    public TutorialScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
     }
 
@@ -28,8 +32,10 @@ public class CreditsScreen extends Screen {
         // setup graphics on screen (background map, spritefont text)
         background = new BlankMap();
         background.setAdjustCamera(false);
-        creditsLabel = new SpriteFont("Credits", 15, 7, "Times New Roman", 30, Color.black);
-        createdByLabel = new SpriteFont("Created by Tripp Menhall and ...", 130, 121, "Times New Roman", 20, Color.red);
+        creditsLabel = new SpriteFont("Tutorial", 15, 7, "Times New Roman", 30, Color.ORANGE);
+        creditsLabel.setOutlineColor(Color.BLACK);
+        creditsLabel.setOutlineThickness(2);
+        createdByLabel = new SpriteFont("Step 1: START THE GAME duh", 130, 121, "Times New Roman", 20, Color.black);
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Times New Roman", 30, Color.blue);
         keyLocker.lockKey(Key.SPACE);
     }
