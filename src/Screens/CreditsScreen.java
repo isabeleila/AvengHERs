@@ -4,6 +4,7 @@ import Engine.*;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
+import Maps.BlankMap;
 import Maps.TitleScreenMap;
 import SpriteFont.SpriteFont;
 
@@ -25,11 +26,11 @@ public class CreditsScreen extends Screen {
     @Override
     public void initialize() {
         // setup graphics on screen (background map, spritefont text)
-        background = new TitleScreenMap();
+        background = new BlankMap();
         background.setAdjustCamera(false);
-        creditsLabel = new SpriteFont("Credits", 15, 7, "Times New Roman", 30, Color.white);
-        createdByLabel = new SpriteFont("Created by Alex Thimineur", 130, 121, "Times New Roman", 20, Color.white);
-        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Times New Roman", 30, Color.white);
+        creditsLabel = new SpriteFont("Credits", 15, 7, "Times New Roman", 30, Color.black);
+        createdByLabel = new SpriteFont("Created by Tripp Menhall and ...", 130, 121, "Times New Roman", 20, Color.red);
+        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Times New Roman", 30, Color.blue);
         keyLocker.lockKey(Key.SPACE);
     }
 
