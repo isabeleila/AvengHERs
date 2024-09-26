@@ -30,21 +30,12 @@ public class Cat extends Player {
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y) {
-<<<<<<< HEAD
-        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x,y + 10, "STAND_RIGHT"); // Adjust y + 10
-        gravity = .6f;
-        terminalVelocityY = 6f;
-        jumpHeight = 14.5f;
-        jumpDegrade = .5f;
-        walkSpeed = 2.3f;
-=======
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
         jumpHeight = 25f;
         jumpDegrade = 2f;
         walkSpeed = 1.9f;
->>>>>>> 15943f309054a638a11a82c81bb8de3dfaa7ec3b
         momentumYIncrease = .5f;
 
         catState = CatState.WALK;
@@ -69,7 +60,7 @@ public class Cat extends Player {
         // if cat is waiting to shoot, it waits for a certain number of frames
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
-                shootTimer = 65;
+                shootTimer = 10;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 catState = CatState.SHOOT;
@@ -106,7 +97,7 @@ public class Cat extends Player {
             catState = CatState.WALK;
 
             // reset shoot wait timer so the process can happen again (cat walks around, then waits, then shoots)
-            shootWaitTimer = 120;
+            shootWaitTimer = 0;
         }
 
         previousCatState = catState;
