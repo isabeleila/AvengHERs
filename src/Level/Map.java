@@ -98,7 +98,7 @@ public abstract class Map {
             npc.setMap(this);
         }
 
-        this.camera = new Camera(0, 0, tileset.getScaledSpriteWidth(), tileset.getScaledSpriteHeight(), this);
+        this.camera = new Camera(50, 0, tileset.getScaledSpriteWidth(), tileset.getScaledSpriteHeight(), this);
     }
 
     // reads in a map file to create the map's tilemap
