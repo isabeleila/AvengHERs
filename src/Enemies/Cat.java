@@ -40,7 +40,6 @@ public class Cat extends Player {
 
         catState = CatState.WALK;
         previousCatState = catState;
-        shootWaitTimer = 100;
         facingDirection = Direction.RIGHT;  // Set default direction
     }
 
