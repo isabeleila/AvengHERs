@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 // This is the class for the Cat player character
 // It now has the ability to shoot balls
-public class Cat extends Player {
+public class Cat1 extends Player {
 
     // timer is used to determine how long the cat waits before shooting
     protected int shootWaitTimer;
@@ -29,7 +29,7 @@ public class Cat extends Player {
     protected Direction facingDirection;
 
  // Increase the y coordinate (starting lower)
-    public Cat(float x, float y) {
+    public Cat1(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
