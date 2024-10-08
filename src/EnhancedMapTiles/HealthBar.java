@@ -7,15 +7,15 @@ import GameObject.SpriteSheet;
 import Level.EnhancedMapTile;
 import Level.Player;
 import Level.TileType;
-import Utils.Point;
 
+import java.awt.Color;
 import java.util.HashMap;
 
 // This class is for the end level gold box tile
 // when the player touches it, it will tell the player that the level has been completed
 public class HealthBar extends EnhancedMapTile {
-    public HealthBar(Point location) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("HealthSheet.png"), 31, 8), TileType.PASSABLE);
+    public HealthBar(int x, int y) {
+        super(x, y, new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), TileType.PASSABLE);
     }
 
     @Override

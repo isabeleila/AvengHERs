@@ -199,15 +199,6 @@ public class CharacterSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             menuItemSelected = currentMenuItemHovered;
-            if (menuItemSelected == 0) {
-                System.out.println("Character 1");
-            } else if (menuItemSelected == 1) {
-                System.out.println("Character 2");
-            } else if (menuItemSelected == 2) {
-                System.out.println("Character 3");
-            } else if (menuItemSelected == 3) {
-                System.out.println("Character 4");
-            }
             screenCoordinator.setGameState(GameState.LEVEL);
         }
     }

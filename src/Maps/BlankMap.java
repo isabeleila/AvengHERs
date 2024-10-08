@@ -12,6 +12,8 @@ import Engine.GraphicsHandler;
 import Level.Map;
 //import Level.TileType;
 import Tilesets.CommonTileset;
+// import Utils.Colors;
+// import Utils.Point;
 
 // Represents the map that is used as a background for the main menu and credits menu screen
 public class BlankMap extends Map {

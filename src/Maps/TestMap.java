@@ -1,6 +1,5 @@
 package Maps;
 
-import Enemies.BugEnemy;
 import Enemies.DinosaurEnemy;
 import EnhancedMapTiles.HealthBar;
 //import Engine.ImageLoader;
@@ -25,9 +24,6 @@ public class TestMap extends Map {
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
 
-        BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
-        enemies.add(bugEnemy);
-
         DinosaurEnemy dinosaurEnemy = new DinosaurEnemy(getMapTile(19, 1).getLocation().addY(2), getMapTile(22, 1).getLocation().addY(2), Direction.RIGHT);
         enemies.add(dinosaurEnemy);
 
@@ -37,11 +33,11 @@ public class TestMap extends Map {
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
     ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
-        HealthBar healthBarP1 = new HealthBar(getMapTile(1, 0).getLocation());
+        HealthBar healthBarP1 = new HealthBar(275, 10);
         enhancedMapTiles.add(healthBarP1);
 
         //Adding player two's healthbar to the map
-        HealthBar healthBarP2 = new HealthBar(getMapTile(15, 0).getLocation());
+        HealthBar healthBarP2 = new HealthBar(450, 10);
         enhancedMapTiles.add(healthBarP2);
         return enhancedMapTiles;
     }
