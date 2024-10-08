@@ -9,7 +9,6 @@ import Maps.CharacterMap;
 import SpriteFont.SpriteFont;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 // This is the class for the main menu screen
 public class CharacterSelectScreen extends Screen {
@@ -36,7 +35,6 @@ public class CharacterSelectScreen extends Screen {
     protected Sprite captainAmericaR;
     protected Sprite spidermanR;
     protected Map background;
-    protected int keyPressTimer;
     protected int pointerLocationX, pointerLocationY;
     protected KeyLocker keyLocker = new KeyLocker();
 
@@ -88,7 +86,7 @@ public class CharacterSelectScreen extends Screen {
         player2 = new SpriteFont("Player 2", 520, 533, "Arial", 30, new Color(255,255,255));
         player2.setOutlineColor(Color.black);
         player2.setOutlineThickness(4);
-        // Character Text
+        // Character Text Left
         character11 = new SpriteFont("Character 1", 15, 230, "Arial", 30, new Color(49, 207, 240));
         character11.setOutlineColor(Color.black);
         character11.setOutlineThickness(4);
@@ -101,7 +99,7 @@ public class CharacterSelectScreen extends Screen {
         character41 = new SpriteFont("Character 4", 195, 490, "Arial", 30, new Color(49, 207, 240));
         character41.setOutlineColor(Color.black);
         character41.setOutlineThickness(4);
-
+        // Character Text Right
         character12 = new SpriteFont("Character 1", 405, 230, "Arial", 30, new Color(49, 207, 240));
         character12.setOutlineColor(Color.black);
         character12.setOutlineThickness(4);
@@ -121,7 +119,6 @@ public class CharacterSelectScreen extends Screen {
         // Background
         background = new CharacterMap();
         background.setAdjustCamera(false);
-        keyPressTimer = 0;
         menuItemSelected = -1;
         keyLocker.lockKey(Key.SPACE);
     }
@@ -130,65 +127,32 @@ public class CharacterSelectScreen extends Screen {
         // update background map (to play tile animations)
         background.update(null);
 
-        // if down or up is pressed, change menu item "hovered" over (blue square in front of text will move along with currentMenuItemHovered changing)
-        /*  if (Keyboard.isKeyDown(Key.DOWN) &&  keyPressTimer == 0) {
-                keyPressTimer = 14;
-                currentMenuItemHovered++;
-            } else if (Keyboard.isKeyDown(Key.UP) &&  keyPressTimer == 0) {
-                keyPressTimer = 14;
-                currentMenuItemHovered--;
-            } else {
-                if (keyPressTimer > 0) {
-                    keyPressTimer--;
-                }
-            } */
-
-        if(Keyboard.isKeyDown(Key.DOWN) && keyPressTimer == 0){
-            keyPressTimer = 14;
+        // if keys are pressed, change menu item "hovered" over
+        if(Keyboard.isKeyDown(Key.DOWN)){
             if(currentMenuItemHovered == 0){
                 currentMenuItemHovered = 2;
             }else if(currentMenuItemHovered == 1){
                 currentMenuItemHovered = 3;
             }
-        }else if(Keyboard.isKeyDown(Key.UP) && keyPressTimer == 0){
-            keyPressTimer = 14;
+        }else if(Keyboard.isKeyDown(Key.UP)){
             if(currentMenuItemHovered == 2){
                 currentMenuItemHovered = 0;
             }else if(currentMenuItemHovered == 3){
                 currentMenuItemHovered = 1;
             }
-        }else if(Keyboard.isKeyDown(Key.LEFT) && keyPressTimer == 0){
-            keyPressTimer = 14;
+        }else if(Keyboard.isKeyDown(Key.LEFT)){
             if(currentMenuItemHovered == 1){
                 currentMenuItemHovered = 0;
             }else if(currentMenuItemHovered == 3){
                 currentMenuItemHovered = 2;
             }
-        }else if(Keyboard.isKeyDown(Key.RIGHT) && keyPressTimer == 0){
-            keyPressTimer = 14;
+        }else if(Keyboard.isKeyDown(Key.RIGHT)){
             if(currentMenuItemHovered == 0){
                 currentMenuItemHovered = 1;
             }else if(currentMenuItemHovered == 2){
                 currentMenuItemHovered = 3;
             }
-        }else{
-            if (keyPressTimer > 0) {
-                keyPressTimer--;
-            }
         }
-
-        // if down is pressed on last menu item or up is pressed on first menu item, "loop" the selection back around to the beginning/end
-        /* if (currentMenuItemHovered > 1) {
-           currentMenuItemHovered = 0;
-           } else if (currentMenuItemHovered < 0) {
-           currentMenuItemHovered = 1;
-           } */ 
-
-        // if (currentMenuItemHovered > 3) {
-        //     currentMenuItemHovered = 0;
-        // } else if (currentMenuItemHovered < 0) {
-        //     currentMenuItemHovered = 3;
-        // }
 
         // sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHovered == 0) {
