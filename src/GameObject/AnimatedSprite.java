@@ -99,6 +99,65 @@ public class AnimatedSprite implements IntersectableRectangle {
 		previousAnimationName = currentAnimationName;
 	}
 
+	public void updateSpecific(int frameNumber){
+		currentFrameIndex = frameNumber;
+		updateCurrentFrame();
+			// if animation has more than one frame, check if it's time to transition to a new frame based on that frame's delay
+			// if (getCurrentAnimation().length > 1 && currentFrame.getDelay() > 0) {
+			// 	frameDelayCounter--;
+
+			// 	// if enough frames have passed based on current frame's delay and it's time to transition to a new frame,
+			// 	// update frame index to the next frame
+			// 	// It will also wrap around back to the first frame index if it was already on the last frame index (the animation will loop)
+			// 	if (frameDelayCounter == 0 && currentFrameIndex + 1 == frameNumber) {
+			// 		currentFrameIndex++;
+			// 		if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+			// 			currentFrameIndex = 0;
+			// 			hasAnimationLooped = true;
+			// 		}
+			// 		frameDelayCounter = getCurrentFrame().getDelay();
+			// 		updateCurrentFrame();
+			// 	}
+			// 	else if (frameDelayCounter == 0 && currentFrameIndex + 2 == frameNumber) {
+			// 		currentFrameIndex++;
+			// 		if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+			// 			currentFrameIndex = 0;
+			// 			hasAnimationLooped = true;
+			// 		}
+			// 		frameDelayCounter = getCurrentFrame().getDelay();
+			// 		currentFrameIndex++;
+			// 		if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+			// 			currentFrameIndex = 0;
+			// 			hasAnimationLooped = true;
+			// 		}
+			// 		frameDelayCounter = getCurrentFrame().getDelay();
+			// 		updateCurrentFrame();
+			// 	}
+				// }else{
+				// 	currentFrameIndex++;
+				// 	if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+				// 		currentFrameIndex = 0;
+				// 		hasAnimationLooped = true;
+				// 	}
+				// 	frameDelayCounter = getCurrentFrame().getDelay();
+				// 	currentFrameIndex++;
+				// 	if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+				// 		currentFrameIndex = 0;
+				// 		hasAnimationLooped = true;
+				// 	}
+				// 	frameDelayCounter = getCurrentFrame().getDelay();
+				// 	currentFrameIndex++;
+				// 	if (currentFrameIndex >= animations.get(currentAnimationName).length) {
+				// 		currentFrameIndex = 0;
+				// 		hasAnimationLooped = true;
+				// 	}
+				// 	frameDelayCounter = getCurrentFrame().getDelay();
+				// 	updateCurrentFrame();
+				// }
+			}
+		//previousAnimationName = currentAnimationName;
+	//}
+
 	// resets current animation
 	// this method is used when switching animations to "freshly load/reset" the new animation
 	private void resetAnimation() {

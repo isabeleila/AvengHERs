@@ -1,12 +1,19 @@
 package Maps;
 
+//import java.util.ArrayList;
+
 import Engine.GraphicsHandler;
-import Engine.ImageLoader;
-import GameObject.Sprite;
+// import Engine.ImageLoader;
+// import EnhancedMapTiles.EndLevelBox;
+// import EnhancedMapTiles.HorizontalMovingPlatform;
+// import GameObject.Rectangle;
+// import GameObject.Sprite;
+// import Level.EnhancedMapTile;
 import Level.Map;
+//import Level.TileType;
 import Tilesets.CommonTileset;
-import Utils.Colors;
-import Utils.Point;
+// import Utils.Colors;
+// import Utils.Point;
 
 // Represents the map that is used as a background for the main menu and credits menu screen
 public class BlankMap extends Map {
@@ -31,5 +38,4 @@ public class BlankMap extends Map {
         // cat.draw(graphicsHandler);
         // cat2.draw(graphicsHandler);
     }
-
 }

@@ -5,8 +5,8 @@ import Engine.ImageLoader;
 import GameObject.Sprite;
 import Level.Map;
 import Tilesets.CommonTileset;
-import Utils.Colors;
-import Utils.Point;
+// import Utils.Colors;
+// import Utils.Point;
 
 // Represents the map that is used as a background for the main menu and credits menu screen
 public class TitleScreenMap extends Map {

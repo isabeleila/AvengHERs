@@ -33,6 +33,7 @@ public abstract class Player extends GameObject {
     protected AirGroundState airGroundState;
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
+    protected int playerHealth;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -55,6 +56,7 @@ public abstract class Player extends GameObject {
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
+        playerHealth = 60;
     }
 
     public void update() {
@@ -306,7 +308,11 @@ public abstract class Player extends GameObject {
         if (!isInvincible) {
             // if map entity is an enemy, kill player on touch
             if (mapEntity instanceof Enemy) {
-                levelState = LevelState.PLAYER_DEAD;
+                if(playerHealth <= 0){
+                    levelState = LevelState.PLAYER_DEAD;
+                }else
+                    playerHealth -= 34;
+                //levelState = LevelState.PLAYER_DEAD;
             }
         }
     }
@@ -365,6 +371,10 @@ public abstract class Player extends GameObject {
                 }
             }
         }
+    }
+
+    public int getPlayerHealth(){
+        return playerHealth;
     }
 
     public PlayerState getPlayerState() {
