@@ -21,6 +21,7 @@ public class TitleScreenMap extends Map {
         background.setWidth(90);
         background.setHeight(65);
         background.setScale(9);
+        background.setLocation(background.getX()-25, background.getY());
     }
 
     @Override
