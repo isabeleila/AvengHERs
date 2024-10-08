@@ -1,5 +1,7 @@
 package Screens;
 
+import java.awt.Color;
+
 import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.Screen;
@@ -9,6 +11,8 @@ import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
+import SpriteFont.SpriteFont;
+
 
 // This class is for when the platformer game is actually being played
 public class PlayLevelScreen extends Screen implements PlayerListener {
@@ -20,6 +24,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelClearedScreen levelClearedScreen;
     protected LevelLoseScreen levelLoseScreen;
     protected boolean levelCompletedStateChangeStart;
+
+    private SpriteFont playerOneText;
+    private SpriteFont playerTwoText;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -38,6 +45,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         levelLoseScreen = new LevelLoseScreen(this);
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
+
+        playerOneText = new SpriteFont("Player 1", 135, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText.setOutlineColor(Color.black);
+        playerTwoText = new SpriteFont("Player 2", 510, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText.setOutlineColor(Color.black);
     }
 
     public void update() {
@@ -63,6 +75,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
+                playerOneText.setColor(Color.RED);
                 levelLoseScreen.update();
                 break;
         }
@@ -74,6 +87,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
+                playerOneText.draw(graphicsHandler);
+                playerTwoText.draw(graphicsHandler);
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);

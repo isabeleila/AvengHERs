@@ -22,6 +22,16 @@ public class SpriteFont {
 		this.color = color;
 	}
 
+	public SpriteFont(String text, Utils.Point location, String fontName, int fontSize, Color color) {
+		this.text = text;
+		font = new Font(fontName, Font.PLAIN, fontSize);
+		float floatValueX = location.x;
+		float floatValueY = location.y;
+		floatValueX = x;
+		floatValueY = y;
+		this.color = color;
+	}
+
 	public SpriteFont(String text, float x, float y, Font font, Color color) {
 		this.text = text;
 		this.font = font;
@@ -30,7 +40,7 @@ public class SpriteFont {
 		this.color = color;
 	}
 
-	public void setColor(Color color) {
+    public void setColor(Color color) {
 		this.color = color;
 	}
 

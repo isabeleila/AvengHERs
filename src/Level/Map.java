@@ -3,6 +3,7 @@ package Level;
 import Engine.Config;
 import Engine.GraphicsHandler;
 import Engine.ScreenManager;
+import SpriteFont.SpriteFont;
 import Utils.Point;
 
 import java.io.File;

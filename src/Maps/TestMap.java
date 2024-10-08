@@ -37,11 +37,11 @@ public class TestMap extends Map {
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
     ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
-        HealthBar healthBarP1 = new HealthBar(getMapTile(1, 0).getLocation());
+        HealthBar healthBarP1 = new HealthBar(275, 10);
         enhancedMapTiles.add(healthBarP1);
 
         //Adding player two's healthbar to the map
-        HealthBar healthBarP2 = new HealthBar(getMapTile(15, 0).getLocation());
+        HealthBar healthBarP2 = new HealthBar(450, 10);
         enhancedMapTiles.add(healthBarP2);
         return enhancedMapTiles;
     }
