@@ -100,8 +100,10 @@ public class AnimatedSprite implements IntersectableRectangle {
 	}
 
 	public void updateSpecific(int frameNumber){
-		currentFrameIndex = frameNumber;
-		updateCurrentFrame();
+		if (currentFrameIndex != frameNumber){
+			currentFrameIndex = frameNumber;	
+			updateCurrentFrame();
+		}
 			// if animation has more than one frame, check if it's time to transition to a new frame based on that frame's delay
 			// if (getCurrentAnimation().length > 1 && currentFrame.getDelay() > 0) {
 			// 	frameDelayCounter--;
