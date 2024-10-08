@@ -19,10 +19,10 @@ import java.util.HashMap;
 public class BugEnemy extends Enemy {
 
     private float gravity = 1f;
-    private float movementSpeed = 6f;
+    private float movementSpeed = 4f;
     private Direction startFacingDirection;
     private Direction facingDirection;
-    private float jumpHeight = 25f;
+    private float jumpHeight = 40f;
     private float terminalVelocityY = 6f;
 private AirGroundState airGroundState;
 
@@ -115,7 +115,7 @@ private AirGroundState airGroundState;
         return new HashMap<String, Frame []> () {{
             put ("WALK_LEFT", new Frame[]{
                 new FrameBuilder (spriteSheet.getSprite(0,0),8)
-                .withScale(2)
+                .withScale(3)
                 .withBounds(6,6,12,7)
                 .build(),
                 
@@ -127,7 +127,7 @@ private AirGroundState airGroundState;
             
             put("WALK_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                    .withScale(2)
+                    .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(6, 6, 12, 7)
                     .build(),

@@ -2,10 +2,10 @@ package Maps;
 
 import Enemies.BugEnemy;
 import Enemies.DinosaurEnemy;
-import Engine.ImageLoader;
-import EnhancedMapTiles.EndLevelBox;
-import EnhancedMapTiles.HorizontalMovingPlatform;
-import GameObject.Rectangle;
+import EnhancedMapTiles.HealthBar;
+//import Engine.ImageLoader;
+//import EnhancedMapTiles.HorizontalMovingPlatform;
+//import GameObject.Rectangle;
 import Level.*;
 import NPCs.Walrus;
 import Tilesets.CommonTileset;
@@ -36,22 +36,13 @@ public class TestMap extends Map {
 
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
-        ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
+    ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
+        HealthBar healthBarP1 = new HealthBar(getMapTile(1, 0).getLocation());
+        enhancedMapTiles.add(healthBarP1);
 
-        HorizontalMovingPlatform hmp = new HorizontalMovingPlatform(
-                ImageLoader.load("GreenPlatform.png"),
-                getMapTile(24, 6).getLocation(),
-                getMapTile(27, 6).getLocation(),
-                TileType.JUMP_THROUGH_PLATFORM,
-                3,
-                new Rectangle(0, 6,16,4),
-                Direction.RIGHT
-        );
-        enhancedMapTiles.add(hmp);
-
-        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(32, 7).getLocation());
-        enhancedMapTiles.add(endLevelBox);
-
+        //Adding player two's healthbar to the map
+        HealthBar healthBarP2 = new HealthBar(getMapTile(15, 0).getLocation());
+        enhancedMapTiles.add(healthBarP2);
         return enhancedMapTiles;
     }
 

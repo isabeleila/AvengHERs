@@ -9,7 +9,6 @@ import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
-import Utils.Point;
 
 // This class is for when the platformer game is actually being played
 public class PlayLevelScreen extends Screen implements PlayerListener {
