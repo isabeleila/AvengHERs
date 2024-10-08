@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 // This is the class for the Cat player character
 // It now has the ability to shoot balls
-public class Cat1 extends Player {
+public class Cat extends Player {
 
     // timer is used to determine how long the cat waits before shooting
     protected int shootWaitTimer;
@@ -29,7 +29,7 @@ public class Cat1 extends Player {
     protected Direction facingDirection;
 
  // Increase the y coordinate (starting lower)
-    public Cat1(float x, float y) {
+    public Cat(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
@@ -40,6 +40,7 @@ public class Cat1 extends Player {
 
         catState = CatState.WALK;
         previousCatState = catState;
+        shootWaitTimer = 100;
         facingDirection = Direction.RIGHT;  // Set default direction
     }
 
@@ -59,7 +60,7 @@ public class Cat1 extends Player {
         // if cat is waiting to shoot, it waits for a certain number of frames
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
-                shootTimer = 65;
+                shootTimer = 10;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 catState = CatState.SHOOT;
@@ -79,15 +80,15 @@ public class Cat1 extends Player {
                 ballX = Math.round(getX()) + getWidth();
                 movementSpeed = 2.0f;
             } else {
-                ballX = Math.round(getX() - 20);
+                ballX = Math.round(getX() - 300);
                 movementSpeed = -2.0f;
             }
 
             // define where the ball will spawn on the map (y location) relative to cat's location
-            int ballY = Math.round(getY()) + 5;
+            int ballY = Math.round(getY()) + 20;
 
             // create Ball enemy (similar to Fireball but with different properties)
-            Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 50, this);
+            Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this);
 
             // add ball enemy to the map for it to spawn in the level
             map.addEnemy(ball);
@@ -96,7 +97,7 @@ public class Cat1 extends Player {
             catState = CatState.WALK;
 
             // reset shoot wait timer so the process can happen again (cat walks around, then waits, then shoots)
-            shootWaitTimer = 120;
+            shootWaitTimer = 0;
         }
 
         previousCatState = catState;
@@ -110,7 +111,7 @@ public class Cat1 extends Player {
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         int spriteWidth = 15;
-        int spriteHeight = 24;
+        int spriteHeight = 19;
 
         return new HashMap<String, Frame[]>() {{
             put("STAND_RIGHT", new Frame[] {
