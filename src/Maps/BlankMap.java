@@ -3,17 +3,23 @@ package Maps;
 //import java.util.ArrayList;
 
 import Engine.GraphicsHandler;
+<<<<<<< HEAD
+=======
 // import Engine.ImageLoader;
 // import EnhancedMapTiles.EndLevelBox;
 // import EnhancedMapTiles.HorizontalMovingPlatform;
 // import GameObject.Rectangle;
 // import GameObject.Sprite;
 // import Level.EnhancedMapTile;
+>>>>>>> 7b9c23fd3616a08fc4a114a804f5f530980a70cc
 import Level.Map;
 //import Level.TileType;
 import Tilesets.CommonTileset;
+<<<<<<< HEAD
+=======
 // import Utils.Colors;
 // import Utils.Point;
+>>>>>>> 7b9c23fd3616a08fc4a114a804f5f530980a70cc
 
 // Represents the map that is used as a background for the main menu and credits menu screen
 public class BlankMap extends Map {
