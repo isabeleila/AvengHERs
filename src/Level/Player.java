@@ -56,7 +56,7 @@ public abstract class Player extends GameObject {
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
-        playerHealth = 60;
+        playerHealth = 100;
     }
 
     public void update() {
