@@ -21,21 +21,12 @@ public class TitleScreenMap extends Map {
         background.setWidth(90);
         background.setHeight(65);
         background.setScale(9);
-
-        // Point catLocation = getMapTile(8, 9).getLocation().subtractX(53).subtractY(-10);
-        // cat = new Sprite(ImageLoader.loadSubImage("Cat.png", Colors.MAGENTA, 0, 0, 24, 24));
-        // cat.setScale(3);
-        // cat.setLocation(catLocation.x, catLocation.y);
-        // cat2 = new Sprite(ImageLoader.loadSubImage("CatFlipped.png", Colors.MAGENTA, 0, 0, 24, 24));
-        // cat2.setScale(3);
-        // cat2.setLocation(catLocation.x + 80, catLocation.y);
+        background.setLocation(background.getX()-25, background.getY());
     }
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        // cat.draw(graphicsHandler);
-        // cat2.draw(graphicsHandler);
         background.draw(graphicsHandler);
     }
 

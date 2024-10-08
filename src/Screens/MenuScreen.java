@@ -29,16 +29,16 @@ public class MenuScreen extends Screen {
 
     @Override
     public void initialize() {
-        playGame = new SpriteFont("PLAY GAME", 300, 170, "Arial", 30, new Color(49, 207, 240));
+        playGame = new SpriteFont("PLAY GAME", 290, 170, "Arial", 30, new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
-        tutorial = new SpriteFont("TUTORIAL", 313, 210, "Arial", 30, new Color(49, 207, 240));
+        tutorial = new SpriteFont("TUTORIAL", 303, 210, "Arial", 30, new Color(49, 207, 240));
         tutorial.setOutlineColor(Color.black);
         tutorial.setOutlineThickness(3);
-        credits = new SpriteFont("CREDITS", 320, 250, "Arial", 30, new Color(49, 207, 240));
+        credits = new SpriteFont("CREDITS", 310, 250, "Arial", 30, new Color(49, 207, 240));
         credits.setOutlineColor(Color.black);
         credits.setOutlineThickness(3);
-        options = new SpriteFont("OPTIONS", 319, 290, "Arial", 30, new Color(49, 207, 240));
+        options = new SpriteFont("OPTIONS", 309, 290, "Arial", 30, new Color(49, 207, 240));
         options.setOutlineColor(Color.black);
         options.setOutlineThickness(3);
         background = new TitleScreenMap();

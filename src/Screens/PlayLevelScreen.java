@@ -3,6 +3,7 @@ package Screens;
 import java.awt.Color;
 
 import Enemies.Cat;
+import Enemies.Cat2;
 import Engine.GraphicsHandler;
 import Engine.Screen;
 import Game.GameState;
@@ -19,6 +20,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected ScreenCoordinator screenCoordinator;
     protected Map map;
     protected Player player;
+    protected Player player2;
     protected PlayLevelScreenState playLevelScreenState = PlayLevelScreenState.RUNNING;  // Initialize to a default value
     protected int screenTimer;
     protected LevelClearedScreen levelClearedScreen;
@@ -41,6 +43,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player.setMap(map);
         this.player.addListener(this);
 
+        // setup player2
+        this.player2 = new Cat2(map.getPlayerStartPosition().x+100, map.getPlayerStartPosition().y);
+        this.player2.setMap(map);
+        this.player2.addListener(this);
+
         levelClearedScreen = new LevelClearedScreen();
         levelLoseScreen = new LevelLoseScreen(this);
 
@@ -58,7 +65,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             // if level is "running" update player and map to keep game logic for the platformer level going
             case RUNNING:
                 player.update();
+                player2.update();
                 map.update(player);
+                map.update(player2);
                 break;
             // if level has been completed, bring up level cleared screen
             case LEVEL_COMPLETED:
@@ -89,6 +98,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player.draw(graphicsHandler);
                 playerOneText.draw(graphicsHandler);
                 playerTwoText.draw(graphicsHandler);
+                player2.draw(graphicsHandler);
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);

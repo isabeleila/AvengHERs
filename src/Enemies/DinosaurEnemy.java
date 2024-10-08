@@ -61,7 +61,7 @@ public class DinosaurEnemy extends Enemy {
         airGroundState = AirGroundState.GROUND;
 
         // every certain number of frames, the fireball will be shot out
-        shootWaitTimer = 65;
+        shootWaitTimer = 30;
     }
 
     @Override
