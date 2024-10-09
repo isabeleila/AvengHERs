@@ -11,8 +11,7 @@ import Level.TileType;
 import java.awt.Color;
 import java.util.HashMap;
 
-// This class is for the end level gold box tile
-// when the player touches it, it will tell the player that the level has been completed
+// This is the default clas that holds the Healthbar for a character
 public class HealthBar extends EnhancedMapTile {
     public HealthBar(int x, int y) {
         super(x, y, new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), TileType.PASSABLE);
@@ -20,7 +19,6 @@ public class HealthBar extends EnhancedMapTile {
 
     @Override
     public void update(Player player) {
-        //super.update(player);
         if (player.getPlayerHealth() == 100) {
             super.updateSpecific(0);
         }else if(player.getPlayerHealth() < 100 && player.getPlayerHealth() > 64){

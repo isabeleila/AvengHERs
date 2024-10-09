@@ -3,6 +3,7 @@ package Enemies;
 import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
+import Engine.Key;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -28,8 +29,10 @@ public class Cat extends Player {
     // facing direction of the cat
     protected Direction facingDirection;
 
+    protected int catHealth;
+
  // Increase the y coordinate (starting lower)
-    public Cat(float x, float y) {
+    public Cat(float x, float y, int playerNumber) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
@@ -42,6 +45,15 @@ public class Cat extends Player {
         previousCatState = catState;
         shootWaitTimer = 100;
         facingDirection = Direction.RIGHT;  // Set default direction
+
+        if(playerNumber == 2){
+            JUMP_KEY = Key.W;
+            MOVE_LEFT_KEY = Key.A;
+            MOVE_RIGHT_KEY = Key.D;
+            CROUCH_KEY = Key.S;
+        }
+
+        catHealth = playerHealth;
         
     }
 
@@ -269,5 +281,9 @@ public class Cat extends Player {
 
     public enum CatState {
         WALK, SHOOT_WAIT, SHOOT
+    }
+
+    public int getCatHealth(){
+        return catHealth;
     }
 }

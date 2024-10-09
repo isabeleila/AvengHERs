@@ -3,7 +3,6 @@ package Screens;
 import java.awt.Color;
 
 import Enemies.Cat;
-import Enemies.Cat2;
 import Engine.GraphicsHandler;
 import Engine.Screen;
 import Game.GameState;
@@ -39,12 +38,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.map = new TestMap();
 
         // setup player
-        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
+        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, 1);
         this.player.setMap(map);
         this.player.addListener(this);
 
         // setup player2
-        this.player2 = new Cat2(map.getPlayerStartPosition().x+100, map.getPlayerStartPosition().y);
+        this.player2 = new Cat(map.getPlayerStartPosition().x+100, map.getPlayerStartPosition().y, 2);
         this.player2.setMap(map);
         this.player2.addListener(this);
 
@@ -84,7 +83,6 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
-                playerOneText.setColor(Color.RED);
                 levelLoseScreen.update();
                 break;
         }
