@@ -3,10 +3,9 @@ package Enemies;
 import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
-import Engine.Keyboard;
 import Engine.Key;
 import Engine.KeyLocker;
-import Engine.Key;
+import Engine.Keyboard;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -15,20 +14,27 @@ import Utils.Point;
 
 import java.util.HashMap;
 
-public class Cat extends Player {
+// This is the class for the Cat player character
+// It now has the ability to shoot balls
+public class Cat2 extends Player {
 
+    // timer is used to determine how long the cat waits before shooting
     protected int shootWaitTimer;
+
+    // timer is used to determine when a ball is to be shot out
     protected int shootTimer;
+
+    // can be either WALK or SHOOT based on what the cat is currently set to do
     protected CatState catState;
     protected CatState previousCatState;
+
+    // facing direction of the cat
     protected Direction facingDirection;
+
     protected KeyLocker keyLocker;
 
-    public Cat(float x, float y) {
-    protected int catHealth;
-
  // Increase the y coordinate (starting lower)
-    public Cat(float x, float y, int playerNumber) {
+    public Cat2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
@@ -40,21 +46,18 @@ public class Cat extends Player {
         catState = CatState.WALK;
         previousCatState = catState;
         shootWaitTimer = 100;
-        facingDirection = Direction.RIGHT;
-        keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
+        keyLocker = new KeyLocker();
 
-        if(playerNumber == 2){
-            JUMP_KEY = Key.W;
-            MOVE_LEFT_KEY = Key.A;
-            MOVE_RIGHT_KEY = Key.D;
-            CROUCH_KEY = Key.S;
-        }
-
-        catHealth = playerHealth;
-        
+        JUMP_KEY = Key.W;
+        MOVE_LEFT_KEY = Key.A;
+        MOVE_RIGHT_KEY = Key.D;
+        CROUCH_KEY = Key.S;
+        System.out.println("yes");
     }
 
+
+   
     @Override
     public void update() {
         super.update();
@@ -65,13 +68,13 @@ public class Cat extends Player {
             facingDirection = Direction.RIGHT;
         }
 
-        if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
+        if (Keyboard.isKeyDown(Key.SHIFT) && !keyLocker.isKeyLocked(Key.SHIFT)) {
             catState = CatState.SHOOT_WAIT;
-            keyLocker.lockKey(Key.CTRL);
+            keyLocker.lockKey(Key.SHIFT);
         }
 
-        if (Keyboard.isKeyUp(Key.CTRL)) {
-            keyLocker.unlockKey(Key.CTRL);
+        if (Keyboard.isKeyUp(Key.SHIFT)) {
+            keyLocker.unlockKey(Key.SHIFT);
         }
 
         if (catState == CatState.SHOOT_WAIT) {
@@ -270,9 +273,5 @@ public class Cat extends Player {
 
     public enum CatState {
         WALK, SHOOT_WAIT, SHOOT
-    }
-
-    public int getCatHealth(){
-        return catHealth;
     }
 }

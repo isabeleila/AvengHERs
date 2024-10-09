@@ -87,6 +87,7 @@ public class Keyboard {
 				 put(Key.LEFT, 37);
 				 put(Key.ENTER, 10);
 				 put(Key.SHIFT, 16);
+				 put(Key.CTRL, 17);
 				 put(Key.A, 65);
 				 put(Key.B, 66);
 				 put(Key.C, 67);
