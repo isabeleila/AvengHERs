@@ -8,6 +8,7 @@ public enum Key {
     LEFT, 
     ENTER,
     SHIFT,
+    CTRL,
     A,
     B,
     C,

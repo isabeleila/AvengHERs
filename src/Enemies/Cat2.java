@@ -4,6 +4,8 @@ import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Key;
+import Engine.KeyLocker;
+import Engine.Keyboard;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -29,6 +31,8 @@ public class Cat2 extends Player {
     // facing direction of the cat
     protected Direction facingDirection;
 
+    protected KeyLocker keyLocker;
+
  // Increase the y coordinate (starting lower)
     public Cat2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
@@ -43,6 +47,7 @@ public class Cat2 extends Player {
         previousCatState = catState;
         shootWaitTimer = 100;
         facingDirection = Direction.RIGHT;  // Set default direction
+        keyLocker = new KeyLocker();
 
         JUMP_KEY = Key.W;
         MOVE_LEFT_KEY = Key.A;
@@ -52,61 +57,55 @@ public class Cat2 extends Player {
     }
 
 
+   
     @Override
     public void update() {
         super.update();
-        
 
+        if (currentAnimationName.contains("LEFT")) {
+            facingDirection = Direction.LEFT;
+        } else if (currentAnimationName.contains("RIGHT")) {
+            facingDirection = Direction.RIGHT;
+        }
 
-        // if shoot timer is up and cat is not currently shooting, set its state to SHOOT
-        if (shootWaitTimer == 0 && catState != CatState.SHOOT_WAIT) {
+        if (Keyboard.isKeyDown(Key.SHIFT) && !keyLocker.isKeyLocked(Key.SHIFT)) {
             catState = CatState.SHOOT_WAIT;
-        }
-        else {
-            shootWaitTimer--;
+            keyLocker.lockKey(Key.SHIFT);
         }
 
-        // if cat is waiting to shoot, it waits for a certain number of frames
+        if (Keyboard.isKeyUp(Key.SHIFT)) {
+            keyLocker.unlockKey(Key.SHIFT);
+        }
+
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
                 shootTimer = 10;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 catState = CatState.SHOOT;
-            }
-            else {
+            } else {
                 shootTimer--;
             }
         }
 
-        // this is for actually having the cat spit out the ball
         if (catState == CatState.SHOOT) {
-            // define where the ball will spawn on map (x location) relative to cat's location
-            // and define its movement speed
             int ballX;
             float movementSpeed;
             if (facingDirection == Direction.RIGHT) {
                 ballX = Math.round(getX()) + getWidth();
                 movementSpeed = 2.0f;
             } else {
-                ballX = Math.round(getX() - 300);
+                ballX = Math.round(getX()) - 5;
                 movementSpeed = -2.0f;
             }
 
-            // define where the ball will spawn on the map (y location) relative to cat's location
             int ballY = Math.round(getY()) + 20;
 
-            // create Ball enemy (similar to Fireball but with different properties)
             Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this);
-
-            // add ball enemy to the map for it to spawn in the level
             map.addEnemy(ball);
 
-            // change cat back to its WALK state after shooting, reset shootTimer to wait a certain number of frames before shooting again
             catState = CatState.WALK;
-
-            // reset shoot wait timer so the process can happen again (cat walks around, then waits, then shoots)
-            shootWaitTimer = 0;
+            shootWaitTimer = 100;
         }
 
         previousCatState = catState;
@@ -114,7 +113,6 @@ public class Cat2 extends Player {
 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        // drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
     }
 
     @Override
@@ -124,9 +122,9 @@ public class Cat2 extends Player {
 
         return new HashMap<String, Frame[]>() {{
             put("STAND_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(0, 0))  // (0, 0) is valid within 128x128
+                new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)  // Bounds set to 24x24
+                    .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -139,7 +137,7 @@ public class Cat2 extends Player {
             });
 
             put("WALK_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)  // Valid (1, 0)
+                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
                     .withScale(3)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build(),
@@ -158,7 +156,7 @@ public class Cat2 extends Player {
             });
 
             put("WALK_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)  // Valid within bounds
+                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
@@ -181,14 +179,14 @@ public class Cat2 extends Player {
             });
 
             put("JUMP_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(2, 0))  // Second row, first column (0, 1)
+                new FrameBuilder(spriteSheet.getSprite(2, 0))
                     .withScale(3)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("JUMP_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(2, 0))  // Same as JUMP_RIGHT, flipped
+                new FrameBuilder(spriteSheet.getSprite(2, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
@@ -196,14 +194,14 @@ public class Cat2 extends Player {
             });
 
             put("FALL_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(3, 0))  // Third row, first column
+                new FrameBuilder(spriteSheet.getSprite(3, 0))
                     .withScale(3)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("FALL_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(3, 0))  // Same sprite as FALL_RIGHT, flipped
+                new FrameBuilder(spriteSheet.getSprite(3, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
@@ -211,14 +209,14 @@ public class Cat2 extends Player {
             });
 
             put("CROUCH_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(4, 0))  // Fourth row
+                new FrameBuilder(spriteSheet.getSprite(4, 0))
                     .withScale(3)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("CROUCH_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(4, 0))  // Same as CROUCH_RIGHT, flipped
+                new FrameBuilder(spriteSheet.getSprite(4, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
@@ -226,7 +224,7 @@ public class Cat2 extends Player {
             });
 
             put("DEATH_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(5, 0), 8)  // Fifth row
+                new FrameBuilder(spriteSheet.getSprite(5, 0), 8)
                     .withScale(3)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(5, 1), 8)
@@ -238,7 +236,7 @@ public class Cat2 extends Player {
             });
 
             put("DEATH_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(5, 0), 8)  // Same as DEATH_RIGHT, flipped
+                new FrameBuilder(spriteSheet.getSprite(5, 0), 8)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .build(),
@@ -252,7 +250,6 @@ public class Cat2 extends Player {
                     .build()
             });
 
-            // Add animations for shooting
             put("SHOOT_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(6, 0))
                     .withScale(3)
@@ -270,7 +267,6 @@ public class Cat2 extends Player {
         }};
     }
 
-    // Direction enum for the cat's facing direction
     public enum Direction {
         LEFT, RIGHT
     }
