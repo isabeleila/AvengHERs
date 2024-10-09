@@ -98,6 +98,15 @@ public class AnimatedSprite implements IntersectableRectangle {
 		}
 		previousAnimationName = currentAnimationName;
 	}
+	
+	//Method used for enhanced tiles (healthbar) to update frames in animation based on int
+	//int is given by which frame (in order) the player's health is at currently
+	public void updateSpecific(int frameNumber){
+		if (currentFrameIndex != frameNumber){
+			currentFrameIndex = frameNumber;	
+			updateCurrentFrame();
+		}
+	}
 
 	// resets current animation
 	// this method is used when switching animations to "freshly load/reset" the new animation

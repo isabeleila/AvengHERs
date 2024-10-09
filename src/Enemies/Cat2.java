@@ -3,6 +3,7 @@ package Enemies;
 import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
+import Engine.Key;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 
 // This is the class for the Cat player character
 // It now has the ability to shoot balls
-public class Cat extends Player {
+public class Cat2 extends Player {
 
     // timer is used to determine how long the cat waits before shooting
     protected int shootWaitTimer;
@@ -29,7 +30,7 @@ public class Cat extends Player {
     protected Direction facingDirection;
 
  // Increase the y coordinate (starting lower)
-    public Cat(float x, float y) {
+    public Cat2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1f;
         terminalVelocityY = 6f;
@@ -42,13 +43,20 @@ public class Cat extends Player {
         previousCatState = catState;
         shootWaitTimer = 100;
         facingDirection = Direction.RIGHT;  // Set default direction
-        
+
+        JUMP_KEY = Key.W;
+        MOVE_LEFT_KEY = Key.A;
+        MOVE_RIGHT_KEY = Key.D;
+        CROUCH_KEY = Key.S;
+        System.out.println("yes");
     }
 
 
     @Override
     public void update() {
         super.update();
+        
+
 
         // if shoot timer is up and cat is not currently shooting, set its state to SHOOT
         if (shootWaitTimer == 0 && catState != CatState.SHOOT_WAIT) {
@@ -81,7 +89,7 @@ public class Cat extends Player {
                 ballX = Math.round(getX()) + getWidth();
                 movementSpeed = 2.0f;
             } else {
-                ballX = Math.round(getX() +5);
+                ballX = Math.round(getX() - 300);
                 movementSpeed = -2.0f;
             }
 
