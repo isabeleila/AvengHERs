@@ -82,7 +82,7 @@ public class Cat extends Player {
 
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
-                shootTimer = 2;
+                shootTimer = 0;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 catState = CatState.SHOOT;
