@@ -53,7 +53,6 @@ public class Cat2 extends Player {
         MOVE_LEFT_KEY = Key.A;
         MOVE_RIGHT_KEY = Key.D;
         CROUCH_KEY = Key.S;
-        System.out.println("yes");
     }
 
 

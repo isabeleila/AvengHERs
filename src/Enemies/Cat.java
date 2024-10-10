@@ -6,7 +6,6 @@ import Engine.ImageLoader;
 import Engine.Keyboard;
 import Engine.Key;
 import Engine.KeyLocker;
-import Engine.Key;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -23,9 +22,7 @@ public class Cat extends Player {
     protected CatState previousCatState;
     protected Direction facingDirection;
     protected KeyLocker keyLocker;
-
-    public Cat(float x, float y) {
-    protected int catHealth;
+    protected int playerNumberOut;
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber) {
@@ -51,7 +48,7 @@ public class Cat extends Player {
             CROUCH_KEY = Key.S;
         }
 
-        catHealth = playerHealth;
+        playerNumberOut = playerNumber;
         
     }
 
@@ -64,14 +61,25 @@ public class Cat extends Player {
         } else if (currentAnimationName.contains("RIGHT")) {
             facingDirection = Direction.RIGHT;
         }
+        if(playerNumberOut == 1){
+            if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
+                catState = CatState.SHOOT_WAIT;
+                keyLocker.lockKey(Key.CTRL);
+            }
 
-        if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
-            catState = CatState.SHOOT_WAIT;
-            keyLocker.lockKey(Key.CTRL);
-        }
+            if (Keyboard.isKeyUp(Key.CTRL)) {
+                keyLocker.unlockKey(Key.CTRL);
+            }
+        }else{
 
-        if (Keyboard.isKeyUp(Key.CTRL)) {
-            keyLocker.unlockKey(Key.CTRL);
+            if (Keyboard.isKeyDown(Key.SHIFT) && !keyLocker.isKeyLocked(Key.SHIFT)) {
+                catState = CatState.SHOOT_WAIT;
+                keyLocker.lockKey(Key.SHIFT);
+            }
+
+            if (Keyboard.isKeyUp(Key.SHIFT)) {
+                keyLocker.unlockKey(Key.SHIFT);
+            }
         }
 
         if (catState == CatState.SHOOT_WAIT) {
@@ -270,9 +278,5 @@ public class Cat extends Player {
 
     public enum CatState {
         WALK, SHOOT_WAIT, SHOOT
-    }
-
-    public int getCatHealth(){
-        return catHealth;
     }
 }
