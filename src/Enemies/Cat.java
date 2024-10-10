@@ -36,7 +36,7 @@ public class Cat extends Player {
 
         catState = CatState.WALK;
         previousCatState = catState;
-        shootWaitTimer = 100;
+        shootWaitTimer = 0;
         facingDirection = Direction.RIGHT;
         keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
@@ -82,7 +82,7 @@ public class Cat extends Player {
 
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
-                shootTimer = 10;
+                shootTimer = 2;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 catState = CatState.SHOOT;
