@@ -20,8 +20,8 @@ public class NPC extends MapEntity {
     protected int textboxOffsetX = 0;
     protected int textboxOffsetY = 0;
 
-    public NPC(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
-        super(x, y, spriteSheet, startingAnimation);
+    public NPC(float x, float y, SpriteSheet spriteSheet, String startingAnimation, int health) {
+        super(x, y, spriteSheet, startingAnimation, health);
         this.message = createMessage();
     }
 

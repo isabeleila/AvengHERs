@@ -34,13 +34,16 @@ public class GameObject extends AnimatedSprite {
     // the map instance this game object "belongs" to.
     protected Map map;
 
+    protected int objectHealth;
 
-    public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation) {
+
+    public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation, int health) {
         super(spriteSheet, x, y, startingAnimation);
         this.startPositionX = x;
         this.startPositionY = y;
         this.previousX = x;
         this.previousY = y;
+        this.objectHealth = health;
     }
 
     public GameObject(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {

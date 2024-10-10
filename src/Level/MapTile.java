@@ -25,8 +25,8 @@ public class MapTile extends MapEntity {
         this.tileType = tileType;
     }
 
-    public MapTile(float x, float y, SpriteSheet spriteSheet, TileType tileType) {
-        super(x, y, spriteSheet, "DEFAULT");
+    public MapTile(float x, float y, SpriteSheet spriteSheet, TileType tileType, int health) {
+        super(x, y, spriteSheet, "DEFAULT", health);
         this.tileType = tileType;
     }
 
