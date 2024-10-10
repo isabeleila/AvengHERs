@@ -8,8 +8,8 @@ import java.util.HashMap;
 // This class is a base class for all enemies in the game -- all enemies should extend from it
 public class Enemy extends MapEntity {
 
-    public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
-        super(x, y, spriteSheet, startingAnimation);
+    public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation, int health) {
+        super(x, y, spriteSheet, startingAnimation, health);
     }
 
     public Enemy(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {

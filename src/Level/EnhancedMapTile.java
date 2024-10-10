@@ -6,7 +6,7 @@ import GameObject.SpriteSheet;
 
 import java.util.HashMap;
 
-import Enemies.Cat;
+
 
 // This class is a base class for all enhanced map tiles in the game -- all enhanced map tiles should extend from it
 public class EnhancedMapTile extends MapTile {
@@ -16,7 +16,7 @@ public class EnhancedMapTile extends MapTile {
     }
 
     public EnhancedMapTile(float x, float y, SpriteSheet spriteSheet, TileType tileType) {
-        super(x, y, spriteSheet, tileType);
+        super(x, y, spriteSheet, tileType, 0);
     }
 
     public EnhancedMapTile(float x, float y, Frame[] frames, TileType tileType) {
@@ -34,10 +34,6 @@ public class EnhancedMapTile extends MapTile {
 
 
     public void update(Player player) {
-        super.update();
-    }
-
-    public void update(Cat player){
         super.update();
     }
 

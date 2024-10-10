@@ -14,8 +14,8 @@ public class MapEntity extends GameObject {
     // if true, entity will continue to be updated even if off camera
     protected boolean isUpdateOffScreen = false;
 
-    public MapEntity(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
-        super(spriteSheet, x, y, startingAnimation);
+    public MapEntity(float x, float y, SpriteSheet spriteSheet, String startingAnimation, int health) {
+        super(spriteSheet, x, y, startingAnimation, health);
     }
 
     public MapEntity(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {

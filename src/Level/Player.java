@@ -33,7 +33,7 @@ public abstract class Player extends GameObject {
     protected AirGroundState airGroundState;
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
-    protected int playerHealth;
+    protected int health;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -48,15 +48,15 @@ public abstract class Player extends GameObject {
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
 
-    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
-        super(spriteSheet, x, y, startingAnimationName);
+    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, int health) {
+        super(spriteSheet, x, y, startingAnimationName, health);
         facingDirection = Direction.RIGHT;
         airGroundState = AirGroundState.AIR;
         previousAirGroundState = airGroundState;
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
-        playerHealth = 100;
+        this.health = health;
     }
 
     public void update() {
@@ -308,10 +308,13 @@ public abstract class Player extends GameObject {
         if (!isInvincible) {
             // if map entity is an enemy, kill player on touch
             if (mapEntity instanceof Enemy) {
-                if(playerHealth <= 0){
+                if(health <= 0){
                     levelState = LevelState.PLAYER_DEAD;
                 }else
-                    playerHealth -= 34;
+                    health -= 35;
+                    if(health <= 0){
+                        levelState = LevelState.PLAYER_DEAD;
+                    }
                 //levelState = LevelState.PLAYER_DEAD;
             }
         }
@@ -374,7 +377,7 @@ public abstract class Player extends GameObject {
     }
 
     public int getPlayerHealth(){
-        return playerHealth;
+        return health;
     }
 
     public PlayerState getPlayerState() {
