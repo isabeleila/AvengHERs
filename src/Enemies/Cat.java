@@ -26,7 +26,7 @@ public class Cat extends Player {
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber) {
-        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
+        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT", 100);
         gravity = 1f;
         terminalVelocityY = 6f;
         jumpHeight = 25f;
@@ -47,9 +47,7 @@ public class Cat extends Player {
             MOVE_RIGHT_KEY = Key.D;
             CROUCH_KEY = Key.S;
         }
-
         playerNumberOut = playerNumber;
-        
     }
 
     @Override
@@ -61,7 +59,7 @@ public class Cat extends Player {
         } else if (currentAnimationName.contains("RIGHT")) {
             facingDirection = Direction.RIGHT;
         }
-        if(playerNumberOut == 1){
+        if(playerNumberOut == 2){
             if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
                 catState = CatState.SHOOT_WAIT;
                 keyLocker.lockKey(Key.CTRL);
