@@ -53,11 +53,11 @@ public class CharacterSelectScreen extends Screen {
         ironmanL.setWidth(ironmanL.getWidth()-30);
         ironmanL.setHeight(ironmanL.getHeight()-30);
         ironmanL.setLocation(ironmanL.getX() + 190, ironmanL.getY() + 10);
-        captainAmericaL = new Sprite(ImageLoader.load("CaptainAmerica1.jpg"));
+        captainAmericaL = new Sprite(ImageLoader.load("CaptainAmerica2.jpg"));
         captainAmericaL.setWidth(captainAmericaL.getWidth()-30);
         captainAmericaL.setHeight(captainAmericaL.getHeight()-30);
         captainAmericaL.setLocation(captainAmericaL.getX() + 10, captainAmericaL.getY() + 270);
-        spidermanL = new Sprite(ImageLoader.load("SpiderMan1.jpg"));
+        spidermanL = new Sprite(ImageLoader.load("SpiderMan2.jpg"));
         spidermanL.setWidth(spidermanL.getWidth()-30);
         spidermanL.setHeight(spidermanL.getHeight()-30);
         spidermanL.setLocation(spidermanL.getX() + 190, spidermanL.getY() + 270);
@@ -70,11 +70,11 @@ public class CharacterSelectScreen extends Screen {
         ironmanR.setWidth(ironmanR.getWidth()-30);
         ironmanR.setHeight(ironmanR.getHeight()-30);
         ironmanR.setLocation(ironmanR.getX() + 580, ironmanR.getY() + 10);
-        captainAmericaR = new Sprite(ImageLoader.load("CaptainAmerica1.jpg"));
+        captainAmericaR = new Sprite(ImageLoader.load("CaptainAmerica2.jpg"));
         captainAmericaR.setWidth(captainAmericaR.getWidth()-30);
         captainAmericaR.setHeight(captainAmericaR.getHeight()-30);
         captainAmericaR.setLocation(captainAmericaR.getX() + 400, captainAmericaR.getY() + 270);
-        spidermanR = new Sprite(ImageLoader.load("SpiderMan1.jpg"));
+        spidermanR = new Sprite(ImageLoader.load("SpiderMan2.jpg"));
         spidermanR.setWidth(spidermanR.getWidth()-30);
         spidermanR.setHeight(spidermanR.getHeight()-30);
         spidermanR.setLocation(spidermanR.getX() + 580, spidermanR.getY() + 270);
