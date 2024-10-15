@@ -24,6 +24,9 @@ public class GamePanel extends JPanel {
 	private final Key pauseKey = Key.P;
 	private Thread gameLoopProcess;
 
+	//istantiate the sound class
+	Sound sound = new Sound();
+
 	private Key showFPSKey = Key.G;
 	private SpriteFont fpsDisplayLabel;
 	private boolean showFPS = false;
@@ -59,17 +62,22 @@ public class GamePanel extends JPanel {
 	// this is called later after instantiation, and will initialize screenManager
 	// this had to be done outside of the constructor because it needed to know the JPanel's width and height, which aren't available in the constructor
 	public void setupGame() {
+		playMusic (0);
 		setBackground(Colors.CORNFLOWER_BLUE);
 		screenManager.initialize(new Rectangle(getX(), getY(), getWidth(), getHeight()));
+		//stopMusic();
+		
 	}
 
 	// this starts the timer (the game loop is started here)
 	public void startGame() {
 		gameLoopProcess.start();
+
 	}
 
 	public ScreenManager getScreenManager() {
 		return screenManager;
+		
 	}
 
 	public void setCurrentFPS(int currentFPS) {
@@ -137,4 +145,20 @@ public class GamePanel extends JPanel {
 			draw();
 		}
 	}
+
+	public void playMusic(int i){
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+
+	public void stopMusic(){
+		sound.stop();
+	}
+
+	public void playSE(int i){
+		sound.setFile(i);
+		sound.play();
+	}
+
 }
