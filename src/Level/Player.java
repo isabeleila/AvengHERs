@@ -3,6 +3,7 @@ package Level;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
+import Engine.SoundEffect;
 import GameObject.GameObject;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 public abstract class Player extends GameObject {
     // values that affect player movement
     // these should be set in a subclass
+
+    SoundEffect soundEffect = new SoundEffect();
+
     protected float walkSpeed = 0;
     protected float gravity = 0;
     protected float jumpHeight = 0;
@@ -317,7 +321,9 @@ public abstract class Player extends GameObject {
                     // }
                     if(health <= 0){
                         levelState = LevelState.PLAYER_DEAD;
+                        playMusic(0);
                     }
+                    //stopMusic();
                 //levelState = LevelState.PLAYER_DEAD;
             }
         }
@@ -418,4 +424,18 @@ public abstract class Player extends GameObject {
         drawBounds(graphicsHandler, new Color(255, 0, 0, 100));
     }
     */
+    public void playMusic(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+		//soundEffect.loop();
+	}
+
+	public void stopMusic(){
+		soundEffect.stop();
+	}
+
+	public void playSE(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+	}
 }

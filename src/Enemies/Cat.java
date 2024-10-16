@@ -4,6 +4,7 @@ import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Keyboard;
+import Engine.SoundEffect;
 import Engine.Key;
 import Engine.KeyLocker;
 import GameObject.Frame;
@@ -11,6 +12,7 @@ import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player;
 import Utils.Point;
+import Engine.GamePanel;
 
 import java.util.HashMap;
 
@@ -24,6 +26,8 @@ public class Cat extends Player {
     protected KeyLocker keyLocker;
     protected int playerNumberOut;
     protected int catHealth;
+    GamePanel gp;
+    SoundEffect soundEffect = new SoundEffect();
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber) {
@@ -86,9 +90,13 @@ public class Cat extends Player {
                 shootTimer = 0;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
+                playMusic(1);
                 catState = CatState.SHOOT;
+                //stopMusic();
+                //System.out.println("stopped");
             } else {
                 shootTimer--;
+                
             }
         }
 
@@ -279,7 +287,18 @@ public class Cat extends Player {
         WALK, SHOOT_WAIT, SHOOT
     }
 
-    public int getCatHealth(){
-        return catHealth;
-    }
+    public void playMusic(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+		//soundEffect.loop();
+	}
+
+	public void stopMusic(){
+		soundEffect.stop();
+	}
+
+	public void playSE(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+	}
 }
