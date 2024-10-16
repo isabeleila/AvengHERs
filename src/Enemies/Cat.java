@@ -25,6 +25,7 @@ public class Cat extends Player {
     protected Direction facingDirection;
     protected KeyLocker keyLocker;
     protected int playerNumberOut;
+    protected int catHealth;
     GamePanel gp;
     SoundEffect soundEffect = new SoundEffect();
 
@@ -90,7 +91,6 @@ public class Cat extends Player {
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 playMusic(1);
-                //System.out.println("played");
                 catState = CatState.SHOOT;
                 //stopMusic();
                 //System.out.println("stopped");
