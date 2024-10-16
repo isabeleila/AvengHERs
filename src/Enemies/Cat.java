@@ -23,6 +23,7 @@ public class Cat extends Player {
     protected Direction facingDirection;
     protected KeyLocker keyLocker;
     protected int playerNumberOut;
+    protected int catHealth;
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber) {
@@ -276,5 +277,9 @@ public class Cat extends Player {
 
     public enum CatState {
         WALK, SHOOT_WAIT, SHOOT
+    }
+
+    public int getCatHealth(){
+        return catHealth;
     }
 }

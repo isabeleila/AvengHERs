@@ -1,35 +1,20 @@
-package EnhancedMapTiles;
+package Level;
 
-import Builders.FrameBuilder;
-import Engine.ImageLoader;
-import GameObject.Frame;
-import GameObject.SpriteSheet;
-import Level.EnhancedMapTile;
-import Level.Player;
-import Level.TileType;
-
-import java.awt.Color;
 import java.util.HashMap;
 
-// This is the default clas that holds the Healthbar for a character
-public class HealthBar extends EnhancedMapTile {
-    public HealthBar(int x, int y) {
-        super(x, y, new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), TileType.PASSABLE);
-    }
+import Builders.FrameBuilder;
+import Engine.GraphicsHandler;
+import GameObject.Frame;
+import GameObject.GameObject;
+import GameObject.SpriteSheet;
 
-    @Override
-    public void update(Player player) {
-        if (player.getPlayerHealth() == 100) {
-            super.updateSpecific(0);
-        }else if(player.getPlayerHealth() < 100 && player.getPlayerHealth() > 64){
-            super.updateSpecific(1);
-        }else if(player.getPlayerHealth() < 64 && player.getPlayerHealth() > 1){
-            super.updateSpecific(2);
-        }else{
-            super.updateSpecific(3);
-        }
-    }
+public class HealthBarSprite extends GameObject{
 
+    public HealthBarSprite(SpriteSheet spriteSheet, float x, float y, String startingAnimation, int health, Player player) {
+        super(spriteSheet, x, y, startingAnimation, health);
+        //TODO Auto-generated constructor stub
+    }
+    
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
@@ -52,5 +37,17 @@ public class HealthBar extends EnhancedMapTile {
                         .build()
             });
         }};
+    }
+
+    //Used to animate based specifically on the input frame number
+    public void updateSpecific(int frameNumber){
+		if (currentFrameIndex != frameNumber){
+			currentFrameIndex = frameNumber;	
+			updateCurrentFrame();
+		}
+	}
+
+    public void draw(GraphicsHandler graphicsHandler) {
+        super.draw(graphicsHandler);
     }
 }
