@@ -1,6 +1,7 @@
 package Screens;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import Enemies.Cat;
 import Engine.GraphicsHandler;
@@ -26,7 +27,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected PlayLevelScreenState playLevelScreenState = PlayLevelScreenState.RUNNING;  // Initialize to a default value
     protected int screenTimer;
     protected LevelClearedScreen levelClearedScreen;
-    protected LevelLoseScreen levelLoseScreen;
+    protected LevelFinishedScreen levelFinishedScreen;
     protected boolean levelCompletedStateChangeStart;
 
     private SpriteFont playerOneText;
@@ -54,13 +55,15 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player2.addListener(this);
 
         levelClearedScreen = new LevelClearedScreen();
-        levelLoseScreen = new LevelLoseScreen(this);
+        levelFinishedScreen = new LevelFinishedScreen(this);
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
         playerOneText = new SpriteFont("Player 1", 135, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText.setFontStyle(Font.BOLD);
         playerOneText.setOutlineColor(Color.black);
         playerTwoText = new SpriteFont("Player 2", 510, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
         //New Healthbar work:
@@ -98,7 +101,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
-                levelLoseScreen.update();
+                levelFinishedScreen.update();
+                //Logic that sends endLevel Screen which player has no more health
+                levelFinishedScreen.updateDecl(player.getPlayerHealth(), player2.getPlayerHealth());
                 break;
         }
     }
@@ -119,7 +124,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 levelClearedScreen.draw(graphicsHandler);
                 break;
             case LEVEL_LOSE:
-                levelLoseScreen.draw(graphicsHandler);
+                levelFinishedScreen.draw(graphicsHandler);
                 break;
         }
     }
