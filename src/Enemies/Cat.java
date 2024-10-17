@@ -46,7 +46,7 @@ public class Cat extends Player {
         keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
 
-        if(playerNumber == 2){
+        if(playerNumber == 1){
             JUMP_KEY = Key.W;
             MOVE_LEFT_KEY = Key.A;
             MOVE_RIGHT_KEY = Key.D;
@@ -64,7 +64,7 @@ public class Cat extends Player {
         } else if (currentAnimationName.contains("RIGHT")) {
             facingDirection = Direction.RIGHT;
         }
-        if(playerNumberOut == 2){
+        if(playerNumberOut == 1){
             if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
                 catState = CatState.SHOOT_WAIT;
                 keyLocker.lockKey(Key.CTRL);
