@@ -16,6 +16,7 @@ import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
 import SpriteFont.SpriteFont;
+import Utils.Direction;
 
 
 // This class is for when the platformer game is actually being played
@@ -50,9 +51,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player.addListener(this);
 
         // setup player2
-        this.player2 = new Cat(map.getPlayerStartPosition().x+100, map.getPlayerStartPosition().y, 2);
+        this.player2 = new Cat(map.getPlayerStartPosition().x+500, map.getPlayerStartPosition().y, 2);
         this.player2.setMap(map);
         this.player2.addListener(this);
+        this.player2.setFacingDirection(Direction.LEFT);
 
         levelClearedScreen = new LevelClearedScreen();
         levelFinishedScreen = new LevelFinishedScreen(this);
@@ -84,6 +86,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //Call to update healthbars every tick
                 updateHealthBarGraphic(player, 1);
                 updateHealthBarGraphic(player2, 2);
+
+                //Once one player dies, the other is set to invincible
+                if(player.getPlayerHealth() <= 0){
+                    player2.setInvincible();
+                }else if(player2.getPlayerHealth() <= 0){
+                    player.setInvincible();
+                }
 
                 break;
             // if level has been completed, bring up level cleared screen

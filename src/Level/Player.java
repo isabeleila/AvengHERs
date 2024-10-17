@@ -307,6 +307,10 @@ public abstract class Player extends GameObject {
         }
     }
 
+    public void setInvincible(){
+        isInvincible = true;
+    }
+
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity) {
         if (!isInvincible) {
