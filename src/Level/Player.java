@@ -52,15 +52,15 @@ public abstract class Player extends GameObject {
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
 
-    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, int health) {
-        super(spriteSheet, x, y, startingAnimationName, health);
+    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, int specificHealth) {
+        super(spriteSheet, x, y, startingAnimationName, specificHealth);
         facingDirection = Direction.RIGHT;
         airGroundState = AirGroundState.AIR;
         previousAirGroundState = airGroundState;
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
-        this.health = health;
+        this.health = specificHealth;
     }
 
     public void update() {
@@ -307,6 +307,10 @@ public abstract class Player extends GameObject {
         }
     }
 
+    public void setInvincible(){
+        isInvincible = true;
+    }
+
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity) {
         if (!isInvincible) {
@@ -314,8 +318,12 @@ public abstract class Player extends GameObject {
             if (mapEntity instanceof Enemy) {
                 if(health <= 0){
                     levelState = LevelState.PLAYER_DEAD;
+                    playMusic(0);
                 }else
                     health -= 35;
+                    // for (PlayerListener listener : listeners) {
+                    //     listener.updateHealthBarGraphic();
+                    // }
                     if(health <= 0){
                         levelState = LevelState.PLAYER_DEAD;
                         playMusic(0);
