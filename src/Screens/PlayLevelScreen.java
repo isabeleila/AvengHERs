@@ -155,6 +155,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 healthBar1.updateSpecific(0);
             else{
                 healthBar2.updateSpecific(0);
+                stopMusic();
             }
         }else if(player.getPlayerHealth() < 100 && player.getPlayerHealth() > 64){
             if(i == 1)
