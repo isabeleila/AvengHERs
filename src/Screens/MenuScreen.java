@@ -23,12 +23,17 @@ public class MenuScreen extends Screen {
     protected int pointerLocationX, pointerLocationY;
     protected KeyLocker keyLocker = new KeyLocker();
 
+    Sound sound = new Sound();
+
     public MenuScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
     }
 
     @Override
     public void initialize() {
+
+        playMusic(0);
+
         playGame = new SpriteFont("PLAY GAME", 290, 170, "Arial", 30, new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
@@ -116,6 +121,7 @@ public class MenuScreen extends Screen {
             } else if (menuItemSelected == 3) {
                 screenCoordinator.setGameState(GameState.OPTIONS);
             }
+            stopMusic();
         }
     }
 
@@ -125,5 +131,20 @@ public class MenuScreen extends Screen {
         tutorial.draw(graphicsHandler);
         credits.draw(graphicsHandler);
         options.draw(graphicsHandler);
+        }
+
+        public void playMusic(int i){
+            sound.setFile(i);
+            sound.play();
+            sound.loop();
+        }
+    
+        public void stopMusic(){
+            sound.stop();
+        }
+    
+        public void playSE(int i){
+            sound.setFile(i);
+            sound.play();
         }
 }

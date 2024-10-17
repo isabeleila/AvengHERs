@@ -90,7 +90,7 @@ public class Cat extends Player {
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 playMusic(1);
-                System.out.println("played");
+                //System.out.println("played");
                 catState = CatState.SHOOT;
                 //stopMusic();
                 //System.out.println("stopped");

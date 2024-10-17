@@ -5,6 +5,7 @@ import java.awt.Color;
 import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Engine.Sound;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
@@ -26,11 +27,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelLoseScreen levelLoseScreen;
     protected boolean levelCompletedStateChangeStart;
 
+    Sound sound = new Sound();
+
     private SpriteFont playerOneText;
     private SpriteFont playerTwoText;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        playMusic(0);
     }
 
     public void initialize() {
@@ -97,6 +101,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 playerOneText.draw(graphicsHandler);
                 playerTwoText.draw(graphicsHandler);
                 player2.draw(graphicsHandler);
+                playMusic(0);
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);
@@ -138,4 +143,19 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private enum PlayLevelScreenState {
         RUNNING, LEVEL_COMPLETED, LEVEL_LOSE
     }
+
+    public void playMusic(int i){
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+
+	public void stopMusic(){
+		sound.stop();
+	}
+
+	public void playSE(int i){
+		sound.setFile(i);
+		sound.play();
+	}
 }

@@ -29,7 +29,7 @@ public class SoundEffect {
     public void play(){
 
         clip.start();
-                        System.out.println("played sound");
+                       // System.out.println("played sound");
 
 
     }

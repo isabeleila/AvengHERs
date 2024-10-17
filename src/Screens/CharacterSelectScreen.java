@@ -36,6 +36,9 @@ public class CharacterSelectScreen extends Screen {
     protected Sprite spidermanR;
     protected Map background;
     protected int pointerLocationX, pointerLocationY;
+
+    Sound sound= new Sound();
+
     protected KeyLocker keyLocker = new KeyLocker();
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
@@ -121,6 +124,7 @@ public class CharacterSelectScreen extends Screen {
         background.setAdjustCamera(false);
         menuItemSelected = -1;
         keyLocker.lockKey(Key.SPACE);
+        playMusic(1);
     }
 
     public void update() {
@@ -199,6 +203,7 @@ public class CharacterSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             menuItemSelected = currentMenuItemHovered;
+            stopMusic();
             screenCoordinator.setGameState(GameState.LEVEL);
         }
     }
@@ -225,4 +230,15 @@ public class CharacterSelectScreen extends Screen {
         captainAmericaR.draw(graphicsHandler);
         spidermanR.draw(graphicsHandler);
         }
+
+        public void playMusic(int i){
+            sound.setFile(i);
+            sound.play();
+            sound.loop();
+        }
+    
+        public void stopMusic(){
+            sound.stop();
+        }
+    
 }
