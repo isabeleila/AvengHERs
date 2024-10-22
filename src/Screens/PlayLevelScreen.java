@@ -8,6 +8,7 @@ import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Screen;
+import Engine.Sound;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.SpriteSheet;
@@ -33,6 +34,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelFinishedScreen levelFinishedScreen;
     protected boolean levelCompletedStateChangeStart;
 
+    Sound sound = new Sound();
+
     private SpriteFont playerOneText;
     private SpriteFont playerTwoText;
 
@@ -46,9 +49,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        playMusic(0);
     }
 
     public void initialize() {
+        playMusic(0);
         // define/setup map
         this.map = new TestMap();
 
@@ -196,6 +201,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 healthBar1.updateSpecific(0);
             else{
                 healthBar2.updateSpecific(0);
+                stopMusic();
             }
         }else if(player.getPlayerHealth() < 100 && player.getPlayerHealth() > 64){
             if(i == 1)
@@ -246,4 +252,19 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private enum PlayLevelScreenState {
         RUNNING, LEVEL_COMPLETED, LEVEL_LOSE
     }
+
+    public void playMusic(int i){
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+
+	public void stopMusic(){
+		sound.stop();
+	}
+
+	public void playSE(int i){
+		sound.setFile(i);
+		sound.play();
+	}
 }

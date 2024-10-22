@@ -318,6 +318,7 @@ public abstract class Player extends GameObject {
             if (mapEntity instanceof Enemy) {
                 if(health <= 0){
                     levelState = LevelState.PLAYER_DEAD;
+                    playMusic(0);
                 }else
                     health -= 35;
                     // for (PlayerListener listener : listeners) {

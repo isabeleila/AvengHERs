@@ -12,7 +12,7 @@ public class Sound {
         soundURL[0] = getClass().getResource("/sound/AvengersThemeSong.wav");
         //soundURL[1] = getClass().getResource("/sound/death.wav");
         //soundURL[2] = getClass().getResource("/sound/fireball.wav");
-        // soundURL[3] = getClass().getResource("/sound/ChooseYourCharacter.wav");
+         soundURL[1] = getClass().getResource("/sound/ChooseYourCharacter.wav");
 
     }
 

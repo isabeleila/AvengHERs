@@ -50,6 +50,7 @@ public class CharacterSelectScreen extends Screen {
     protected boolean player1Ready = false;
     protected boolean player2Ready = false;
     protected KeyLocker keyLocker = new KeyLocker();
+    Sound sound= new Sound();
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -207,6 +208,7 @@ public class CharacterSelectScreen extends Screen {
         menuItemSelectedL = -1;
         menuItemSelectedR = -1;
         keyLocker.lockKey(Key.SPACE);
+        playMusic(1);
     }
 
     public void update() {
@@ -318,7 +320,8 @@ public class CharacterSelectScreen extends Screen {
         if (!keyLocker.isKeyLocked(Key.CTRL) && Keyboard.isKeyDown(Key.CTRL)) {
             if(playerPressedStart2){
                 menuItemSelectedL = currentMenuItemHoveredL;
-                screenCoordinator.setGameState(GameState.LEVEL);
+                stopMusic();
+                screenCoordinator.setGameState(GameState.LEVELSELECT);
             }else if(!player1Ready){
                 playerPressedStart1 = true;
                 menuItemSelectedL = currentMenuItemHoveredL;
@@ -333,7 +336,8 @@ public class CharacterSelectScreen extends Screen {
         if (!keyLocker.isKeyLocked(Key.SHIFT) && Keyboard.isKeyDown(Key.SHIFT)) {
             if(playerPressedStart1){
                 menuItemSelectedR = currentMenuItemHoveredR;
-                screenCoordinator.setGameState(GameState.LEVEL);
+                stopMusic();
+                screenCoordinator.setGameState(GameState.LEVELSELECT);
             }else if(!player2Ready){
                 playerPressedStart2 = true;
                 menuItemSelectedR = currentMenuItemHoveredR;
@@ -373,4 +377,15 @@ public class CharacterSelectScreen extends Screen {
         c3.draw(graphicsHandler);
         c4.draw(graphicsHandler);
         }
+
+        public void playMusic(int i){
+            sound.setFile(i);
+            sound.play();
+            sound.loop();
+        }
+    
+        public void stopMusic(){
+            sound.stop();
+        }
+    
 }
