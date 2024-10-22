@@ -66,10 +66,12 @@ public class GamePanel extends JPanel {
 	// this starts the timer (the game loop is started here)
 	public void startGame() {
 		gameLoopProcess.start();
+
 	}
 
 	public ScreenManager getScreenManager() {
 		return screenManager;
+		
 	}
 
 	public void setCurrentFPS(int currentFPS) {
@@ -137,4 +139,5 @@ public class GamePanel extends JPanel {
 			draw();
 		}
 	}
+
 }

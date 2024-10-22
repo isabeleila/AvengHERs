@@ -4,6 +4,7 @@ import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Keyboard;
+import Engine.SoundEffect;
 import Engine.Key;
 import Engine.KeyLocker;
 import GameObject.Frame;
@@ -11,6 +12,7 @@ import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player;
 import Utils.Point;
+import Engine.GamePanel;
 
 import java.util.HashMap;
 
@@ -23,6 +25,9 @@ public class Cat extends Player {
     protected Direction facingDirection;
     protected KeyLocker keyLocker;
     protected int playerNumberOut;
+    protected int catHealth;
+    GamePanel gp;
+    SoundEffect soundEffect = new SoundEffect();
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber) {
@@ -41,7 +46,7 @@ public class Cat extends Player {
         keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
 
-        if(playerNumber == 2){
+        if(playerNumber == 1){
             JUMP_KEY = Key.W;
             MOVE_LEFT_KEY = Key.A;
             MOVE_RIGHT_KEY = Key.D;
@@ -59,7 +64,7 @@ public class Cat extends Player {
         } else if (currentAnimationName.contains("RIGHT")) {
             facingDirection = Direction.RIGHT;
         }
-        if(playerNumberOut == 2){
+        if(playerNumberOut == 1){
             if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
                 catState = CatState.SHOOT_WAIT;
                 keyLocker.lockKey(Key.CTRL);
@@ -85,9 +90,13 @@ public class Cat extends Player {
                 shootTimer = 0;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
+                playMusic(1);
                 catState = CatState.SHOOT;
+                //stopMusic();
+                //System.out.println("stopped");
             } else {
                 shootTimer--;
+                
             }
         }
 
@@ -277,4 +286,19 @@ public class Cat extends Player {
     public enum CatState {
         WALK, SHOOT_WAIT, SHOOT
     }
+
+    public void playMusic(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+		//soundEffect.loop();
+	}
+
+	public void stopMusic(){
+		soundEffect.stop();
+	}
+
+	public void playSE(int i){
+		soundEffect.setFile(i);
+		soundEffect.play();
+	}
 }
