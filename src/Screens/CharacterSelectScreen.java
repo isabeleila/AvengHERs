@@ -317,22 +317,16 @@ public class CharacterSelectScreen extends Screen {
         if (Keyboard.isKeyUp(Key.CTRL)) {
             keyLocker.unlockKey(Key.CTRL);
         }
-<<<<<<< HEAD
-        if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
-            menuItemSelected = currentMenuItemHovered;
-            screenCoordinator.setGameState(GameState.LEVELSELECT);
-=======
         if (!keyLocker.isKeyLocked(Key.CTRL) && Keyboard.isKeyDown(Key.CTRL)) {
             if(playerPressedStart2){
                 menuItemSelectedL = currentMenuItemHoveredL;
                 stopMusic();
-                screenCoordinator.setGameState(GameState.LEVEL);
+                screenCoordinator.setGameState(GameState.LEVELSELECT);
             }else if(!player1Ready){
                 playerPressedStart1 = true;
                 ReadyScreen(currentMenuItemHoveredL, 0);
                 player1Ready = true;
             }
->>>>>>> da71bca9b1fb2c4d66d77fa64e937b3c63b7b48f
         }
 
         if (Keyboard.isKeyUp(Key.SHIFT)) {
@@ -342,7 +336,7 @@ public class CharacterSelectScreen extends Screen {
             if(playerPressedStart1){
                 menuItemSelectedR = currentMenuItemHoveredR;
                 stopMusic();
-                screenCoordinator.setGameState(GameState.LEVEL);
+                screenCoordinator.setGameState(GameState.LEVELSELECT);
             }else if(!player2Ready){
                 playerPressedStart2 = true;
                 // Make a screen show up saying player ready // or call a method to do it
