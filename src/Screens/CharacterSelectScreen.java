@@ -199,7 +199,7 @@ public class CharacterSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             menuItemSelected = currentMenuItemHovered;
-            screenCoordinator.setGameState(GameState.LEVEL);
+            screenCoordinator.setGameState(GameState.LEVELSELECT);
         }
     }
 

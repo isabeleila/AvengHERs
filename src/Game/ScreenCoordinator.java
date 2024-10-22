@@ -5,6 +5,7 @@ import Engine.GraphicsHandler;
 import Engine.Screen;
 import Screens.CharacterSelectScreen;
 import Screens.CreditsScreen;
+import Screens.LevelSelectScreen;
 import Screens.MenuScreen;
 import Screens.OptionScreen;
 import Screens.PlayLevelScreen;
@@ -61,6 +62,9 @@ public class ScreenCoordinator extends Screen {
 						break;
 					case CHARACTER:
 						currentScreen = new CharacterSelectScreen(this);
+						break;
+					case LEVELSELECT:
+						currentScreen = new LevelSelectScreen(this);
 						break;
 				}
 				currentScreen.initialize();
