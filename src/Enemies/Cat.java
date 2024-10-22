@@ -26,12 +26,13 @@ public class Cat extends Player {
     protected KeyLocker keyLocker;
     protected int playerNumberOut;
     protected int catHealth;
+    protected String character;
     GamePanel gp;
     SoundEffect soundEffect = new SoundEffect();
 
  // Increase the y coordinate (starting lower)
-    public Cat(float x, float y, int playerNumber) {
-        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT", 100);
+    public Cat(float x, float y, int playerNumber, String character) {
+        super(new SpriteSheet(ImageLoader.load(character), 24, 24), x, y, "STAND_RIGHT", 100);
         gravity = 1f;
         terminalVelocityY = 6f;
         jumpHeight = 25f;

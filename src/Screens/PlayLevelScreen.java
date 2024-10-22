@@ -3,6 +3,7 @@ package Screens;
 import java.awt.Color;
 import java.awt.Font;
 
+import Screens.CharacterSelectScreen;
 import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
@@ -23,6 +24,7 @@ import Utils.Direction;
 public class PlayLevelScreen extends Screen implements PlayerListener {
     protected ScreenCoordinator screenCoordinator;
     protected Map map;
+    protected CharacterSelectScreen selctScreen;
     protected Player player;
     protected Player player2;
     protected PlayLevelScreenState playLevelScreenState = PlayLevelScreenState.RUNNING;  // Initialize to a default value
@@ -37,6 +39,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected HealthBarSprite healthBar1;
     protected HealthBarSprite healthBar2;
 
+    private int select1;
+    private int select2;
+    private String player1Selected;
+    private String player2Selected;
+
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
     }
@@ -45,13 +52,52 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         // define/setup map
         this.map = new TestMap();
 
+        //HulkSpriteSheet.png
+        //spidermanSpriteSheet.png
+        //CAPTAMERICAsheet.png
+        //IRONMANsheet.png
+
+        // Use these methods to get which character is selected
+    // -1 is none selected yet
+    // 0 is Character1 (Hulk)
+    // 1 is Character2 (IronMan)
+    // 2 is Character3 (CaptainAmerica)
+    // 3 is Character4 (Spiderman)
+
         // setup player
-        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, 1);
+        select1 = CharacterSelectScreen.getCharacterL();
+        if(select1 == 0){
+            player1Selected = "HulkSpriteSheet.png";
+        } else if(select1 == 1){
+            player1Selected = "IRONMANsheet.png";
+        } else if(select1 == 2){
+            player1Selected = "CAPTAMERICAsheet.png";
+        } else if(select1 == 3){
+            player1Selected = "spidermanSpriteSheet.png";
+        } else if(select1 == -1){
+            player1Selected = "HulkSpriteSheet.png";
+        }
+
+        select2 = CharacterSelectScreen.getCharacterR();
+        if(select2 == 0){
+            player2Selected = "HulkSpriteSheet.png";
+        } else if(select2 == 1){
+            player2Selected = "IRONMANsheet.png";
+        } else if(select2 == 2){
+            player2Selected = "CAPTAMERICAsheet.png";
+        } else if(select2 == 3){
+            player2Selected = "spidermanSpriteSheet.png";
+        } else if(select2 == -1){
+            player2Selected = "HulkSpriteSheet.png";
+        }
+
+
+        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, 1,player1Selected);
         this.player.setMap(map);
         this.player.addListener(this);
 
         // setup player2
-        this.player2 = new Cat(map.getPlayerStartPosition().x+500, map.getPlayerStartPosition().y, 2);
+        this.player2 = new Cat(map.getPlayerStartPosition().x+500, map.getPlayerStartPosition().y, 2, player2Selected);
         this.player2.setMap(map);
         this.player2.addListener(this);
         this.player2.setFacingDirection(Direction.LEFT);

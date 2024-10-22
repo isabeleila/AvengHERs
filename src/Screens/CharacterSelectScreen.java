@@ -16,8 +16,8 @@ public class CharacterSelectScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected int currentMenuItemHoveredL = 0; // current menu item being "hovered" over LEFT
     protected int currentMenuItemHoveredR = 0; // current menu item being "hovered" over RIGHT
-    protected int menuItemSelectedL = -1;
-    protected int menuItemSelectedR = -1;
+    protected static int menuItemSelectedL = -1;
+    protected static int menuItemSelectedR = -1;
     protected SpriteFont character11;
     protected SpriteFont character12;
     protected SpriteFont character21;
@@ -62,11 +62,11 @@ public class CharacterSelectScreen extends Screen {
     // 2 is Character3 (CaptainAmerica)
     // 3 is Character4 (Spiderman)
 
-    public int getCharacterL(){
+    public static int getCharacterL(){
         return menuItemSelectedL;
     }
 
-    public int getCharacterR(){
+    public static int getCharacterR(){
         return menuItemSelectedR;
     }
 
@@ -321,6 +321,7 @@ public class CharacterSelectScreen extends Screen {
                 screenCoordinator.setGameState(GameState.LEVEL);
             }else if(!player1Ready){
                 playerPressedStart1 = true;
+                menuItemSelectedL = currentMenuItemHoveredL;
                 ReadyScreen(currentMenuItemHoveredL, 0);
                 player1Ready = true;
             }
@@ -335,6 +336,7 @@ public class CharacterSelectScreen extends Screen {
                 screenCoordinator.setGameState(GameState.LEVEL);
             }else if(!player2Ready){
                 playerPressedStart2 = true;
+                menuItemSelectedR = currentMenuItemHoveredR;
                 // Make a screen show up saying player ready // or call a method to do it
                 ReadyScreen(currentMenuItemHoveredR, 1);
                 player2Ready = true;
