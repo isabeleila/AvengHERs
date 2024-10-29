@@ -3,7 +3,6 @@ package Screens;
 import java.awt.Color;
 import java.awt.Font;
 
-import Screens.CharacterSelectScreen;
 import Enemies.Cat;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;

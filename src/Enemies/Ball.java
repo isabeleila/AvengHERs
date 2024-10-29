@@ -21,8 +21,8 @@ public class Ball extends Enemy {
     private int existenceFrames;
     private Player creator;  // New field to track the creator of the ball
 
-    public Ball(Point location, float movementSpeed, int existenceFrames, Player creator) {  // Updated constructor
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Ball.png"), 7, 7), "DEFAULT", 1);
+    public Ball(Point location, float movementSpeed, int existenceFrames, Player creator, String charString) {  // Updated constructor
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load(charString), 7, 7), "DEFAULT", 1);
         this.movementSpeed = movementSpeed;
         this.existenceFrames = existenceFrames;
         this.creator = creator;  // Set the creator of the ball
