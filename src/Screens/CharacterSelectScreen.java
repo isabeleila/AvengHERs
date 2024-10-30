@@ -314,10 +314,10 @@ public class CharacterSelectScreen extends Screen {
         }
 
         // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
-        if (Keyboard.isKeyUp(Key.CTRL)) {
-            keyLocker.unlockKey(Key.CTRL);
+        if (Keyboard.isKeyUp(Key.Q)) {
+            keyLocker.unlockKey(Key.Q);
         }
-        if (!keyLocker.isKeyLocked(Key.CTRL) && Keyboard.isKeyDown(Key.CTRL)) {
+        if (!keyLocker.isKeyLocked(Key.Q) && Keyboard.isKeyDown(Key.Q)) {
             if(playerPressedStart2){
                 menuItemSelectedL = currentMenuItemHoveredL;
                 stopMusic();
