@@ -173,29 +173,29 @@ public class CharacterSelectScreen extends Screen {
         player2.setOutlineColor(Color.black);
         player2.setOutlineThickness(4);
         // Character Text Left
-        character11 = new SpriteFont("Character 1", 15, 230, "Arial", 30, new Color(49, 207, 240));
+        character11 = new SpriteFont("Hulk", 15, 230, "Arial", 30, new Color(49, 207, 240));
         character11.setOutlineColor(Color.black);
         character11.setOutlineThickness(4);
-        character21 = new SpriteFont("Character 2", 195, 230, "Arial", 30, new Color(49, 207, 240));
+        character21 = new SpriteFont("Iron Man", 195, 230, "Arial", 30, new Color(49, 207, 240));
         character21.setOutlineColor(Color.black);
         character21.setOutlineThickness(4);
-        character31 = new SpriteFont("Character 3", 15, 490, "Arial", 30, new Color(49, 207, 240));
+        character31 = new SpriteFont("Cap Merica", 15, 490, "Arial", 30, new Color(49, 207, 240));
         character31.setOutlineColor(Color.black);
         character31.setOutlineThickness(4);
-        character41 = new SpriteFont("Character 4", 195, 490, "Arial", 30, new Color(49, 207, 240));
+        character41 = new SpriteFont("Spider-Man", 195, 490, "Arial", 30, new Color(49, 207, 240));
         character41.setOutlineColor(Color.black);
         character41.setOutlineThickness(4);
         // Character Text Right
-        character12 = new SpriteFont("Character 1", 405, 230, "Arial", 30, new Color(49, 207, 240));
+        character12 = new SpriteFont("Hulk", 405, 230, "Arial", 30, new Color(49, 207, 240));
         character12.setOutlineColor(Color.black);
         character12.setOutlineThickness(4);
-        character22 = new SpriteFont("Character 2", 585, 230, "Arial", 30, new Color(49, 207, 240));
+        character22 = new SpriteFont("Iron Man", 585, 230, "Arial", 30, new Color(49, 207, 240));
         character22.setOutlineColor(Color.black);
         character22.setOutlineThickness(4);
-        character32 = new SpriteFont("Character 3", 405, 490, "Arial", 30, new Color(49, 207, 240));
+        character32 = new SpriteFont("Cap Merica", 405, 490, "Arial", 30, new Color(49, 207, 240));
         character32.setOutlineColor(Color.black);
         character32.setOutlineThickness(4);
-        character42 = new SpriteFont("Character 4", 585, 490, "Arial", 30, new Color(49, 207, 240));
+        character42 = new SpriteFont("Spider-Man", 585, 490, "Arial", 30, new Color(49, 207, 240));
         character42.setOutlineColor(Color.black);
         character42.setOutlineThickness(4);
         // Line
