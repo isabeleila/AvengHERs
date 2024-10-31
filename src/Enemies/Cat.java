@@ -37,7 +37,7 @@ public class Cat extends Player {
         terminalVelocityY = 6f;
         jumpHeight = 25f;
         jumpDegrade = 2f;
-        walkSpeed = 1.9f;
+        walkSpeed = 3f;
         momentumYIncrease = .5f;
 
         catState = CatState.WALK;
