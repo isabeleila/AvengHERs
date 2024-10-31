@@ -61,7 +61,13 @@ public class MenuScreen extends Screen {
         if (Keyboard.isKeyDown(Key.DOWN) &&  keyPressTimer == 0) {
             keyPressTimer = 14;
             currentMenuItemHovered++;
-        } else if (Keyboard.isKeyDown(Key.UP) &&  keyPressTimer == 0) {
+        }else if(Keyboard.isKeyDown(Key.S) &&  keyPressTimer == 0){
+            keyPressTimer = 14;
+            currentMenuItemHovered++;
+        }else if (Keyboard.isKeyDown(Key.UP) &&  keyPressTimer == 0) {
+            keyPressTimer = 14;
+            currentMenuItemHovered--;
+        }else if(Keyboard.isKeyDown(Key.W) &&  keyPressTimer == 0){
             keyPressTimer = 14;
             currentMenuItemHovered--;
         } else {

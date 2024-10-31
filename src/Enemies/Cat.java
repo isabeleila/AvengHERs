@@ -54,6 +54,7 @@ public class Cat extends Player {
             CROUCH_KEY = Key.S;
         }
         playerNumberOut = playerNumber;
+        this.character = character;
     }
 
     @Override
@@ -66,13 +67,13 @@ public class Cat extends Player {
             facingDirection = Direction.RIGHT;
         }
         if(playerNumberOut == 1){
-            if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
+            if (Keyboard.isKeyDown(Key.Q) && !keyLocker.isKeyLocked(Key.Q)) {
                 catState = CatState.SHOOT_WAIT;
-                keyLocker.lockKey(Key.CTRL);
+                keyLocker.lockKey(Key.Q);
             }
 
-            if (Keyboard.isKeyUp(Key.CTRL)) {
-                keyLocker.unlockKey(Key.CTRL);
+            if (Keyboard.isKeyUp(Key.Q)) {
+                keyLocker.unlockKey(Key.Q);
             }
         }else{
 
@@ -114,8 +115,47 @@ public class Cat extends Player {
 
             int ballY = Math.round(getY()) + 20;
 
-            Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this);
-            map.addEnemy(ball);
+            //Setting the right sprite for the Projectiles
+            //Dependant on Direction of the player
+            if(facingDirection == Direction.LEFT){
+                if(character.equals("HulkSpriteSheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBall.png");
+                    map.addEnemy(ball);
+
+                }else if(character.equals("IRONMANsheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    map.addEnemy(ball);
+
+                }else if(character.equals("CAPTAMERICAsheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    map.addEnemy(ball);
+
+                }else{
+                    //Spiderman sprite sheet
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBall.png");
+                    map.addEnemy(ball);
+
+                }
+            }else{
+                if(character.equals("HulkSpriteSheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBallR.png");
+                    map.addEnemy(ball);
+
+                }else if(character.equals("IRONMANsheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    map.addEnemy(ball);
+
+                }else if(character.equals("CAPTAMERICAsheet.png")){
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    map.addEnemy(ball);
+
+                }else{
+                    //Spiderman sprite sheet
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBallR.png");
+                    map.addEnemy(ball);
+
+                }
+            }
 
             catState = CatState.WALK;
             shootWaitTimer = 100;
