@@ -5,8 +5,6 @@ import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.Sprite;
 
-import Level.Map;
-import Maps.CharacterMap;
 import SpriteFont.SpriteFont;
 
 import java.awt.*;
@@ -43,7 +41,7 @@ public class CharacterSelectScreen extends Screen {
     protected Sprite c2;
     protected Sprite c3;
     protected Sprite c4;
-    protected Map background;
+    protected Sprite background;
     protected int pointerLocationX, pointerLocationY;
     protected boolean playerPressedStart1 = false;
     protected boolean playerPressedStart2 = false;
@@ -173,38 +171,36 @@ public class CharacterSelectScreen extends Screen {
         player2.setOutlineColor(Color.black);
         player2.setOutlineThickness(4);
         // Character Text Left
-        character11 = new SpriteFont("Character 1", 15, 230, "Arial", 30, new Color(49, 207, 240));
+        character11 = new SpriteFont("Hulk", 15, 230, "Arial", 30, new Color(49, 207, 240));
         character11.setOutlineColor(Color.black);
         character11.setOutlineThickness(4);
-        character21 = new SpriteFont("Character 2", 195, 230, "Arial", 30, new Color(49, 207, 240));
+        character21 = new SpriteFont("Iron Man", 195, 230, "Arial", 30, new Color(49, 207, 240));
         character21.setOutlineColor(Color.black);
         character21.setOutlineThickness(4);
-        character31 = new SpriteFont("Character 3", 15, 490, "Arial", 30, new Color(49, 207, 240));
+        character31 = new SpriteFont("Cap Merica", 15, 490, "Arial", 30, new Color(49, 207, 240));
         character31.setOutlineColor(Color.black);
         character31.setOutlineThickness(4);
-        character41 = new SpriteFont("Character 4", 195, 490, "Arial", 30, new Color(49, 207, 240));
+        character41 = new SpriteFont("Spider-Man", 195, 490, "Arial", 30, new Color(49, 207, 240));
         character41.setOutlineColor(Color.black);
         character41.setOutlineThickness(4);
         // Character Text Right
-        character12 = new SpriteFont("Character 1", 405, 230, "Arial", 30, new Color(49, 207, 240));
+        character12 = new SpriteFont("Hulk", 405, 230, "Arial", 30, new Color(49, 207, 240));
         character12.setOutlineColor(Color.black);
         character12.setOutlineThickness(4);
-        character22 = new SpriteFont("Character 2", 585, 230, "Arial", 30, new Color(49, 207, 240));
+        character22 = new SpriteFont("Iron Man", 585, 230, "Arial", 30, new Color(49, 207, 240));
         character22.setOutlineColor(Color.black);
         character22.setOutlineThickness(4);
-        character32 = new SpriteFont("Character 3", 405, 490, "Arial", 30, new Color(49, 207, 240));
+        character32 = new SpriteFont("Cap Merica", 405, 490, "Arial", 30, new Color(49, 207, 240));
         character32.setOutlineColor(Color.black);
         character32.setOutlineThickness(4);
-        character42 = new SpriteFont("Character 4", 585, 490, "Arial", 30, new Color(49, 207, 240));
+        character42 = new SpriteFont("Spider-Man", 585, 490, "Arial", 30, new Color(49, 207, 240));
         character42.setOutlineColor(Color.black);
         character42.setOutlineThickness(4);
         // Line
         line = new Sprite(ImageLoader.load("LINEb.jpg"));
         line.setHeight(line.getHeight()+100);
         line.setLocation(line.getX() + 372, line.getY());
-        // Background
-        background = new CharacterMap();
-        background.setAdjustCamera(false);
+        background = new Sprite(ImageLoader.load("White.jpg"));
         menuItemSelectedL = -1;
         menuItemSelectedR = -1;
         keyLocker.lockKey(Key.SPACE);
@@ -213,7 +209,7 @@ public class CharacterSelectScreen extends Screen {
 
     public void update() {
         // update background map (to play tile animations)
-        background.update(null);
+        //background.update(null);
 
         // if keys are pressed, change menu item "hovered" over
         if(Keyboard.isKeyDown(Key.S)){
@@ -314,10 +310,10 @@ public class CharacterSelectScreen extends Screen {
         }
 
         // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
-        if (Keyboard.isKeyUp(Key.CTRL)) {
-            keyLocker.unlockKey(Key.CTRL);
+        if (Keyboard.isKeyUp(Key.Q)) {
+            keyLocker.unlockKey(Key.Q);
         }
-        if (!keyLocker.isKeyLocked(Key.CTRL) && Keyboard.isKeyDown(Key.CTRL)) {
+        if (!keyLocker.isKeyLocked(Key.Q) && Keyboard.isKeyDown(Key.Q)) {
             if(playerPressedStart2){
                 menuItemSelectedL = currentMenuItemHoveredL;
                 stopMusic();
