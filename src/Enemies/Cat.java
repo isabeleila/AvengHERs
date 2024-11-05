@@ -67,13 +67,13 @@ public class Cat extends Player {
             facingDirection = Direction.RIGHT;
         }
         if(playerNumberOut == 1){
-            if (Keyboard.isKeyDown(Key.CTRL) && !keyLocker.isKeyLocked(Key.CTRL)) {
+            if (Keyboard.isKeyDown(Key.Q) && !keyLocker.isKeyLocked(Key.Q)) {
                 catState = CatState.SHOOT_WAIT;
-                keyLocker.lockKey(Key.CTRL);
+                keyLocker.lockKey(Key.Q);
             }
 
-            if (Keyboard.isKeyUp(Key.CTRL)) {
-                keyLocker.unlockKey(Key.CTRL);
+            if (Keyboard.isKeyUp(Key.Q)) {
+                keyLocker.unlockKey(Key.Q);
             }
         }else{
 
