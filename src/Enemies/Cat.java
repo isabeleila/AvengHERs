@@ -119,39 +119,39 @@ public class Cat extends Player {
             //Dependant on Direction of the player
             if(facingDirection == Direction.LEFT){
                 if(character.equals("HulkSpriteSheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("IRONMANsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("CAPTAMERICAsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
                 }else{
                     //Spiderman sprite sheet
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "SpiderBall.png");
                     map.addEnemy(ball);
 
                 }
             }else{
                 if(character.equals("HulkSpriteSheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBallR.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBallR.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("IRONMANsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("CAPTAMERICAsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
                 }else{
                     //Spiderman sprite sheet
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBallR.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "SpiderBallR.png");
                     map.addEnemy(ball);
 
                 }
