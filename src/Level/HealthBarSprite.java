@@ -34,6 +34,34 @@ public class HealthBarSprite extends GameObject{
                 new FrameBuilder(spriteSheet.getSprite(0, 3), 40)
                         .withScale(3)
                         .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 4), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 5), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 6), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 7), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 8), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 9), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 10), 40)
+                        .withScale(3)
+                        .withBounds(1, 1, 14, 14)
                         .build()
             });
         }};

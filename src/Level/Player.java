@@ -1,6 +1,5 @@
 package Level;
 
-import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
@@ -9,8 +8,6 @@ import GameObject.GameObject;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
-
-import java.awt.Color;
 import java.util.ArrayList;
 
 public abstract class Player extends GameObject {
@@ -339,7 +336,7 @@ public abstract class Player extends GameObject {
                     levelState = LevelState.PLAYER_DEAD;
                     playMusic(0);
                 }else
-                    health -= 35;
+                    health -= 10;
                     // for (PlayerListener listener : listeners) {
                     //     listener.updateHealthBarGraphic();
                     // }

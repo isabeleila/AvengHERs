@@ -114,10 +114,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
-        playerOneText = new SpriteFont("Player 1", 135, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(0, 0, 0));
         playerOneText.setFontStyle(Font.BOLD);
         playerOneText.setOutlineColor(Color.black);
-        playerTwoText = new SpriteFont("Player 2", 510, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 0));
         playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
@@ -127,8 +127,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         background.setAdjustCamera(false);        
 
         //New Healthbar work:
-        this.healthBar1 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), 225, 10, "DEFAULT", player.getPlayerHealth(), player);
-        this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
+        this.healthBar1 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 158, 10, "DEFAULT", player.getPlayerHealth(), player);
+        this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
     }
 
     public void update() {
@@ -204,6 +204,89 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     //logic used to decide which health bar gets updated, when, and to what frame.
     public void updateHealthBarGraphic(Player player, int i){
         //changes the healthbar
+        switch (player.getPlayerHealth()) {
+            case 100:
+                if(i == 1)
+                    healthBar1.updateSpecific(0);
+                else{
+                    healthBar2.updateSpecific(0);
+                    stopMusic();
+                }
+                break;
+            case 90:
+                if(i == 1)
+                    healthBar1.updateSpecific(1);
+                else{
+                    healthBar2.updateSpecific(1);
+                }
+                break;
+            case 80:
+                if(i == 1)
+                    healthBar1.updateSpecific(2);
+                else{
+                    healthBar2.updateSpecific(2);
+                }
+                break;
+            case 70:
+                if(i == 1)
+                    healthBar1.updateSpecific(3);
+                else{
+                    healthBar2.updateSpecific(3);
+                }
+                break;
+            case 60:
+                if(i == 1)
+                    healthBar1.updateSpecific(4);
+                else{
+                    healthBar2.updateSpecific(4);
+                }
+                break;
+            case 50:
+                if(i == 1)
+                    healthBar1.updateSpecific(5);
+                else{
+                    healthBar2.updateSpecific(5);
+                }
+                break;
+            case 40:
+                if(i == 1)
+                    healthBar1.updateSpecific(6);
+                else{
+                    healthBar2.updateSpecific(6);
+                }
+                break;
+            case 30:
+                if(i == 1)
+                    healthBar1.updateSpecific(7);
+                else{
+                    healthBar2.updateSpecific(7);
+                }
+                break;
+            case 20:
+                if(i == 1)
+                    healthBar1.updateSpecific(8);
+                else{
+                    healthBar2.updateSpecific(8);
+                }
+                break;
+            case 10:
+                if(i == 1)
+                    healthBar1.updateSpecific(9);
+                else{
+                    healthBar2.updateSpecific(9);
+                }
+                break;
+            case 0:
+                if(i == 1)
+                    healthBar1.updateSpecific(10);
+                else{
+                    healthBar2.updateSpecific(10);
+                }
+                break;
+                
+        }
+
+        /* 
         if (player.getPlayerHealth() == 100) {
             if(i == 1)
                 healthBar1.updateSpecific(0);
@@ -230,6 +313,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 healthBar2.updateSpecific(3);
             }
         }
+        */
     }
 
 
