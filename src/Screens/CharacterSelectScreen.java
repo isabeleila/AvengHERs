@@ -5,8 +5,6 @@ import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.Sprite;
 
-import Level.Map;
-import Maps.CharacterMap;
 import SpriteFont.SpriteFont;
 
 import java.awt.*;
@@ -43,7 +41,7 @@ public class CharacterSelectScreen extends Screen {
     protected Sprite c2;
     protected Sprite c3;
     protected Sprite c4;
-    protected Map background;
+    protected Sprite background;
     protected int pointerLocationX, pointerLocationY;
     protected boolean playerPressedStart1 = false;
     protected boolean playerPressedStart2 = false;
@@ -202,9 +200,7 @@ public class CharacterSelectScreen extends Screen {
         line = new Sprite(ImageLoader.load("LINEb.jpg"));
         line.setHeight(line.getHeight()+100);
         line.setLocation(line.getX() + 372, line.getY());
-        // Background
-        background = new CharacterMap();
-        background.setAdjustCamera(false);
+        background = new Sprite(ImageLoader.load("White.jpg"));
         menuItemSelectedL = -1;
         menuItemSelectedR = -1;
         keyLocker.lockKey(Key.SPACE);
@@ -213,7 +209,7 @@ public class CharacterSelectScreen extends Screen {
 
     public void update() {
         // update background map (to play tile animations)
-        background.update(null);
+        //background.update(null);
 
         // if keys are pressed, change menu item "hovered" over
         if(Keyboard.isKeyDown(Key.S)){
