@@ -52,6 +52,7 @@ public class Cat extends Player {
             MOVE_LEFT_KEY = Key.A;
             MOVE_RIGHT_KEY = Key.D;
             CROUCH_KEY = Key.S;
+            SHOOT_KEY = Key.Q;
         }
         playerNumberOut = playerNumber;
         this.character = character;
@@ -304,14 +305,16 @@ public class Cat extends Player {
             });
 
             put("SHOOT_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(6, 0))
+                //adds delay to shooting animation. 
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
                     .withScale(3)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("SHOOT_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(6, 0))
+                //adds delay to shooting animation. 
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(0, 0, spriteWidth, spriteHeight)
