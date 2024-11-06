@@ -426,10 +426,10 @@ public abstract class Player extends GameObject {
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize
     
-    public void draw(GraphicsHandler graphicsHandler) {
+    /*public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         drawBounds(graphicsHandler, new Color(255, 0, 0, 100));
-    }
+    }*/
     
     public void playMusic(int i){
 		soundEffect.setFile(i);
