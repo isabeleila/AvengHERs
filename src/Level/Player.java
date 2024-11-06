@@ -8,7 +8,6 @@ import GameObject.GameObject;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
-
 import java.util.ArrayList;
 
 public abstract class Player extends GameObject {
@@ -48,6 +47,7 @@ public abstract class Player extends GameObject {
     protected Key MOVE_LEFT_KEY = Key.LEFT;
     protected Key MOVE_RIGHT_KEY = Key.RIGHT;
     protected Key CROUCH_KEY = Key.DOWN;
+    protected Key SHOOT_KEY = Key.SHIFT;
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
@@ -263,14 +263,26 @@ public abstract class Player extends GameObject {
             if (currentMapTile != null && currentMapTile.getTileType() == TileType.WATER) {
                 this.currentAnimationName = facingDirection == Direction.RIGHT ? "SWIM_STAND_RIGHT" : "SWIM_STAND_LEFT";
             }
+            //switches to shooting animation. 
+            if(Keyboard.isKeyDown(SHOOT_KEY)){
+                this.currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
+            }
         }
         else if (playerState == PlayerState.WALKING) {
             // sets animation to a WALK animation based on which way player is facing
             this.currentAnimationName = facingDirection == Direction.RIGHT ? "WALK_RIGHT" : "WALK_LEFT";
+            //switches to shooting animation. 
+            if(Keyboard.isKeyDown(SHOOT_KEY)){
+                this.currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
+            }
         }
         else if (playerState == PlayerState.CROUCHING) {
             // sets animation to a CROUCH animation based on which way player is facing
             this.currentAnimationName = facingDirection == Direction.RIGHT ? "CROUCH_RIGHT" : "CROUCH_LEFT";
+            //switches to shooting animation. 
+            if(Keyboard.isKeyDown(SHOOT_KEY)){
+                this.currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
+            }
         }
         else if (playerState == PlayerState.JUMPING) {
             // if player is moving upwards, set player's animation to jump. if player moving downwards, set player's animation to fall
@@ -278,6 +290,10 @@ public abstract class Player extends GameObject {
                 this.currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
             } else {
                 this.currentAnimationName = facingDirection == Direction.RIGHT ? "FALL_RIGHT" : "FALL_LEFT";
+            }
+            //switches to shooting animation. 
+            if(Keyboard.isKeyDown(SHOOT_KEY)){
+                this.currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             }
         }
     }
@@ -320,7 +336,7 @@ public abstract class Player extends GameObject {
                     levelState = LevelState.PLAYER_DEAD;
                     playMusic(0);
                 }else
-                    health -= 35;
+                    health -= 10;
                     // for (PlayerListener listener : listeners) {
                     //     listener.updateHealthBarGraphic();
                     // }
@@ -423,12 +439,12 @@ public abstract class Player extends GameObject {
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize
-    /*
-    public void draw(GraphicsHandler graphicsHandler) {
+    
+    /*public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         drawBounds(graphicsHandler, new Color(255, 0, 0, 100));
-    }
-    */
+    }*/
+    
     public void playMusic(int i){
 		soundEffect.setFile(i);
 		soundEffect.play();

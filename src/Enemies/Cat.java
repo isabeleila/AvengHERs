@@ -54,6 +54,7 @@ public class Cat extends Player {
             MOVE_LEFT_KEY = Key.A;
             MOVE_RIGHT_KEY = Key.D;
             CROUCH_KEY = Key.S;
+            SHOOT_KEY = Key.Q;
         }
         playerNumberOut = playerNumber;
         this.character = character;
@@ -94,7 +95,7 @@ public class Cat extends Player {
 
         if (catState == CatState.SHOOT_WAIT) {
             if (previousCatState == CatState.WALK) {
-                shootTimer = 0;
+                shootTimer = 15;
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             } else if (shootTimer == 0) {
                 playMusic(1);
@@ -124,39 +125,39 @@ public class Cat extends Player {
             //Dependant on Direction of the player
             if(facingDirection == Direction.LEFT){
                 if(character.equals("HulkSpriteSheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("IRONMANsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("CAPTAMERICAsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
                 }else{
                     //Spiderman sprite sheet
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "SpiderBall.png");
                     map.addEnemy(ball);
 
                 }
             }else{
                 if(character.equals("HulkSpriteSheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "HulkBallR.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBallR.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("IRONMANsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "IronBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
                 }else if(character.equals("CAPTAMERICAsheet.png")){
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "CaptBall.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
                 }else{
                     //Spiderman sprite sheet
-                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 400, this, "SpiderBallR.png");
+                    Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "SpiderBallR.png");
                     map.addEnemy(ball);
 
                 }
@@ -177,14 +178,14 @@ public class Cat extends Player {
 
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
-        int spriteWidth = 15;
+        int spriteWidth = 14;
         int spriteHeight = 19;
 
         return new HashMap<String, Frame[]>() {{
             put("STAND_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -192,26 +193,26 @@ public class Cat extends Player {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("WALK_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 3), 14)
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -219,29 +220,29 @@ public class Cat extends Player {
                 new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
                 new FrameBuilder(spriteSheet.getSprite(1, 3), 14)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("JUMP_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(2, 0))
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -249,14 +250,14 @@ public class Cat extends Player {
                 new FrameBuilder(spriteSheet.getSprite(2, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("FALL_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(3, 0))
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -264,14 +265,14 @@ public class Cat extends Player {
                 new FrameBuilder(spriteSheet.getSprite(3, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("CROUCH_RIGHT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(4, 0))
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -279,7 +280,7 @@ public class Cat extends Player {
                 new FrameBuilder(spriteSheet.getSprite(4, 0))
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
@@ -311,17 +312,19 @@ public class Cat extends Player {
             });
 
             put("SHOOT_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(6, 0))
+                //adds delay to shooting animation. 
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
                     .withScale(3)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("SHOOT_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(6, 0))
+                //adds delay to shooting animation. 
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                    .withBounds(0, 0, spriteWidth, spriteHeight)
+                    .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
         }};
