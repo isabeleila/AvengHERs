@@ -15,6 +15,7 @@ import Level.HealthBarSprite;
 import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
+import Maps.PlayLevelMap;
 import Maps.TestMap;
 import SpriteFont.SpriteFont;
 import Utils.Direction;
@@ -45,6 +46,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int select2;
     private String player1Selected;
     private String player2Selected;
+
+    protected PlayLevelMap background;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -118,6 +121,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
+        //Making the backgroun picture for the play level screen.
+        //PlayLevelMap class holds the actaul image we are using here.
+        background = new PlayLevelMap("backgroundDark.jpeg");
+        background.setAdjustCamera(false);        
+
         //New Healthbar work:
         this.healthBar1 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), 225, 10, "DEFAULT", player.getPlayerHealth(), player);
         this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthSheet.png", Color.black), 32, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
@@ -171,6 +179,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         // based on screen state, draw appropriate graphics
         switch (playLevelScreenState) {
             case RUNNING:
+                background.draw(graphicsHandler);
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
                 playerOneText.draw(graphicsHandler);
