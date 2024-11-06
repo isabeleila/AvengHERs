@@ -13,6 +13,7 @@ import GameObject.SpriteSheet;
 import Level.Player;
 import Utils.Point;
 import Engine.GamePanel;
+import GameObject.Wall;
 
 import java.util.HashMap;
 
@@ -29,6 +30,7 @@ public class Cat extends Player {
     protected String character;
     GamePanel gp;
     SoundEffect soundEffect = new SoundEffect();
+    private Wall wall;
 
  // Increase the y coordinate (starting lower)
     public Cat(float x, float y, int playerNumber, String character) {
@@ -55,6 +57,9 @@ public class Cat extends Player {
         }
         playerNumberOut = playerNumber;
         this.character = character;
+
+        // wall position and size 
+        wall = new Wall(1000, 600, 50, 80);
     }
 
     @Override
@@ -166,6 +171,8 @@ public class Cat extends Player {
 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
+
+        wall.draw(graphicsHandler);
     }
 
     @Override
