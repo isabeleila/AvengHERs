@@ -2,6 +2,7 @@ package Level;
 
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import GameObject.Wall;
 
 import java.util.HashMap;
 
@@ -43,5 +44,10 @@ public class Enemy extends MapEntity {
     // A subclass can override this method to specify what it does when it touches the player
     public void touchedPlayer(Player player) {
         player.hurtPlayer(this);
+    }
+
+    public void touchedWall(Wall wall) {
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+
     }
 }
