@@ -14,6 +14,7 @@ import java.awt.*;
 public class CreditsScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected Map background;
+    protected Sprite backgroundImage;
     protected KeyLocker keyLocker = new KeyLocker();
     protected SpriteFont creditsLabel;
     protected SpriteFont createdByLabel;
@@ -35,6 +36,8 @@ public class CreditsScreen extends Screen {
         // setup graphics on screen (background map, spritefont text)
         background = new BlankMap();
         background.setAdjustCamera(false);
+        backgroundImage = new Sprite(ImageLoader.load("WhiteBackground.jpeg"));
+        backgroundImage.setScale(4);
         creditsLabel = new SpriteFont("Credits", 300, 9, "Arial", 50, Color.WHITE);
         creditsLabel.setOutlineColor(Color.BLACK);
         creditsLabel.setOutlineThickness(3);
@@ -72,6 +75,7 @@ public class CreditsScreen extends Screen {
 
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
+        backgroundImage.draw(graphicsHandler);
         creditsLabel.draw(graphicsHandler);
         createdByLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);

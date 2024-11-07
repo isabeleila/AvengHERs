@@ -18,6 +18,7 @@ import java.awt.*;
 public class TutorialScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected Map background;
+    protected Sprite backgroundImage;
     protected KeyLocker keyLocker = new KeyLocker();
     protected Sprite player1;
     protected Sprite player2;
@@ -33,10 +34,12 @@ public class TutorialScreen extends Screen {
         // setup graphics on screen (background map, spritefont text)
         background = new BlankMap();
         background.setAdjustCamera(false);
+        backgroundImage = new Sprite(ImageLoader.load("TutorialBackground.jpg"));
+        backgroundImage.setScale(2);
         creditsLabel = new SpriteFont("Tutorial", 293, 9, "Arial", 50, Color.BLACK);
         creditsLabel.setOutlineColor(Color.WHITE);
         creditsLabel.setOutlineThickness(3);
-        player1 = new Sprite(ImageLoader.load("TutorialPlayer1.jpg"));
+        player1 = new Sprite(ImageLoader.load("TutorialPlayer11.jpg"));
         player1.setLocation(20, 65);
         player1.setWidth(player1.getWidth() - 340);
         player1.setHeight(player1.getHeight() - 430);
@@ -65,6 +68,7 @@ public class TutorialScreen extends Screen {
 
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
+        backgroundImage.draw(graphicsHandler);
         creditsLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         player1.draw(graphicsHandler);
