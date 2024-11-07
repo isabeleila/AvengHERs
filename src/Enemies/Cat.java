@@ -162,6 +162,7 @@ public class Cat extends Player {
             }
 
             catState = CatState.WALK;
+            //Change this to make pause between shots longer/shorter
             super.setShootTimer(50);
         }
 
