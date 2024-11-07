@@ -2,7 +2,7 @@ package Level;
 
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-import GameObject.Wall;
+//import GameObject.Wall;
 
 import java.util.HashMap;
 
@@ -46,8 +46,8 @@ public class Enemy extends MapEntity {
         player.hurtPlayer(this);
     }
 
-    public void touchedWall(Wall wall) {
-        this.mapEntityStatus = MapEntityStatus.REMOVED;
+    // public void touchedWall(Wall wall) {
+    //     this.mapEntityStatus = MapEntityStatus.REMOVED;
 
-    }
+    // }
 }
