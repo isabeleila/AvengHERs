@@ -37,6 +37,7 @@ public abstract class Player extends GameObject {
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
     protected int health;
+    protected int shootTimer;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -459,4 +460,13 @@ public abstract class Player extends GameObject {
 		soundEffect.setFile(i);
 		soundEffect.play();
 	}
+
+    //Getters and settors for shootTimer in cat and playLevel class
+    public int getShootTimer(){
+        return shootTimer;
+    }
+
+    public void setShootTimer(int x){
+        shootTimer = x;
+    }
 }

@@ -43,6 +43,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected HealthBarSprite healthBar1;
     protected HealthBarSprite healthBar2;
 
+    protected ShootBarSprite shootBar1;
+    protected ShootBarSprite shootBar2;
+
     private int select1;
     private int select2;
     private String player1Selected;
@@ -131,7 +134,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.healthBar1 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 158, 10, "DEFAULT", player.getPlayerHealth(), player);
         this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
 
-        //this.shootBar1 = new ShootBarSprite(new SpriteSheet(), select2, select1, player1Selected, screenTimer)
+        //New bars that show if plaer can shoot
+        this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 0, 540, "DEFAULT", 3);
+        this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 650, 540, "DEFAULT", 3);
     }
 
     public void update() {
@@ -147,6 +152,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //Call to update healthbars every tick
                 updateHealthBarGraphic(player, 1);
                 updateHealthBarGraphic(player2, 2);
+
+                //Call to make healthbars update besed on a player's shootTimer
+                shootBar1.updateSpecific(player.getShootTimer());
+                shootBar2.updateSpecific(player2.getShootTimer());
 
                 //Once one player dies, the other is set to invincible
                 if(player.getPlayerHealth() <= 0){
@@ -190,6 +199,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player2.draw(graphicsHandler);
                 healthBar1.draw(graphicsHandler);
                 healthBar2.draw(graphicsHandler);
+                shootBar1.draw(graphicsHandler);
+                shootBar2.draw(graphicsHandler);
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);

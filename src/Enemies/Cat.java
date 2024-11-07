@@ -20,7 +20,6 @@ import java.util.HashMap;
 public class Cat extends Player {
 
     protected int shootWaitTimer;
-    protected int shootTimer;
     protected CatState catState;
     protected CatState previousCatState;
     protected Direction facingDirection;
@@ -48,6 +47,7 @@ public class Cat extends Player {
         facingDirection = Direction.RIGHT;
         keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
+        super.setShootTimer(0);
 
         if(playerNumber == 1){
             JUMP_KEY = Key.W;
@@ -73,7 +73,7 @@ public class Cat extends Player {
             facingDirection = Direction.RIGHT;
         }
         if(playerNumberOut == 1){
-            if (Keyboard.isKeyDown(Key.Q) && !keyLocker.isKeyLocked(Key.Q) && shootTimer == 0) {
+            if (Keyboard.isKeyDown(Key.Q) && !keyLocker.isKeyLocked(Key.Q) && super.getShootTimer() == 0) {
                 catState = CatState.SHOOT;
                 keyLocker.lockKey(Key.Q);
             }
@@ -83,7 +83,7 @@ public class Cat extends Player {
             }
         }else{
 
-            if (Keyboard.isKeyDown(Key.SHIFT) && !keyLocker.isKeyLocked(Key.SHIFT) && shootTimer == 0) {
+            if (Keyboard.isKeyDown(Key.SHIFT) && !keyLocker.isKeyLocked(Key.SHIFT) && super.getShootTimer() == 0) {
                 catState = CatState.SHOOT;
                 keyLocker.lockKey(Key.SHIFT);
             }
@@ -93,7 +93,7 @@ public class Cat extends Player {
             }
         }
 
-        if (catState == CatState.SHOOT && shootTimer == 0) {
+        if (catState == CatState.SHOOT && super.getShootTimer() == 0) {
             if (previousCatState == CatState.WALK) {
                 currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
             }
@@ -102,10 +102,11 @@ public class Cat extends Player {
             //stopMusic();
             //System.out.println("stopped");
         }
-        if(shootTimer > 0)
-            shootTimer--;
+        //Decrement shootTimer
+        if(super.getShootTimer() > 0)
+            super.setShootTimer(super.getShootTimer()-1);
 
-        if (catState == CatState.SHOOT && shootTimer == 0) {
+        if (catState == CatState.SHOOT && super.getShootTimer() == 0) {
             int ballX;
             float movementSpeed;
             if (facingDirection == Direction.RIGHT) {
@@ -161,11 +162,12 @@ public class Cat extends Player {
             }
 
             catState = CatState.WALK;
-            shootTimer = 50;
+            super.setShootTimer(50);
         }
 
         previousCatState = catState;
-        System.out.println(shootTimer);
+        //Check each player's timer on the terminal for testing
+        //System.out.println(super.getShootTimer());
     }
 
     public void draw(GraphicsHandler graphicsHandler) {

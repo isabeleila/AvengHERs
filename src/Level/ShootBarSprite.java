@@ -12,7 +12,6 @@ public class ShootBarSprite extends GameObject{
 
     public ShootBarSprite(SpriteSheet spriteSheet, float x, float y, String startingAnimation,int health) {
         super(spriteSheet, x, y, startingAnimation, health);
-        //TODO Auto-generated constructor stub
     }
     
     @Override
