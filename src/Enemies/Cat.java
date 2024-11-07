@@ -165,7 +165,6 @@ public class Cat extends Player {
         }
 
         previousCatState = catState;
-        System.out.println(shootTimer);
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
