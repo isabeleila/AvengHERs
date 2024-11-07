@@ -4,6 +4,7 @@ import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import GameObject.Wall;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -58,6 +59,12 @@ public class Ball extends Enemy {
             this.mapEntityStatus = MapEntityStatus.REMOVED;
         }
     }
+
+    @Override
+public void touchedWall(Wall wall) {
+    // When the ball touches a wall, it should disappear immediately.
+    this.mapEntityStatus = MapEntityStatus.REMOVED;
+}
 
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {

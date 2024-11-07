@@ -32,11 +32,11 @@ public class ShootBarSprite extends GameObject{
     }
 
     //Used to animate based specifically on the input frame number
-    public void updateSpecific(boolean flag){
-        if(flag == true){
-            setCurrentAnimationFrameIndex(0);
-        }else{
+    public void updateSpecific(int shootTimer){
+        if(shootTimer == 0){
             setCurrentAnimationFrameIndex(1);
+        }else{
+            setCurrentAnimationFrameIndex(0);
         }
         updateCurrentFrame();
     }
