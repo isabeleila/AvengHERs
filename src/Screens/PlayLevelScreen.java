@@ -78,28 +78,28 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         // setup player
         select1 = CharacterSelectScreen.getCharacterL();
         if(select1 == 0){
-            player1Selected = "HulkSpriteSheet.png";
+            player1Selected = "HulkSpriteSheetPlayer1.png";
         } else if(select1 == 1){
-            player1Selected = "IRONMANsheet.png";
+            player1Selected = "IRONMANsheetPlayer1.png";
         } else if(select1 == 2){
-            player1Selected = "CAPTAMERICAsheet.png";
+            player1Selected = "CAPTAMERICAsheetPlayer1.png";
         } else if(select1 == 3){
-            player1Selected = "spidermanSpriteSheet.png";
+            player1Selected = "spidermanSpriteSheetPlayer1.png";
         } else if(select1 == -1){
-            player1Selected = "HulkSpriteSheet.png";
+            player1Selected = "HulkSpriteSheetPlayer1.png";
         }
 
         select2 = CharacterSelectScreen.getCharacterR();
         if(select2 == 0){
-            player2Selected = "HulkSpriteSheet.png";
+            player2Selected = "HulkSpriteSheetPlayer2.png";
         } else if(select2 == 1){
-            player2Selected = "IRONMANsheet.png";
+            player2Selected = "IRONMANsheetPlayer2.png";
         } else if(select2 == 2){
-            player2Selected = "CAPTAMERICAsheet.png";
+            player2Selected = "CAPTAMERICAsheetPlayer2.png";
         } else if(select2 == 3){
-            player2Selected = "spidermanSpriteSheet.png";
+            player2Selected = "spidermanSpriteSheetPlayer2.png";
         } else if(select2 == -1){
-            player2Selected = "HulkSpriteSheet.png";
+            player2Selected = "HulkSpriteSheetPlayer2.png";
         }
 
 

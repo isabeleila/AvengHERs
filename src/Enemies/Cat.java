@@ -122,15 +122,15 @@ public class Cat extends Player {
             //Setting the right sprite for the Projectiles
             //Dependant on Direction of the player
             if(facingDirection == Direction.LEFT){
-                if(character.equals("HulkSpriteSheet.png")){
+                if(character.equals("HulkSpriteSheetPlayer1.png") || character.equals("HulkSpriteSheetPlayer2.png") || character.equals("GirlHulkSpriteSheetPlayer1.png") || character.equals("GirlHulkSpriteSheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBall.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("IRONMANsheet.png")){
+                }else if(character.equals("IRONMANsheetPlayer1.png") || character.equals("IRONMANsheetPlayer2.png") || character.equals("GirlIRONMANsheetPlayer1.png") || character.equals("GirlIRONMANsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("CAPTAMERICAsheet.png")){
+                }else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
@@ -141,15 +141,15 @@ public class Cat extends Player {
 
                 }
             }else{
-                if(character.equals("HulkSpriteSheet.png")){
+                if(character.equals("HulkSpriteSheetPlayer1.png") || character.equals("HulkSpriteSheetPlayer2.png") || character.equals("GirlHulkSpriteSheetPlayer1.png") || character.equals("GirlHulkSpriteSheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "HulkBallR.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("IRONMANsheet.png")){
+                }else if(character.equals("IRONMANsheetPlayer1.png") || character.equals("IRONMANsheetPlayer2.png") || character.equals("GirlIRONMANsheetPlayer1.png") || character.equals("GirlIRONMANsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("CAPTAMERICAsheet.png")){
+                }else if(character.equals("CAPTAMERICAsheetPlayer1.png")  || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
