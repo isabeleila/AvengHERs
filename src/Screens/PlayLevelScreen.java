@@ -146,10 +146,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
-        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(255, 0, 0));
         playerOneText.setFontStyle(Font.BOLD);
         playerOneText.setOutlineColor(Color.black);
-        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 255));
         playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
