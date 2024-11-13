@@ -19,11 +19,23 @@ public class ShootBarSprite extends GameObject{
         return new HashMap<String, Frame[]>() {{
             put("DEFAULT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0), 40)
-                        .withScale(3)
+                        .withScale(1)
                         .withBounds(1, 1, 14, 14)
                         .build(),
                 new FrameBuilder(spriteSheet.getSprite(0, 1), 40)
-                        .withScale(3)
+                        .withScale(1)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 2), 40)
+                        .withScale(1)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                new FrameBuilder(spriteSheet.getSprite(0, 3), 40)
+                        .withScale(1)
+                        .withBounds(1, 1, 14, 14)
+                        .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 4), 40)
+                        .withScale(1)
                         .withBounds(1, 1, 14, 14)
                         .build(),
             });
@@ -32,10 +44,16 @@ public class ShootBarSprite extends GameObject{
 
     //Used to animate based specifically on the input frame number
     public void updateSpecific(int shootTimer){
-        if(shootTimer == 0){
-            setCurrentAnimationFrameIndex(1);
-        }else{
+        if(shootTimer <= 50 && shootTimer >= 38){
             setCurrentAnimationFrameIndex(0);
+        }else if(shootTimer < 38 && shootTimer >= 26){
+            setCurrentAnimationFrameIndex(1);
+        }else if(shootTimer < 26 && shootTimer >= 12){
+            setCurrentAnimationFrameIndex(2);
+        }else if(shootTimer < 12 && shootTimer > 0){
+            setCurrentAnimationFrameIndex(3);
+        }else{
+            setCurrentAnimationFrameIndex(4);
         }
         updateCurrentFrame();
     }
