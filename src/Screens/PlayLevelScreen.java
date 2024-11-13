@@ -135,8 +135,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
 
         //New bars that show if plaer can shoot
-        this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 0, 540, "DEFAULT", 3);
-        this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 650, 540, "DEFAULT", 3);
+        this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 25, 13, "DEFAULT", 3);
+        this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 707, 13, "DEFAULT", 3);
     }
 
     public void update() {
