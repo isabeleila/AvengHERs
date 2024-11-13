@@ -205,12 +205,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         goBackToMenu();
                     }
                 }
+                CharacterSelectScreen.setFlag(false);
                 break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
                 levelFinishedScreen.update();
                 //Logic that sends endLevel Screen which player has no more health
                 levelFinishedScreen.updateDecl(player.getPlayerHealth(), player2.getPlayerHealth());
+                CharacterSelectScreen.setFlag(false);
                 break;
         }
     }

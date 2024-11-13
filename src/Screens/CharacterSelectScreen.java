@@ -392,4 +392,8 @@ public class CharacterSelectScreen extends Screen {
         public static boolean getFlag(){
             return hiddenFlag;
         }
+
+        public static void setFlag(boolean value){
+            hiddenFlag = value;
+        }
 }
