@@ -49,6 +49,7 @@ public class CharacterSelectScreen extends Screen {
     protected boolean player2Ready = false;
     protected KeyLocker keyLocker = new KeyLocker();
     Sound sound= new Sound();
+    protected static boolean hiddenFlag = false;
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -264,6 +265,10 @@ public class CharacterSelectScreen extends Screen {
             }
         }
 
+        if(Keyboard.isKeyDown(Key.H) && Keyboard.isKeyDown(Key.E) && Keyboard.isKeyDown(Key.R)){
+            hiddenFlag = true;
+        }
+
         // sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHoveredL == 0) {
             character11.setColor(new Color(250, 0, 0));
@@ -383,5 +388,8 @@ public class CharacterSelectScreen extends Screen {
         public void stopMusic(){
             sound.stop();
         }
-    
+
+        public static boolean getFlag(){
+            return hiddenFlag;
+        }
 }

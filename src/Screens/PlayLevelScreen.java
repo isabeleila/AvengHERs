@@ -76,30 +76,58 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     // 3 is Character4 (Spiderman)
 
         // setup player
-        select1 = CharacterSelectScreen.getCharacterL();
-        if(select1 == 0){
-            player1Selected = "HulkSpriteSheetPlayer1.png";
-        } else if(select1 == 1){
-            player1Selected = "IRONMANsheetPlayer1.png";
-        } else if(select1 == 2){
-            player1Selected = "CAPTAMERICAsheetPlayer1.png";
-        } else if(select1 == 3){
-            player1Selected = "spidermanSpriteSheetPlayer1.png";
-        } else if(select1 == -1){
-            player1Selected = "HulkSpriteSheetPlayer1.png";
-        }
+        if(CharacterSelectScreen.getFlag()){
+            select1 = CharacterSelectScreen.getCharacterL();
+            if(select1 == 0){
+                player1Selected = "GirlHulkSpriteSheetPlayer1.png";
+            } else if(select1 == 1){
+                player1Selected = "GirlIRONMANsheetPlayer1.png";
+            } else if(select1 == 2){
+                player1Selected = "GirlCAPTAMERICAsheetPlayer1.png";
+            } else if(select1 == 3){
+                player1Selected = "GirlspidermanSpriteSheetPlayer1.png";
+            } else if(select1 == -1){
+                player1Selected = "GirlHulkSpriteSheetPlayer1.png";
+            }
+    
+            select2 = CharacterSelectScreen.getCharacterR();
+            if(select2 == 0){
+                player2Selected = "GirlHulkSpriteSheetPlayer2.png";
+            } else if(select2 == 1){
+                player2Selected = "GirlIRONMANsheetPlayer2.png";
+            } else if(select2 == 2){
+                player2Selected = "GirlCAPTAMERICAsheetPlayer2.png";
+            } else if(select2 == 3){
+                player2Selected = "GirlspidermanSpriteSheetPlayer2.png";
+            } else if(select2 == -1){
+                player2Selected = "GirlHulkSpriteSheetPlayer2.png";
+            }
+        }else{
+            select1 = CharacterSelectScreen.getCharacterL();
+            if(select1 == 0){
+                player1Selected = "HulkSpriteSheetPlayer1.png";
+            } else if(select1 == 1){
+                player1Selected = "IRONMANsheetPlayer1.png";
+            } else if(select1 == 2){
+                player1Selected = "CAPTAMERICAsheetPlayer1.png";
+            } else if(select1 == 3){
+                player1Selected = "spidermanSpriteSheetPlayer1.png";
+            } else if(select1 == -1){
+                player1Selected = "HulkSpriteSheetPlayer1.png";
+            }
 
-        select2 = CharacterSelectScreen.getCharacterR();
-        if(select2 == 0){
-            player2Selected = "HulkSpriteSheetPlayer2.png";
-        } else if(select2 == 1){
-            player2Selected = "IRONMANsheetPlayer2.png";
-        } else if(select2 == 2){
-            player2Selected = "CAPTAMERICAsheetPlayer2.png";
-        } else if(select2 == 3){
-            player2Selected = "spidermanSpriteSheetPlayer2.png";
-        } else if(select2 == -1){
-            player2Selected = "HulkSpriteSheetPlayer2.png";
+            select2 = CharacterSelectScreen.getCharacterR();
+            if(select2 == 0){
+                player2Selected = "HulkSpriteSheetPlayer2.png";
+            } else if(select2 == 1){
+                player2Selected = "IRONMANsheetPlayer2.png";
+            } else if(select2 == 2){
+                player2Selected = "CAPTAMERICAsheetPlayer2.png";
+            } else if(select2 == 3){
+                player2Selected = "spidermanSpriteSheetPlayer2.png";
+            } else if(select2 == -1){
+                player2Selected = "HulkSpriteSheetPlayer2.png";
+            }
         }
 
 
