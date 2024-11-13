@@ -78,26 +78,26 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         // setup player
         select1 = CharacterSelectScreen.getCharacterL();
         if(select1 == 0){
-            player1Selected = "HulkSpriteSheetPlayer1.png";
+            player1Selected = "GirlHulkSpriteSheetPlayer1.png";
         } else if(select1 == 1){
-            player1Selected = "IRONMANsheetPlayer1.png";
+            player1Selected = "GirlIRONMANsheetPlayer1.png";
         } else if(select1 == 2){
-            player1Selected = "CAPTAMERICAsheetPlayer1.png";
+            player1Selected = "GirlCAPTAMERICAsheetPlayer1.png";
         } else if(select1 == 3){
-            player1Selected = "spidermanSpriteSheetPlayer1.png";
+            player1Selected = "GirlspidermanSpriteSheetPlayer1.png";
         } else if(select1 == -1){
             player1Selected = "HulkSpriteSheetPlayer1.png";
         }
 
         select2 = CharacterSelectScreen.getCharacterR();
         if(select2 == 0){
-            player2Selected = "HulkSpriteSheetPlayer2.png";
+            player2Selected = "GirlHulkSpriteSheetPlayer2.png";
         } else if(select2 == 1){
-            player2Selected = "IRONMANsheetPlayer2.png";
+            player2Selected = "GirlIRONMANsheetPlayer2.png";
         } else if(select2 == 2){
-            player2Selected = "CAPTAMERICAsheetPlayer2.png";
+            player2Selected = "GirlCAPTAMERICAsheetPlayer2.png";
         } else if(select2 == 3){
-            player2Selected = "spidermanSpriteSheetPlayer2.png";
+            player2Selected = "GirlspidermanSpriteSheetPlayer2.png";
         } else if(select2 == -1){
             player2Selected = "HulkSpriteSheetPlayer2.png";
         }
@@ -118,10 +118,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
-        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(255, 0, 0));
         playerOneText.setFontStyle(Font.BOLD);
         playerOneText.setOutlineColor(Color.black);
-        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 255));
         playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
