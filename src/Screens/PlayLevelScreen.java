@@ -76,6 +76,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     // 3 is Character4 (Spiderman)
 
         // setup player
+        //Get flag tells the game if the easter egg has been flipped
         if(CharacterSelectScreen.getFlag()){
             select1 = CharacterSelectScreen.getCharacterL();
             if(select1 == 0){
