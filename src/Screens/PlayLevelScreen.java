@@ -76,30 +76,58 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     // 3 is Character4 (Spiderman)
 
         // setup player
-        select1 = CharacterSelectScreen.getCharacterL();
-        if(select1 == 0){
-            player1Selected = "HulkSpriteSheet.png";
-        } else if(select1 == 1){
-            player1Selected = "IRONMANsheet.png";
-        } else if(select1 == 2){
-            player1Selected = "CAPTAMERICAsheet.png";
-        } else if(select1 == 3){
-            player1Selected = "spidermanSpriteSheet.png";
-        } else if(select1 == -1){
-            player1Selected = "HulkSpriteSheet.png";
-        }
+        if(CharacterSelectScreen.getFlag()){
+            select1 = CharacterSelectScreen.getCharacterL();
+            if(select1 == 0){
+                player1Selected = "GirlHulkSpriteSheetPlayer1.png";
+            } else if(select1 == 1){
+                player1Selected = "GirlIRONMANsheetPlayer1.png";
+            } else if(select1 == 2){
+                player1Selected = "GirlCAPTAMERICAsheetPlayer1.png";
+            } else if(select1 == 3){
+                player1Selected = "GirlspidermanSpriteSheetPlayer1.png";
+            } else if(select1 == -1){
+                player1Selected = "GirlHulkSpriteSheetPlayer1.png";
+            }
+    
+            select2 = CharacterSelectScreen.getCharacterR();
+            if(select2 == 0){
+                player2Selected = "GirlHulkSpriteSheetPlayer2.png";
+            } else if(select2 == 1){
+                player2Selected = "GirlIRONMANsheetPlayer2.png";
+            } else if(select2 == 2){
+                player2Selected = "GirlCAPTAMERICAsheetPlayer2.png";
+            } else if(select2 == 3){
+                player2Selected = "GirlspidermanSpriteSheetPlayer2.png";
+            } else if(select2 == -1){
+                player2Selected = "GirlHulkSpriteSheetPlayer2.png";
+            }
+        }else{
+            select1 = CharacterSelectScreen.getCharacterL();
+            if(select1 == 0){
+                player1Selected = "HulkSpriteSheetPlayer1.png";
+            } else if(select1 == 1){
+                player1Selected = "IRONMANsheetPlayer1.png";
+            } else if(select1 == 2){
+                player1Selected = "CAPTAMERICAsheetPlayer1.png";
+            } else if(select1 == 3){
+                player1Selected = "spidermanSpriteSheetPlayer1.png";
+            } else if(select1 == -1){
+                player1Selected = "HulkSpriteSheetPlayer1.png";
+            }
 
-        select2 = CharacterSelectScreen.getCharacterR();
-        if(select2 == 0){
-            player2Selected = "HulkSpriteSheet.png";
-        } else if(select2 == 1){
-            player2Selected = "IRONMANsheet.png";
-        } else if(select2 == 2){
-            player2Selected = "CAPTAMERICAsheet.png";
-        } else if(select2 == 3){
-            player2Selected = "spidermanSpriteSheet.png";
-        } else if(select2 == -1){
-            player2Selected = "HulkSpriteSheet.png";
+            select2 = CharacterSelectScreen.getCharacterR();
+            if(select2 == 0){
+                player2Selected = "HulkSpriteSheetPlayer2.png";
+            } else if(select2 == 1){
+                player2Selected = "IRONMANsheetPlayer2.png";
+            } else if(select2 == 2){
+                player2Selected = "CAPTAMERICAsheetPlayer2.png";
+            } else if(select2 == 3){
+                player2Selected = "spidermanSpriteSheetPlayer2.png";
+            } else if(select2 == -1){
+                player2Selected = "HulkSpriteSheetPlayer2.png";
+            }
         }
 
 
@@ -118,10 +146,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
-        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(0, 0, 0));
+        playerOneText = new SpriteFont("Player 1", 65, 10, "Arial", 20, new Color(255, 0, 0));
         playerOneText.setFontStyle(Font.BOLD);
         playerOneText.setOutlineColor(Color.black);
-        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 0));
+        playerTwoText = new SpriteFont("Player 2", 620, 10, "Arial", 20, new Color(0, 0, 255));
         playerTwoText.setFontStyle(Font.BOLD);
         playerTwoText.setOutlineColor(Color.black);
 
@@ -135,8 +163,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.healthBar2 = new HealthBarSprite(new SpriteSheet(ImageLoader.load("HealthBarFINALfinal.png", Color.black), 68, 8), 400, 10, "DEFAULT", player2.getPlayerHealth(), player2);
 
         //New bars that show if plaer can shoot
-        this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 0, 540, "DEFAULT", 3);
-        this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarTest.png", Color.black), 32, 8), 650, 540, "DEFAULT", 3);
+        this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 25, 13, "DEFAULT", 3);
+        this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 707, 13, "DEFAULT", 3);
     }
 
     public void update() {
@@ -177,12 +205,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         goBackToMenu();
                     }
                 }
+                CharacterSelectScreen.setFlag(false);
                 break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
                 levelFinishedScreen.update();
                 //Logic that sends endLevel Screen which player has no more health
                 levelFinishedScreen.updateDecl(player.getPlayerHealth(), player2.getPlayerHealth());
+                CharacterSelectScreen.setFlag(false);
                 break;
         }
     }
