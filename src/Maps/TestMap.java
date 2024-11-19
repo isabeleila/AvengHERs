@@ -40,8 +40,8 @@ public class TestMap extends Map {
     public ArrayList<NPC> loadNPCs() {
         ArrayList<NPC> npcs = new ArrayList<>();
 
-        Walrus walrus = new Walrus(getMapTile(30, 10).getLocation().subtractY(13));
-        npcs.add(walrus);
+        Walrus firstAid = new Walrus(getMapTile(7, 4).getLocation().addY(20));
+        npcs.add(firstAid);
 
         return npcs;
     }

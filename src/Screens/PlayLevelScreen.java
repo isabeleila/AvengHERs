@@ -2,6 +2,7 @@ package Screens;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.lang.System.Logger.Level;
 
 import Enemies.Cat;
 import Engine.GraphicsHandler;
@@ -11,6 +12,7 @@ import Engine.Sound;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.SpriteSheet;
+//import Level.FirstAid;
 import Level.HealthBarSprite;
 import Level.Map;
 import Level.Player;
@@ -18,8 +20,10 @@ import Level.PlayerListener;
 import Level.ShootBarSprite;
 import Maps.PlayLevelMap;
 import Maps.TestMap;
+import NPCs.Walrus;
 import SpriteFont.SpriteFont;
 import Utils.Direction;
+import Utils.Point;
 
 
 // This class is for when the platformer game is actually being played
@@ -190,6 +194,17 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     player2.setInvincible();
                 }else if(player2.getPlayerHealth() <= 0){
                     player.setInvincible();
+                }
+
+                //if (item should spawn) {
+                //    map.addNPC(new FirstAid());
+                //}
+                //adds first add to screen. 
+                //if()
+
+                if(NPCs.Walrus.canSpawn){
+                    //Point p1 = new Point(10,20);
+                    //Walrus FirstAid = new Walrus(30,40);
                 }
 
                 break;

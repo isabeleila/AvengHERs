@@ -351,6 +351,10 @@ public abstract class Player extends GameObject {
         }
     }
 
+    public void healPlayer(Player player){
+        health += 10;
+    }
+
     // other entities can call this to tell the player they beat a level
     public void completeLevel() {
         levelState = LevelState.LEVEL_COMPLETED;

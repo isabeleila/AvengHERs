@@ -12,7 +12,7 @@ import java.util.HashMap;
 // This class is a base class for all npcs in the game -- all npcs should extend from it
 public class NPC extends MapEntity {
     protected boolean isInteractable = false;
-    protected boolean talkedTo = false;
+    protected boolean pickedUp = false; //is first aid kit picked up by a player?
     protected SpriteFont message;
     protected int talkedToTime; // how long after talking to NPC will textbox stay open -- use negative number to have it be infinite time
     protected int timer;
@@ -51,31 +51,26 @@ public class NPC extends MapEntity {
 
     public void update(Player player) {
         super.update();
-        checkTalkedTo(player);
+        checkPickedUp(player);
         textbox.setLocation((int)getCalibratedXLocation() + textboxOffsetX, (int)getCalibratedYLocation() + textboxOffsetY);
     }
 
-    public void checkTalkedTo(Player player) {
-        if (isInteractable && intersects(player) && Keyboard.isKeyDown(Key.SPACE)) {
-            talkedTo = true;
-            if (talkedToTime >= 0) {
-                timer = talkedToTime;
-            }
+    public boolean checkPickedUp(Player player) {
+        if (isInteractable && intersects(player)) {
+            pickedUp = true;
+            System.out.println("interacted");
+            this.mapEntityStatus = MapEntityStatus.REMOVED;
+            player.healPlayer(player);
         }
-
-        if (talkedTo && talkedToTime >= 0 && timer == 0) {
-            talkedTo = false;
-        }
-
-        if (timer > 0) {
-            timer--;
-        }
+        return pickedUp;
+        //LOOGIC FOR HEALTHBAAR SYNC UP GOES HERE LATER. 
+        
     }
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        if (talkedTo) {
+        if (pickedUp) {
             textbox.draw(graphicsHandler);
         }
     }
