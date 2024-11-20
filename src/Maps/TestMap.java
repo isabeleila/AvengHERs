@@ -8,6 +8,7 @@ import Level.*;
 import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
+import java.util.Random;
 
 import java.util.ArrayList;
 
@@ -40,8 +41,14 @@ public class TestMap extends Map {
     public ArrayList<NPC> loadNPCs() {
         ArrayList<NPC> npcs = new ArrayList<>();
 
-        Walrus walrus = new Walrus(getMapTile(30, 10).getLocation().subtractY(13));
-        npcs.add(walrus);
+        Random random = new Random();
+        int randX = random.nextInt(2,16);
+        int randY = random.nextInt(2,9);
+
+        //adds walrus (FIRSTAID) t the game level screen. 
+        
+        Walrus firstAid = new Walrus(getMapTile(randX, randY).getLocation().addY(20));
+        npcs.add(firstAid);
 
         return npcs;
     }

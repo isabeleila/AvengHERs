@@ -3,7 +3,6 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
-import Level.Map;
 import Screens.CharacterSelectScreen;
 import Screens.CreditsScreen;
 import Screens.LevelSelectScreen;
@@ -17,8 +16,6 @@ import Screens.TutorialScreen;
  * There can only be one "currentScreen", although screens can have "nested" screens
  */
 public class ScreenCoordinator extends Screen {
-
-	protected Map levelMapStorage;
 	// currently shown Screen
 	protected Screen currentScreen = new DefaultScreen();
 
@@ -33,11 +30,6 @@ public class ScreenCoordinator extends Screen {
 	// Other Screens can set the gameState of this class to force it to change the currentScreen
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
-	}
-
-	public void SetLevel(Map levelMap) {
-		levelMapStorage = levelMap;
-		System.out.println("Set Level");
 	}
 
 	@Override
@@ -76,7 +68,6 @@ public class ScreenCoordinator extends Screen {
 						break;
 				}
 				currentScreen.initialize();
-				if(currentScreen instanceof PlayLevelScreen){ ((PlayLevelScreen)(currentScreen)).setMap(levelMapStorage); }
 			}
 			previousGameState = gameState;
 
