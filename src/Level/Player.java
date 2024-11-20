@@ -351,6 +351,8 @@ public abstract class Player extends GameObject {
         }
     }
 
+    //once player interacts with a first aid n the play screen, health will increasse by 1 hit. 
+    //NPC calls this method. 
     public void healPlayer(Player player){
         health += 10;
     }

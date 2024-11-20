@@ -5,6 +5,8 @@ import Engine.Key;
 import Engine.Keyboard;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import Maps.PlayLevelMap;
+import Screens.PlayLevelScreen;
 import SpriteFont.SpriteFont;
 
 import java.util.HashMap;
@@ -58,9 +60,10 @@ public class NPC extends MapEntity {
     public boolean checkPickedUp(Player player) {
         if (isInteractable && intersects(player)) {
             pickedUp = true;
-            System.out.println("interacted");
-            this.mapEntityStatus = MapEntityStatus.REMOVED;
-            player.healPlayer(player);
+            //System.out.println("interacted");     DEBUG STATEMENT
+            this.mapEntityStatus = MapEntityStatus.REMOVED; //removes the first aid once player interacts with it. 
+            player.healPlayer(player);  //updates the health of player that interacted with it. 
+            PlayLevelScreen.canSpawnItem = true;
         }
         return pickedUp;
         //LOOGIC FOR HEALTHBAAR SYNC UP GOES HERE LATER. 

@@ -3,6 +3,7 @@ package Screens;
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.System.Logger.Level;
+import java.util.Random;
 
 import Enemies.Cat;
 import Engine.GraphicsHandler;
@@ -15,6 +16,7 @@ import GameObject.SpriteSheet;
 //import Level.FirstAid;
 import Level.HealthBarSprite;
 import Level.Map;
+import Level.NPC;
 import Level.Player;
 import Level.PlayerListener;
 import Level.ShootBarSprite;
@@ -54,6 +56,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int select2;
     private String player1Selected;
     private String player2Selected;
+    public static boolean canSpawnItem; 
+    private int firstAidTimer = 10;
 
     protected PlayLevelMap background;
 
@@ -145,6 +149,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player2.addListener(this);
         this.player2.setFacingDirection(Direction.LEFT);
 
+
         levelClearedScreen = new LevelClearedScreen();
         levelFinishedScreen = new LevelFinishedScreen(this);
 
@@ -169,6 +174,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         //New bars that show if plaer can shoot
         this.shootBar1 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 25, 13, "DEFAULT", 3);
         this.shootBar2 = new ShootBarSprite(new SpriteSheet(ImageLoader.load("ShootBarReal.png", Color.black), 32, 20), 707, 13, "DEFAULT", 3);
+    
     }
 
     public void update() {
@@ -180,6 +186,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player2.update();
                 map.update(player);
                 map.update(player2);
+                
+               
 
                 //Call to update healthbars every tick
                 updateHealthBarGraphic(player, 1);
@@ -202,10 +210,28 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //adds first add to screen. 
                 //if()
 
-                if(NPCs.Walrus.canSpawn){
+                //if(NPCs.Walrus.canSpawn){
                     //Point p1 = new Point(10,20);
                     //Walrus FirstAid = new Walrus(30,40);
+                //}
+
+                // timer that counts down until item can be spawned
+                if (firstAidTimer > 0) {
+                    firstAidTimer--;
                 }
+                else if (firstAidTimer <= 0 && canSpawnItem) {
+                    // reset timer
+                    firstAidTimer = 600;
+                    // spawn first aid
+                    Random random = new Random();
+                    int randX = random.nextInt(2,16);
+                    int randY = random.nextInt(2,9);
+
+                    Walrus firstAid = new Walrus(map.getMapTile(randX, randY).getLocation().addY(20));
+                    map.addNPC(firstAid);;
+                    canSpawnItem = false;
+                }
+
 
                 break;
             // if level has been completed, bring up level cleared screen
