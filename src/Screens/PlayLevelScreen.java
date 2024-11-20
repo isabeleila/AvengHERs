@@ -131,12 +131,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
 
 
-        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, 1,player1Selected);
+        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y-200, 1,player1Selected);
         this.player.setMap(map);
         this.player.addListener(this);
 
         // setup player2
-        this.player2 = new Cat(map.getPlayerStartPosition().x+500, map.getPlayerStartPosition().y, 2, player2Selected);
+        this.player2 = new Cat(map.getPlayerStartPosition().x+410, map.getPlayerStartPosition().y-200, 2, player2Selected);
         this.player2.setMap(map);
         this.player2.addListener(this);
         this.player2.setFacingDirection(Direction.LEFT);
@@ -406,6 +406,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public void setMap(Map map) {
         this.map=map;
+        this.player.setMap(map);
+        this.player2.setMap(map);
         this.map.reset();
     }
 }
