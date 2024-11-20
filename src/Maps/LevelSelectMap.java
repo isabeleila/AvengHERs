@@ -12,6 +12,7 @@ public class LevelSelectMap extends Map {
     public LevelSelectMap() {
         super("title_screen_map.txt", new CommonTileset());
     }
+    
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
