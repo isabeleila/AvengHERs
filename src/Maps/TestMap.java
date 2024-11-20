@@ -47,6 +47,7 @@ public class TestMap extends Map {
 
         //adds walrus (FIRSTAID) t the game level screen. 
         
+        //
         Walrus firstAid = new Walrus(getMapTile(randX, randY).getLocation().addY(20));
         npcs.add(firstAid);
 

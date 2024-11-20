@@ -3,6 +3,7 @@ package Screens;
 import java.awt.Color;
 import java.awt.Font;
 import java.lang.System.Logger.Level;
+//added 
 import java.util.Random;
 
 import Enemies.Cat;
@@ -16,16 +17,16 @@ import GameObject.SpriteSheet;
 //import Level.FirstAid;
 import Level.HealthBarSprite;
 import Level.Map;
-import Level.NPC;
+//import Level.NPC;
 import Level.Player;
 import Level.PlayerListener;
 import Level.ShootBarSprite;
 import Maps.PlayLevelMap;
 import Maps.TestMap;
-import NPCs.Walrus;
+import NPCs.Walrus; //
 import SpriteFont.SpriteFont;
-import Utils.Direction;
-import Utils.Point;
+import Utils.Direction; //
+//import Utils.Point; //
 
 
 // This class is for when the platformer game is actually being played
@@ -56,10 +57,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int select2;
     private String player1Selected;
     private String player2Selected;
-    public static boolean canSpawnItem; 
-    private int firstAidTimer = 10;
 
     protected PlayLevelMap background;
+
+    public static boolean canSpawnItem; //
+    private int firstAidTimer = 10; //
+    
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -216,6 +219,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //}
 
                 // timer that counts down until item can be spawned
+                //
                 if (firstAidTimer > 0) {
                     firstAidTimer--;
                 }
@@ -227,6 +231,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     int randX = random.nextInt(2,16);
                     int randY = random.nextInt(2,9);
 
+                    //adds first aid to the map. 
                     Walrus firstAid = new Walrus(map.getMapTile(randX, randY).getLocation().addY(20));
                     map.addNPC(firstAid);;
                     canSpawnItem = false;

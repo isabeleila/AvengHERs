@@ -53,10 +53,11 @@ public class NPC extends MapEntity {
 
     public void update(Player player) {
         super.update();
-        checkPickedUp(player);
+        checkPickedUp(player); //
         textbox.setLocation((int)getCalibratedXLocation() + textboxOffsetX, (int)getCalibratedYLocation() + textboxOffsetY);
     }
 
+    //
     public boolean checkPickedUp(Player player) {
         if (isInteractable && intersects(player)) {
             pickedUp = true;
