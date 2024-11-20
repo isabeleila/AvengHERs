@@ -444,9 +444,4 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 		sound.setFile(i);
 		sound.play();
 	}
-
-    public void setMap(Map map) {
-        this.map=map;
-        this.map.reset();
-    }
 }
