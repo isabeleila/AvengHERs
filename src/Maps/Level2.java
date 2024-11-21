@@ -16,6 +16,7 @@ public class Level2 extends Map {
 
         if (player.getY() > getCamera().getEndBoundY()) {
             player.setLevelState(LevelState.PLAYER_DEAD);
+            player.setPlayerHealth(0);
         }
     }
 

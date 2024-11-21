@@ -17,6 +17,7 @@ public class Level3 extends Map {
         // check if player if out of the window 
         if (player.getY() > getCamera().getEndBoundY()) {
             player.setLevelState(LevelState.PLAYER_DEAD);
+            player.setPlayerHealth(0);
         }
     }
 

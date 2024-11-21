@@ -475,4 +475,8 @@ public abstract class Player extends GameObject {
     public void setShootTimer(int x){
         shootTimer = x;
     }
+
+    public void setPlayerHealth(int x){
+        health = x;
+    }
 }
