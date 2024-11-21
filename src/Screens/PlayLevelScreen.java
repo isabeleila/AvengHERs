@@ -2,7 +2,6 @@ package Screens;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.lang.System.Logger.Level;
 //added 
 import java.util.Random;
 

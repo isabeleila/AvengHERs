@@ -1,11 +1,8 @@
 package Level;
 
 import Engine.GraphicsHandler;
-import Engine.Key;
-import Engine.Keyboard;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-import Maps.PlayLevelMap;
 import Screens.PlayLevelScreen;
 import SpriteFont.SpriteFont;
 
