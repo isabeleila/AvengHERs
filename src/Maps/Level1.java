@@ -1,6 +1,7 @@
 package Maps;
 
 import Engine.GraphicsHandler;
+import Level.LevelState;
 import Level.Map;
 import Tilesets.CommonTileset;
 
@@ -12,7 +13,9 @@ public class Level1 extends Map {
     @Override
     public void update(Level.Player player) {
         super.update(player);
-
+        if (player.getY() > getCamera().getEndBoundY()) {
+            player.setLevelState(LevelState.PLAYER_DEAD);
+        }
     }
 
     @Override
