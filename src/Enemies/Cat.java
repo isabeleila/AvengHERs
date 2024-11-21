@@ -27,6 +27,7 @@ public class Cat extends Player {
     protected int playerNumberOut;
     protected int catHealth;
     protected String character;
+    private int characterNum;
     GamePanel gp;
     SoundEffect soundEffect = new SoundEffect();
    // private Wall wall;
@@ -41,13 +42,55 @@ public class Cat extends Player {
         walkSpeed = 3f;
         momentumYIncrease = .5f;
 
+        //setting abilities to each character
+        if(character.equals("HulkSpriteSheetPlayer1.png") || character.equals("HulkSpriteSheetPlayer2.png") || character.equals("GirlHulkSpriteSheetPlayer1.png") || character.equals("GirlHulkSpriteSheetPlayer2.png")){
+            //low speed, low, jump (highest damage: 3)
+            gravity = 1f;
+            terminalVelocityY = 3f;
+            jumpHeight = 20f;
+            jumpDegrade = 1f;
+            walkSpeed = 2f;
+            momentumYIncrease = .5f;
+            //System.out.println("hulk");
+            characterNum = 1;
+        } else if(character.equals("IRONMANsheetPlayer1.png") || character.equals("IRONMANsheetPlayer2.png") || character.equals("GirlIRONMANsheetPlayer1.png") || character.equals("GirlIRONMANsheetPlayer2.png")){
+            //medium jump height, high speed (regualar damage: 2)
+            gravity = 1f;
+            terminalVelocityY = 9f;
+            jumpHeight = 40f;
+            jumpDegrade = 3f;
+            walkSpeed = 6f;
+            momentumYIncrease = .5f;
+            characterNum = 2;
+        }else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
+            //medium jump, medium walk speed, (regualar damage: 2)
+            gravity = 1f;
+            terminalVelocityY = 6f;
+            jumpHeight = 30f;
+            jumpDegrade = 2f;
+            walkSpeed = 4f;
+            momentumYIncrease = .5f;
+            characterNum =3;
+        }else{
+            //spideerman is fastest and has highest jumping height (lowest damage: 1)
+            gravity = 1f;
+            terminalVelocityY = 12f;
+            jumpHeight = 35f;
+            jumpDegrade = 3f;
+            walkSpeed = 8f;
+            momentumYIncrease = 1f;
+            characterNum =4;
+        }
+
+
+
         catState = CatState.WALK;
         previousCatState = catState;
         shootWaitTimer = 0;
         facingDirection = Direction.RIGHT;
         keyLocker = new KeyLocker();
         facingDirection = Direction.RIGHT;  // Set default direction
-        super.setShootTimer(0);
+        //super.setShootTimer(0);
 
         if(playerNumber == 1){
             JUMP_KEY = Key.W;
@@ -163,7 +206,14 @@ public class Cat extends Player {
 
             catState = CatState.WALK;
             //Change this to make pause between shots longer/shorter
-            super.setShootTimer(50);
+
+            if(characterNum == 1){
+                super.setShootTimer(15);
+            } else if(characterNum == 2 || characterNum == 3){
+                super.setShootTimer(20);
+            }else{
+                super.setShootTimer(25);
+            }
         }
 
         previousCatState = catState;
