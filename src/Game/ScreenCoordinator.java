@@ -8,7 +8,6 @@ import Screens.CharacterSelectScreen;
 import Screens.CreditsScreen;
 import Screens.LevelSelectScreen;
 import Screens.MenuScreen;
-import Screens.OptionScreen;
 import Screens.PlayLevelScreen;
 import Screens.TutorialScreen;
 
@@ -64,9 +63,6 @@ public class ScreenCoordinator extends Screen {
 						break;
 					case TUTORIAL:
 						currentScreen = new TutorialScreen(this);
-						break;
-					case OPTIONS:
-						currentScreen = new OptionScreen(this);
 						break;
 					case CHARACTER:
 						currentScreen = new CharacterSelectScreen(this);
