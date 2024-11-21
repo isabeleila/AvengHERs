@@ -60,8 +60,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     protected PlayLevelMap background;
 
-    public static boolean canSpawnItem; //
-    private int firstAidTimer = 10; //
+    public static boolean canSpawnItem = true; //
+    private int firstAidTimer = 20; //
+    protected Walrus firstAid;
     
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
@@ -189,6 +190,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player2.update();
                 map.update(player);
                 map.update(player2);
+
+               
                 
                
 
@@ -221,19 +224,19 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 // timer that counts down until item can be spawned
                 //
                 if (firstAidTimer > 0) {
+                    //DDEGUB STATEMENTG: System.out.println("firstAid timer goes down");
                     firstAidTimer--;
                 }
                 else if (firstAidTimer <= 0 && canSpawnItem) {
+                    //EBUG STATEMENT: System.out.println("first ai timer ran out");
                     // reset timer
                     firstAidTimer = 600;
                     // spawn first aid
                     Random random = new Random();
                     int randX = random.nextInt(2,16);
                     int randY = random.nextInt(2,9);
-
-                    //adds first aid to the map. 
-                    Walrus firstAid = new Walrus(map.getMapTile(randX, randY).getLocation().addY(20));
-                    map.addNPC(firstAid);;
+                    firstAid = new Walrus(map.getMapTile(randX, randY).getLocation().addY(20));
+                    map.addNPC(firstAid);
                     canSpawnItem = false;
                 }
 
