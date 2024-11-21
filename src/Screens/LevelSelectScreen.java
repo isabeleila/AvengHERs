@@ -5,6 +5,7 @@ import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.Sprite;
 import Level.Map;
+import MapEditor.EditorMaps;
 import Maps.LevelSelectMap;
 import SpriteFont.SpriteFont;
 
@@ -34,28 +35,28 @@ public class LevelSelectScreen extends Screen {
     public void initialize() {
         //level images
         levelImage1 = new Sprite(ImageLoader.load("Level1.png"));
-        levelImage1.setWidth(levelImage1.getWidth()-100 );
-        levelImage1.setHeight(levelImage1.getHeight()-100);
+        levelImage1.setWidth(levelImage1.getWidth()-170 );
+        levelImage1.setHeight(levelImage1.getHeight()-170);
         levelImage1.setLocation(levelImage1.getX() + 50, levelImage1.getY() + 100);
 
         levelImage2 = new Sprite(ImageLoader.load("Level2.png"));
-        levelImage2.setWidth(levelImage2.getWidth()-100);
-        levelImage2.setHeight(levelImage2.getHeight()-100);
+        levelImage2.setWidth(levelImage2.getWidth()-170);
+        levelImage2.setHeight(levelImage2.getHeight()-170);
         levelImage2.setLocation(levelImage2.getX() + 280, levelImage2.getY() + 100);
 
         levelImage3 = new Sprite(ImageLoader.load("Level3.png"));
-        levelImage3.setWidth(levelImage3.getWidth()-100);
-        levelImage3.setHeight(levelImage3.getHeight()-100);
+        levelImage3.setWidth(levelImage3.getWidth()-170);
+        levelImage3.setHeight(levelImage3.getHeight()-170);
         levelImage3.setLocation(levelImage3.getX() + 510, levelImage3.getY() + 100);
     
         //level text
-        level1 = new SpriteFont("Level 1", 100, 320, "Arial", 30, new Color(49, 207, 240));
+        level1 = new SpriteFont("Level 1", 100, 350, "Arial", 35, new Color(49, 207, 240));
         level1.setOutlineColor(Color.black);
         level1.setOutlineThickness(4);
-        level2 = new SpriteFont("Level 2", 330, 320, "Arial", 30, new Color(49, 207, 240));
+        level2 = new SpriteFont("Level 2", 330, 350, "Arial", 35, new Color(49, 207, 240));
         level2.setOutlineColor(Color.black);
         level2.setOutlineThickness(4);
-        level3 = new SpriteFont("Level 3", 560, 320, "Arial", 30, new Color(49, 207, 240));
+        level3 = new SpriteFont("Level 3", 560, 350, "Arial", 35, new Color(49, 207, 240));
         level3.setOutlineColor(Color.black);
         level3.setOutlineThickness(4);
     
@@ -119,6 +120,18 @@ public class LevelSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             levelSelected = currentLevelHovered;
+  // Load the selected level dynamically using EditorMaps
+            if (levelSelected == 0) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level1"));
+                System.out.println("Level 1");
+            } else if (levelSelected == 1) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level2"));
+                System.out.println("Level 2");
+            } else if (levelSelected == 2) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level3"));
+                System.out.println("Level 3");
+            }
+
             screenCoordinator.setGameState(GameState.LEVEL); // Transition to selected level
         }
     }
