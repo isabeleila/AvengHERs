@@ -6,6 +6,7 @@ import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
+import Level.MapEntityStatus;
 import Level.NPC;
 import Level.Player;
 import Utils.Point;
@@ -15,39 +16,37 @@ import java.util.HashMap;
 // This class is for the walrus NPC
 public class Walrus extends NPC {
 
+    public static boolean canSpawn = true;
+    
+
     public Walrus(Point location) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Walrus.png"), 24, 24), "TAIL_DOWN", 50);
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("bouncingFirstAid.png"), 11, 11), "DEFAULT", 50);
         isInteractable = true;
         talkedToTime = 200;
-        textbox.setText("Hello!");
-        textboxOffsetX = -4;
-        textboxOffsetY = -34;
+        canSpawn = false;
+        
     }
 
     public void update(Player player) {
         // while npc is being talked to, it raises its tail up (in excitement?)
-        if (talkedTo) {
-            currentAnimationName = "TAIL_UP";
-        } else {
-            currentAnimationName = "TAIL_DOWN";
-        }
+       // if (NPC.checkPickedUp(player)) {
+       //     this.mapEntityStatus = MapEntityStatus.REMOVED;
+        //} else {
+            currentAnimationName = "DEFAULT";
+        //}
 
         super.update(player);
+
+        
     }
 
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
-           put("TAIL_DOWN", new Frame[] {
-                   new FrameBuilder(spriteSheet.getSprite(0, 0))
-                           .withScale(3)
-                           .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                           .build()
-           });
-            put("TAIL_UP", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(1, 0))
-                            .withScale(3)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+            put("DEFAULT", new Frame[]{
+                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                            .withScale((float) 4.0)
+                            .withBounds(1, 1, 5, 5)
                             .build()
             });
         }};
