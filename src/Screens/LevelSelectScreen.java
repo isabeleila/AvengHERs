@@ -5,6 +5,7 @@ import Game.GameState;
 import Game.ScreenCoordinator;
 import GameObject.Sprite;
 import Level.Map;
+import MapEditor.EditorMaps;
 import Maps.LevelSelectMap;
 import SpriteFont.SpriteFont;
 
@@ -119,6 +120,18 @@ public class LevelSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             levelSelected = currentLevelHovered;
+  // Load the selected level dynamically using EditorMaps
+            if (levelSelected == 0) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level1"));
+                System.out.println("Level 1");
+            } else if (levelSelected == 1) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level2"));
+                System.out.println("Level 2");
+            } else if (levelSelected == 2) {
+                screenCoordinator.SetLevel(EditorMaps.getMapByName("Level3"));
+                System.out.println("Level 3");
+            }
+
             screenCoordinator.setGameState(GameState.LEVEL); // Transition to selected level
         }
     }
