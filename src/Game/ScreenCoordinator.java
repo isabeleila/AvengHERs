@@ -36,7 +36,6 @@ public class ScreenCoordinator extends Screen {
 
 	public void SetLevel(Map levelMap) {
 		levelMapStorage = levelMap;
-		System.out.println("Set Level");
 	}
 
 	@Override
