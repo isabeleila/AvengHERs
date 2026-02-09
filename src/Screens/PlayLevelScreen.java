@@ -70,7 +70,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     }
 
     public void initialize() {
-        playMusic(0);
+        //playMusic(0);
         // define/setup map
         this.map = new TestMap();
 
@@ -206,8 +206,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //Once one player dies, the other is set to invincible
                 if(player.getPlayerHealth() <= 0){
                     player2.setInvincible();
+                    //stopMusic();
                 }else if(player2.getPlayerHealth() <= 0){
                     player.setInvincible();
+                    //stopMusic();
                 }
 
                 //if (item should spawn) {
@@ -247,11 +249,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 if (levelCompletedStateChangeStart) {
                     screenTimer = 130;
                     levelCompletedStateChangeStart = false;
+                    //stopMusic();
                 } else {
                     levelClearedScreen.update();
                     screenTimer--;
                     if (screenTimer == 0) {
                         goBackToMenu();
+                        stopMusic();
                     }
                 }
                 CharacterSelectScreen.setFlag(false);
@@ -262,6 +266,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 //Logic that sends endLevel Screen which player has no more health
                 levelFinishedScreen.updateDecl(player.getPlayerHealth(), player2.getPlayerHealth());
                 CharacterSelectScreen.setFlag(false);
+                stopMusic();
                 break;
         }
     }
@@ -283,9 +288,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);
+                //stopMusic();
                 break;
             case LEVEL_LOSE:
                 levelFinishedScreen.draw(graphicsHandler);
+                //stopMusic();
                 break;
         }
     }
@@ -303,6 +310,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     healthBar1.updateSpecific(0);
                 else{
                     healthBar2.updateSpecific(0);
+                    //
                     stopMusic();
                 }
                 break;
@@ -408,7 +416,20 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
         */
     }
+ public void playMusic(int i){
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
 
+	public void stopMusic(){
+		sound.stop();
+	}
+
+	public void playSE(int i){
+		sound.setFile(i);
+		sound.play();
+	}
 
     @Override
     public void onLevelCompleted() {
@@ -422,6 +443,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     public void onDeath() {
         if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
             playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
+            sound.stop();
         }
     }
 
@@ -438,20 +460,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         RUNNING, LEVEL_COMPLETED, LEVEL_LOSE
     }
 
-    public void playMusic(int i){
-		sound.setFile(i);
-		sound.play();
-		sound.loop();
-	}
-
-	public void stopMusic(){
-		sound.stop();
-	}
-
-	public void playSE(int i){
-		sound.setFile(i);
-		sound.play();
-	}
+   
 
     public void setMap(Map map) {
         this.map=map;

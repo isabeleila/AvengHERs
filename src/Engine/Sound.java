@@ -33,7 +33,7 @@ public class Sound {
 
     }
     public void loop(){
-
+//commenting this out so the music doesnt loop over itself
         clip.loop(Clip.LOOP_CONTINUOUSLY);
 
     }
