@@ -208,7 +208,7 @@ public class Cat extends Player {
             //Change this to make pause between shots longer/shorter
 
             if(characterNum == 1){
-                super.setShootTimer(15);
+                super.setShootTimer(18);
             } else if(characterNum == 2 || characterNum == 3){
                 super.setShootTimer(20);
             }else{
