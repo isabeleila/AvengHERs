@@ -311,7 +311,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 else{
                     healthBar2.updateSpecific(0);
                     //
-                    stopMusic();
+                   // stopMusic();
                 }
                 break;
             case 90:
