@@ -22,10 +22,11 @@ public class CharacterSelectScreen extends Screen {
     protected SpriteFont character22;
     protected SpriteFont character31;
     protected SpriteFont character32;
-    protected SpriteFont character41;
+        protected SpriteFont character41;
     protected SpriteFont character42;
     protected SpriteFont player1;
     protected SpriteFont player2;
+    protected SpriteFont vsComputerText;
     protected Sprite line;
     protected Sprite hulkL;
     protected Sprite ironmanL;
@@ -50,9 +51,18 @@ public class CharacterSelectScreen extends Screen {
     protected KeyLocker keyLocker = new KeyLocker();
     Sound sound= new Sound();
     protected static boolean hiddenFlag = false;
+    protected static boolean vsComputerMode = false;
+    protected static int aiDifficulty = 0; // 0=Regular, 1=Hard, 2=Impossible
+    protected SpriteFont difficultyText;
+    protected SpriteFont difficultyRegular;
+    protected SpriteFont difficultyHard;
+    protected SpriteFont difficultyImpossible;
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        
+        // Only reset vsComputerMode if we're coming from the menu (not from level select)
+        // This preserves the selection when going back from level select
     }
 
     // Use these methods to get which character is selected
@@ -171,6 +181,25 @@ public class CharacterSelectScreen extends Screen {
         player2 = new SpriteFont("Player 2", 520, 533, "Arial", 30, new Color(255,255,255));
         player2.setOutlineColor(Color.black);
         player2.setOutlineThickness(4);
+        
+        // vs Computer text
+        vsComputerText = new SpriteFont("vs CPU (Press C)", 450, 500, "Arial", 20, new Color(150,150,150));
+        vsComputerText.setOutlineColor(Color.black);
+        vsComputerText.setOutlineThickness(2);
+        
+        // Difficulty selection text (shown when vs Computer is enabled)
+        difficultyText = new SpriteFont("Difficulty:", 450, 530, "Arial", 20, new Color(150,150,150));
+        difficultyText.setOutlineColor(Color.black);
+        difficultyText.setOutlineThickness(2);
+        difficultyRegular = new SpriteFont("[1] Regular", 450, 555, "Arial", 18, new Color(0, 255, 0));
+        difficultyRegular.setOutlineColor(Color.black);
+        difficultyRegular.setOutlineThickness(2);
+        difficultyHard = new SpriteFont("[2] Hard", 580, 555, "Arial", 18, new Color(150,150,150));
+        difficultyHard.setOutlineColor(Color.black);
+        difficultyHard.setOutlineThickness(2);
+        difficultyImpossible = new SpriteFont("[3] Impossible", 680, 555, "Arial", 18, new Color(150,150,150));
+        difficultyImpossible.setOutlineColor(Color.black);
+        difficultyImpossible.setOutlineThickness(2);
         // Character Text Left
         character11 = new SpriteFont("Hulk", 15, 230, "Arial", 30, new Color(49, 207, 240));
         character11.setOutlineColor(Color.black);
@@ -268,6 +297,51 @@ public class CharacterSelectScreen extends Screen {
         if(Keyboard.isKeyDown(Key.H) && Keyboard.isKeyDown(Key.E) && Keyboard.isKeyDown(Key.R)){
             hiddenFlag = true;
         }
+        
+        // Toggle vs Computer mode with C key
+        // Allow toggling as long as player 1 hasn't confirmed their selection
+        if(Keyboard.isKeyUp(Key.C) && !player1Ready) {
+            if (!keyLocker.isKeyLocked(Key.C)) {
+                vsComputerMode = !vsComputerMode;
+                keyLocker.lockKey(Key.C);
+            }
+        }
+        if (Keyboard.isKeyUp(Key.C)) {
+            keyLocker.unlockKey(Key.C);
+        }
+        
+        // Difficulty selection with 1, 2, 3 keys (only when vs Computer mode is enabled)
+        if (vsComputerMode && !player1Ready && !player2Ready) {
+            if (Keyboard.isKeyDown(Key.ONE)) {
+                aiDifficulty = 0;
+            } else if (Keyboard.isKeyDown(Key.TWO)) {
+                aiDifficulty = 1;
+            } else if (Keyboard.isKeyDown(Key.THREE)) {
+                aiDifficulty = 2;
+            }
+        }
+        
+        // Update difficulty text colors based on selection
+        if (aiDifficulty == 0) {
+            difficultyRegular.setColor(new Color(0, 255, 0));
+            difficultyHard.setColor(new Color(150, 150, 150));
+            difficultyImpossible.setColor(new Color(150, 150, 150));
+        } else if (aiDifficulty == 1) {
+            difficultyRegular.setColor(new Color(150, 150, 150));
+            difficultyHard.setColor(new Color(255, 165, 0));  // Orange
+            difficultyImpossible.setColor(new Color(150, 150, 150));
+        } else if (aiDifficulty == 2) {
+            difficultyRegular.setColor(new Color(150, 150, 150));
+            difficultyHard.setColor(new Color(150, 150, 150));
+            difficultyImpossible.setColor(new Color(255, 0, 0));  // Red
+        }
+        
+        // Update vs Computer text color based on mode
+        if (vsComputerMode) {
+            vsComputerText.setColor(new Color(0, 255, 0));
+        } else {
+            vsComputerText.setColor(new Color(150, 150, 150));
+        }
 
         // sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHoveredL == 0) {
@@ -328,6 +402,16 @@ public class CharacterSelectScreen extends Screen {
                 menuItemSelectedL = currentMenuItemHoveredL;
                 ReadyScreen(currentMenuItemHoveredL, 0);
                 player1Ready = true;
+                
+                // If vs CPU mode is enabled, auto-select player 2 as CPU
+                if (vsComputerMode) {
+                    // Auto-select a different character for AI (cycles through characters)
+                    int aiCharacter = (currentMenuItemHoveredL + 1) % 4;
+                    menuItemSelectedR = aiCharacter;
+                    ReadyScreen(aiCharacter, 1);
+                    player2Ready = true;
+                    // Don't auto-advance - let user see the selection
+                }
             }
         }
 
@@ -336,7 +420,10 @@ public class CharacterSelectScreen extends Screen {
         }
         if (!keyLocker.isKeyLocked(Key.SHIFT) && Keyboard.isKeyDown(Key.SHIFT)) {
             if(playerPressedStart1){
-                menuItemSelectedR = currentMenuItemHoveredR;
+                // If vs CPU mode, don't update player 2 selection - it's already set
+                if (!vsComputerMode) {
+                    menuItemSelectedR = currentMenuItemHoveredR;
+                }
                 stopMusic();
                 screenCoordinator.setGameState(GameState.LEVELSELECT);
             }else if(!player2Ready){
@@ -362,6 +449,14 @@ public class CharacterSelectScreen extends Screen {
         character42.draw(graphicsHandler);
         player1.draw(graphicsHandler);
         player2.draw(graphicsHandler);
+        vsComputerText.draw(graphicsHandler);
+        // Draw difficulty text when vs Computer mode is enabled
+        if (vsComputerMode) {
+            difficultyText.draw(graphicsHandler);
+            difficultyRegular.draw(graphicsHandler);
+            difficultyHard.draw(graphicsHandler);
+            difficultyImpossible.draw(graphicsHandler);
+        }
         line.draw(graphicsHandler);
         hulkL.draw(graphicsHandler);
         ironmanL.draw(graphicsHandler);
@@ -395,5 +490,17 @@ public class CharacterSelectScreen extends Screen {
 
         public static void setFlag(boolean value){
             hiddenFlag = value;
+        }
+        
+        public static boolean isVsComputerMode() {
+            return vsComputerMode;
+        }
+        
+        public static void setVsComputerMode(boolean value) {
+            vsComputerMode = value;
+        }
+        
+        public static int getAIDifficulty() {
+            return aiDifficulty;
         }
 }

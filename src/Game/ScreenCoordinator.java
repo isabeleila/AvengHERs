@@ -55,7 +55,7 @@ public class ScreenCoordinator extends Screen {
 						currentScreen = new MenuScreen(this);
 						break;
 					case LEVEL:
-						currentScreen = new PlayLevelScreen(this);
+						currentScreen = new PlayLevelScreen(this, CharacterSelectScreen.isVsComputerMode(), CharacterSelectScreen.getAIDifficulty());
 						break;
 					case CREDITS:
 						currentScreen = new CreditsScreen(this);

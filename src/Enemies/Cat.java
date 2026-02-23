@@ -11,6 +11,8 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player;
+import Level.PlayerState;
+import Utils.AirGroundState;
 import Utils.Point;
 import Engine.GamePanel;
 //import GameObject.Wall;
@@ -403,4 +405,52 @@ public class Cat extends Player {
 		soundEffect.setFile(i);
 		soundEffect.play();
 	}
+
+    // ==================== AI Helper Methods ====================
+    
+    /**
+     * Move left by setting move amount directly (for AI)
+     */
+    public void aiMoveLeft() {
+        moveAmountX = -walkSpeed;
+        facingDirection = Direction.LEFT;
+        currentAnimationName = "WALK_LEFT";
+    }
+    
+    /**
+     * Move right by setting move amount directly (for AI)
+     */
+    public void aiMoveRight() {
+        moveAmountX = walkSpeed;
+        facingDirection = Direction.RIGHT;
+        currentAnimationName = "WALK_RIGHT";
+    }
+    
+    /**
+     * Jump by setting player state to jumping (for AI)
+     */
+    public void aiJump() {
+        if (airGroundState == AirGroundState.GROUND && playerState != PlayerState.JUMPING) {
+            playerState = PlayerState.JUMPING;
+            jumpForce = jumpHeight;
+            airGroundState = AirGroundState.AIR;
+            currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
+        }
+    }
+    
+    /**
+     * Trigger shooting (for AI)
+     */
+    public void aiShoot() {
+        if (shootTimer == 0) {
+            catState = CatState.SHOOT;
+        }
+    }
+    
+    /**
+     * Set facing direction (for AI)
+     */
+    public void aiSetFacingDirection(Direction direction) {
+        this.facingDirection = direction;
+    }
 }

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.util.Random;
 
 import Enemies.Cat;
+import Enemies.AIPlayer;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Screen;
@@ -40,6 +41,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelClearedScreen levelClearedScreen;
     protected LevelFinishedScreen levelFinishedScreen;
     protected boolean levelCompletedStateChangeStart;
+    
+    // AI Mode flag
+    protected boolean isPlayer2AI = false;
+    protected int aiDifficulty = 0; // 0=Regular, 1=Hard, 2=Impossible
 
     Sound sound = new Sound();
 
@@ -67,6 +72,24 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
         playMusic(0);
+    }
+    
+    public PlayLevelScreen(ScreenCoordinator screenCoordinator, boolean isPlayer2AI) {
+        this.screenCoordinator = screenCoordinator;
+        this.isPlayer2AI = isPlayer2AI;
+        playMusic(0);
+    }
+    
+    public PlayLevelScreen(ScreenCoordinator screenCoordinator, boolean isPlayer2AI, int aiDifficulty) {
+        this.screenCoordinator = screenCoordinator;
+        this.isPlayer2AI = isPlayer2AI;
+        this.aiDifficulty = aiDifficulty;
+        playMusic(0);
+    }
+    
+    public void setAIParams(boolean isPlayer2AI, int aiDifficulty) {
+        this.isPlayer2AI = isPlayer2AI;
+        this.aiDifficulty = aiDifficulty;
     }
 
     public void initialize() {
@@ -148,7 +171,19 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player.addListener(this);
 
         // setup player2
-        this.player2 = new Cat(map.getPlayerStartPosition().x+410, map.getPlayerStartPosition().y-200, 2, player2Selected);
+        if (isPlayer2AI) {
+            // Create AI player that fights against player 1 with selected difficulty
+            AIPlayer.Difficulty difficulty = AIPlayer.Difficulty.REGULAR;
+            if (aiDifficulty == 1) {
+                difficulty = AIPlayer.Difficulty.HARD;
+            } else if (aiDifficulty == 2) {
+                difficulty = AIPlayer.Difficulty.IMPOSSIBLE;
+            }
+            this.player2 = new AIPlayer(map.getPlayerStartPosition().x + 410, map.getPlayerStartPosition().y - 200, 2, player2Selected, player, difficulty);
+        } else {
+            // Create regular player 2 (human controlled)
+            this.player2 = new Cat(map.getPlayerStartPosition().x + 410, map.getPlayerStartPosition().y - 200, 2, player2Selected);
+        }
         this.player2.setMap(map);
         this.player2.addListener(this);
         this.player2.setFacingDirection(Direction.LEFT);
