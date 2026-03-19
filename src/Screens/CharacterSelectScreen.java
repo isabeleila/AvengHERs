@@ -25,8 +25,6 @@ public class CharacterSelectScreen extends Screen {
         protected SpriteFont character41;
     protected SpriteFont character42;
     protected SpriteFont player1;
-    protected SpriteFont player2;
-    protected SpriteFont vsComputerText;
     protected Sprite line;
     protected Sprite hulkL;
     protected Sprite ironmanL;
@@ -57,6 +55,11 @@ public class CharacterSelectScreen extends Screen {
     protected SpriteFont difficultyRegular;
     protected SpriteFont difficultyHard;
     protected SpriteFont difficultyImpossible;
+    protected SpriteFont p2ModeLabel;
+    protected SpriteFont modePlayer2Option;
+    protected SpriteFont modeSeparator;
+    protected SpriteFont modeVsCpuOption;
+    protected SpriteFont toggleHint;
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -128,7 +131,7 @@ public class CharacterSelectScreen extends Screen {
         c3.setWidth(c3.getWidth()+80);
         c3.setHeight(c3.getHeight()+80);
         c3.setScale(0);
-        c4 = new Sprite(ImageLoader.load("SpiderMan2.jpg"));
+        c4 = new Sprite(ImageLoader.load("Spiderman2.jpg"));
         c4.setLocation(430, 40);
         c4.setWidth(c4.getWidth()+80);
         c4.setHeight(c4.getHeight()+80);
@@ -177,27 +180,35 @@ public class CharacterSelectScreen extends Screen {
         player1 = new SpriteFont("Player 1", 130, 533, "Arial", 30, new Color(255,255,255));
         player1.setOutlineColor(Color.black);
         player1.setOutlineThickness(4);
-        // Player 2
-        player2 = new SpriteFont("Player 2", 520, 533, "Arial", 30, new Color(255,255,255));
-        player2.setOutlineColor(Color.black);
-        player2.setOutlineThickness(4);
+        // P2 Mode panel - entirely in RIGHT half (x>=410) to avoid divider overlap
+        // Tab-style: "Player 2" | "vs CPU" with active one highlighted
+        p2ModeLabel = new SpriteFont("P2:", 410, 538, "Arial", 22, new Color(100, 100, 100));
+        p2ModeLabel.setOutlineColor(Color.black);
+        p2ModeLabel.setOutlineThickness(2);
+        modePlayer2Option = new SpriteFont("Player 2", 455, 538, "Arial", 20, new Color(150, 150, 150));
+        modePlayer2Option.setOutlineColor(Color.black);
+        modePlayer2Option.setOutlineThickness(2);
+        modeSeparator = new SpriteFont("|", 520, 538, "Arial", 18, new Color(180, 180, 180));
+        modeSeparator.setOutlineColor(Color.black);
+        modeSeparator.setOutlineThickness(1);
+        modeVsCpuOption = new SpriteFont("vs CPU", 535, 538, "Arial", 20, new Color(150, 150, 150));
+        modeVsCpuOption.setOutlineColor(Color.black);
+        modeVsCpuOption.setOutlineThickness(2);
+        toggleHint = new SpriteFont("C to switch", 410, 562, "Arial", 14, new Color(130, 130, 130));
+        toggleHint.setOutlineColor(Color.black);
+        toggleHint.setOutlineThickness(1);
         
-        // vs Computer text
-        vsComputerText = new SpriteFont("vs CPU (Press C)", 450, 500, "Arial", 20, new Color(150,150,150));
-        vsComputerText.setOutlineColor(Color.black);
-        vsComputerText.setOutlineThickness(2);
-        
-        // Difficulty selection text (shown when vs Computer is enabled)
-        difficultyText = new SpriteFont("Difficulty:", 450, 530, "Arial", 20, new Color(150,150,150));
+        // Difficulty (vs CPU only) - right half, below mode
+        difficultyText = new SpriteFont("Difficulty:", 410, 588, "Arial", 16, new Color(100, 100, 100));
         difficultyText.setOutlineColor(Color.black);
         difficultyText.setOutlineThickness(2);
-        difficultyRegular = new SpriteFont("[1] Regular", 450, 555, "Arial", 18, new Color(0, 255, 0));
+        difficultyRegular = new SpriteFont("1-Regular", 500, 588, "Arial", 15, new Color(0, 255, 0));
         difficultyRegular.setOutlineColor(Color.black);
         difficultyRegular.setOutlineThickness(2);
-        difficultyHard = new SpriteFont("[2] Hard", 580, 555, "Arial", 18, new Color(150,150,150));
+        difficultyHard = new SpriteFont("2-Hard", 585, 588, "Arial", 15, new Color(150, 150, 150));
         difficultyHard.setOutlineColor(Color.black);
         difficultyHard.setOutlineThickness(2);
-        difficultyImpossible = new SpriteFont("[3] Impossible", 680, 555, "Arial", 18, new Color(150,150,150));
+        difficultyImpossible = new SpriteFont("3-Impossible", 655, 588, "Arial", 15, new Color(150, 150, 150));
         difficultyImpossible.setOutlineColor(Color.black);
         difficultyImpossible.setOutlineThickness(2);
         // Character Text Left
@@ -233,7 +244,12 @@ public class CharacterSelectScreen extends Screen {
         background = new Sprite(ImageLoader.load("White.jpg"));
         menuItemSelectedL = -1;
         menuItemSelectedR = -1;
+        aiDifficulty = 0;  // Reset each time - P1 must select difficulty
         keyLocker.lockKey(Key.SPACE);
+        keyLocker.lockKey(Key.C);
+        keyLocker.lockKey(Key.ONE);
+        keyLocker.lockKey(Key.TWO);
+        keyLocker.lockKey(Key.THREE);
         playMusic(1);
     }
 
@@ -298,26 +314,30 @@ public class CharacterSelectScreen extends Screen {
             hiddenFlag = true;
         }
         
-        // Toggle vs Computer mode with C key
+        // Toggle vs Computer mode with C key (on press, not release)
         // Allow toggling as long as player 1 hasn't confirmed their selection
-        if(Keyboard.isKeyUp(Key.C) && !player1Ready) {
-            if (!keyLocker.isKeyLocked(Key.C)) {
-                vsComputerMode = !vsComputerMode;
-                keyLocker.lockKey(Key.C);
-            }
-        }
         if (Keyboard.isKeyUp(Key.C)) {
             keyLocker.unlockKey(Key.C);
         }
+        if (!keyLocker.isKeyLocked(Key.C) && Keyboard.isKeyDown(Key.C) && !player1Ready) {
+            vsComputerMode = !vsComputerMode;
+            keyLocker.lockKey(Key.C);
+        }
         
         // Difficulty selection with 1, 2, 3 keys (only when vs Computer mode is enabled)
+        if (Keyboard.isKeyUp(Key.ONE)) keyLocker.unlockKey(Key.ONE);
+        if (Keyboard.isKeyUp(Key.TWO)) keyLocker.unlockKey(Key.TWO);
+        if (Keyboard.isKeyUp(Key.THREE)) keyLocker.unlockKey(Key.THREE);
         if (vsComputerMode && !player1Ready && !player2Ready) {
-            if (Keyboard.isKeyDown(Key.ONE)) {
+            if (!keyLocker.isKeyLocked(Key.ONE) && Keyboard.isKeyDown(Key.ONE)) {
                 aiDifficulty = 0;
-            } else if (Keyboard.isKeyDown(Key.TWO)) {
+                keyLocker.lockKey(Key.ONE);
+            } else if (!keyLocker.isKeyLocked(Key.TWO) && Keyboard.isKeyDown(Key.TWO)) {
                 aiDifficulty = 1;
-            } else if (Keyboard.isKeyDown(Key.THREE)) {
+                keyLocker.lockKey(Key.TWO);
+            } else if (!keyLocker.isKeyLocked(Key.THREE) && Keyboard.isKeyDown(Key.THREE)) {
                 aiDifficulty = 2;
+                keyLocker.lockKey(Key.THREE);
             }
         }
         
@@ -336,11 +356,13 @@ public class CharacterSelectScreen extends Screen {
             difficultyImpossible.setColor(new Color(255, 0, 0));  // Red
         }
         
-        // Update vs Computer text color based on mode
+        // Update P2 mode indicator colors - highlight active option
         if (vsComputerMode) {
-            vsComputerText.setColor(new Color(0, 255, 0));
+            modePlayer2Option.setColor(new Color(150, 150, 150));
+            modeVsCpuOption.setColor(new Color(0, 200, 0));
         } else {
-            vsComputerText.setColor(new Color(150, 150, 150));
+            modePlayer2Option.setColor(new Color(0, 200, 0));
+            modeVsCpuOption.setColor(new Color(150, 150, 150));
         }
 
         // sets color of spritefont text based on which menu item is being hovered
@@ -448,9 +470,13 @@ public class CharacterSelectScreen extends Screen {
         character32.draw(graphicsHandler);
         character42.draw(graphicsHandler);
         player1.draw(graphicsHandler);
-        player2.draw(graphicsHandler);
-        vsComputerText.draw(graphicsHandler);
-        // Draw difficulty text when vs Computer mode is enabled
+        // P2 mode panel (replaces redundant "Player 2" label - single clean indicator)
+        p2ModeLabel.draw(graphicsHandler);
+        modePlayer2Option.draw(graphicsHandler);
+        modeSeparator.draw(graphicsHandler);
+        modeVsCpuOption.draw(graphicsHandler);
+        toggleHint.draw(graphicsHandler);
+        // Difficulty selection when vs CPU
         if (vsComputerMode) {
             difficultyText.draw(graphicsHandler);
             difficultyRegular.draw(graphicsHandler);

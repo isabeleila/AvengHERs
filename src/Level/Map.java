@@ -61,6 +61,9 @@ public abstract class Map {
 
     // map tiles in map that are animated
     protected ArrayList<MapTile> animatedMapTiles;
+    
+    // navigation system for AI pathfinding
+    protected NavigationSystem navigationSystem;
 
     public Map(String mapFileName, Tileset tileset) {
         this.mapFileName = mapFileName;
@@ -73,6 +76,9 @@ public abstract class Map {
         this.xMidPoint = ScreenManager.getScreenWidth() / 2;
         this.yMidPoint = (ScreenManager.getScreenHeight() / 2);
         this.playerStartPosition = new Point(0, 0);
+        
+        // Initialize navigation system for AI
+        this.navigationSystem = new NavigationSystem(this);
     }
 
     // sets up map by reading in the map file to create the tile map
@@ -289,6 +295,10 @@ public abstract class Map {
     public ArrayList<MapTile> getAnimatedMapTiles() {
         return animatedMapTiles;
     }
+    
+    public NavigationSystem getNavigationSystem() {
+        return navigationSystem;
+    }
 
     // returns all active enemies (enemies that are a part of the current update cycle) -- this changes every frame by the Camera class
     public ArrayList<Enemy> getActiveEnemies() {
@@ -395,6 +405,11 @@ public abstract class Map {
 
     public void draw(GraphicsHandler graphicsHandler) {
         camera.draw(graphicsHandler);
+        
+        // Debug: draw navigation nodes if available
+        if (navigationSystem != null) {
+            navigationSystem.draw(graphicsHandler);
+        }
     }
 
     public int getEndBoundX() { return endBoundX; }

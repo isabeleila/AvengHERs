@@ -9,6 +9,8 @@ import Engine.SoundEffect;
 import GameObject.SpriteSheet;
 import Level.Map;
 import Level.MapTile;
+import Level.NavigationNode;
+import Level.NavigationSystem;
 import Level.Player;
 import Level.PlayerState;
 import Level.LevelState;
@@ -20,414 +22,319 @@ import java.util.Random;
 
 /**
  * AIPlayer - A computer-controlled player that uses AI decision making
- * to fight against a human opponent
+ * to fight against a human opponent. Uses NavigationSystem for platform
+ * pathfinding and integrates with the physics pipeline for collision-aware movement.
  */
 public class AIPlayer extends Cat {
-    
-    // Difficulty levels
+
     public enum Difficulty {
         REGULAR,
         HARD,
         IMPOSSIBLE
     }
-    
-    private Player opponent;  // Reference to the human player
+
+    private Player opponent;
     private Random random;
     private int decisionTimer;
-    private int currentAction;
     private Difficulty difficulty;
-    
-    // AI Behavior parameters - will be set based on difficulty
-    private int AGGRO_RANGE;
+    private NavigationSystem navigationSystem;
+
+    // AI intent - set each decision cycle, consumed by physics
+    private int aiMoveDirection = 0;  // -1=left, 0=none, 1=right
+    private boolean aiWantsToJump = false;
+
+    // Behavior parameters
     private int SHOOT_RANGE;
     private int RETREAT_HEALTH;
     private int DECISION_INTERVAL;
-    private float RANDOM_JUMP_CHANCE;
+    private int JUMP_UP_THRESHOLD;
     private float HESITATION_CHANCE;
-    private float RANDOM_ACTION_CHANCE;
+    private int PREFERRED_DISTANCE;   // Stay this far from opponent (avoid overlap)
+    private int TOO_CLOSE_DISTANCE;   // When closer, back off immediately
     
-    // AI Actions
-    private static final int ACTION_NONE = 0;
-    private static final int ACTION_MOVE_LEFT = 1;
-    private static final int ACTION_MOVE_RIGHT = 2;
-    private static final int ACTION_JUMP = 3;
-    private static final int ACTION_SHOOT = 4;
-    private static final int ACTION_JUMP_SHOOT = 5;
-    
+    // Stuck detection
+    private int stuckFrames;
+    private static final int STUCK_THRESHOLD = 10;
+
     public AIPlayer(float x, float y, int playerNumber, String character, Player opponent) {
         this(x, y, playerNumber, character, opponent, Difficulty.REGULAR);
     }
-    
+
     public AIPlayer(float x, float y, int playerNumber, String character, Player opponent, Difficulty difficulty) {
         super(x, y, playerNumber, character);
         this.opponent = opponent;
         this.random = new Random();
         this.decisionTimer = 0;
-        this.currentAction = ACTION_NONE;
         this.difficulty = difficulty;
-        
-        // Set behavior parameters based on difficulty
         setDifficultyParameters();
     }
-    
-    /**
-     * Set AI behavior parameters based on selected difficulty
-     */
+
     private void setDifficultyParameters() {
         switch (difficulty) {
             case REGULAR:
-                AGGRO_RANGE = 2000; // Always chase - huge range
-                SHOOT_RANGE = 100;   // Reduced - AI must get closer to shoot
+                SHOOT_RANGE = 100;
                 RETREAT_HEALTH = 30;
-                DECISION_INTERVAL = 6;
-                RANDOM_JUMP_CHANCE = 0.5f; // Much higher - frequent platform jumping
-                HESITATION_CHANCE = 0.0f; // No hesitation
-                RANDOM_ACTION_CHANCE = 0.0f;
+                DECISION_INTERVAL = 8;
+                JUMP_UP_THRESHOLD = 90;
+                HESITATION_CHANCE = 0.20f;
+                PREFERRED_DISTANCE = 85;
+                TOO_CLOSE_DISTANCE = 45;
                 break;
             case HARD:
-                AGGRO_RANGE = 2000; // Always chase
-                SHOOT_RANGE = 150;   // Slightly further for hard
-                RETREAT_HEALTH = 25;
+                SHOOT_RANGE = 150;
+                RETREAT_HEALTH = 20;
                 DECISION_INTERVAL = 4;
-                RANDOM_JUMP_CHANCE = 0.8f; // Even higher
-                HESITATION_CHANCE = 0.0f;
-                RANDOM_ACTION_CHANCE = 0.0f;
+                JUMP_UP_THRESHOLD = 60;
+                HESITATION_CHANCE = 0.08f;
+                PREFERRED_DISTANCE = 75;
+                TOO_CLOSE_DISTANCE = 40;
                 break;
             case IMPOSSIBLE:
-                AGGRO_RANGE = 2000; // Always chase - no limit
-                SHOOT_RANGE = 200;   // Further for impossible
-                RETREAT_HEALTH = 10; // Only retreat when almost dead
-                DECISION_INTERVAL = 3;
-                RANDOM_JUMP_CHANCE = 1f; // Highest - constantly exploring platforms
+                SHOOT_RANGE = 220;
+                RETREAT_HEALTH = 10;
+                DECISION_INTERVAL = 1;
+                JUMP_UP_THRESHOLD = 40;
                 HESITATION_CHANCE = 0.0f;
-                RANDOM_ACTION_CHANCE = 0.0f;
+                PREFERRED_DISTANCE = 65;
+                TOO_CLOSE_DISTANCE = 35;
                 break;
         }
     }
-    
-    /**
-     * Get current difficulty
-     */
+
     public Difficulty getDifficulty() {
         return difficulty;
     }
-    
-    /**
-     * Update AI behavior - called each frame
-     */
+
+    @Override
+    public void setMap(Map map) {
+        super.setMap(map);
+        if (map != null) {
+            this.navigationSystem = map.getNavigationSystem();
+        }
+    }
+
     @Override
     public void update() {
-        // Call parent update for physics and animations
-        super.update();
-        
-        // Make AI decisions and apply movement EVERY FRAME
         if (opponent != null) {
-            // Get opponent's CURRENT position (updated every frame)
-            float myX = this.getX();
-            float myY = this.getY();
-            float opponentX = opponent.getX();
-            float opponentY = opponent.getY();
-            
-            // Calculate distance
-            float distance = Math.abs(myX - opponentX);
-            
-            // Determine direction to opponent
-            boolean opponentIsRight = opponentX > myX;
-            boolean opponentIsAbove = opponentY < myY - 20;
-            boolean opponentIsBelow = opponentY > myY + 20;
-            
-            // ALWAYS jump when on ground to use platforms
-            if (airGroundState == AirGroundState.GROUND) {
-                // 90% chance to jump - prioritize platform jumping
-                if (Math.random() < 0.9) {
-                    playerState = PlayerState.JUMPING;
-                    jumpForce = jumpHeight;
-                }
-            }
-            
-            // Also move toward opponent
-            if (opponentIsRight) {
-                this.moveX(walkSpeed);
-            } else {
-                this.moveX(-walkSpeed);
-            }
-            
-            // Shoot at opponent if in range
-            if (distance <= SHOOT_RANGE && shootTimer == 0) {
-                if (opponentIsRight) {
-                    facingDirection = Direction.RIGHT;
-                } else {
-                    facingDirection = Direction.LEFT;
-                }
-                catState = CatState.SHOOT;
-            }
+            updateAIDecisions();
         }
+        super.update();
     }
-    
+
     /**
-     * Make AI decision based on game state
+     * Run AI decisions before physics. Uses pathfinding when available,
+     * sets aiMoveDirection and aiWantsToJump for the physics step.
+     * Avoids overlapping with opponent by maintaining preferred distance.
      */
-    private void makeAIDecision() {
-        // Make decisions every frame for consistent movement
-        // The AI keeps its current action until changed
-        
-        // Get opponent position info - UPDATED EVERY FRAME
-        float myX = this.getX();
-        float myY = this.getY();
-        float opponentX = opponent.getX();
-        float opponentY = opponent.getY();
-        
-        // Calculate distance and direction
-        float distance = Math.abs(myX - opponentX);
-        float verticalDistance = myY - opponentY;
-        int myHealth = this.getPlayerHealth();
-        
-        // Determine if opponent is to our right or left
-        boolean opponentIsRight = opponentX > myX;
-        boolean opponentIsAbove = opponentY < myY - 20;
-        boolean opponentIsBelow = opponentY > myY + 50; // Opponent is significantly below
-        
-        // Check if opponent is shooting (for dodging)
-        boolean opponentIsShooting = false;
-        try {
-            // Check if opponent is in shoot state
-            if (opponent instanceof Cat) {
-                Cat opponentCat = (Cat) opponent;
-                // Would need to check catState but it's private, so we use distance heuristic
-                // If very close, opponent might be about to shoot
-            }
-        } catch (Exception e) {
-            // Ignore
+    private void updateAIDecisions() {
+        float myX = getBounds().getX1() + getBounds().getWidth() / 2f;
+        float myY = getBounds().getY1() + getBounds().getHeight() / 2f;
+        float oppX = opponent.getBounds().getX1() + opponent.getBounds().getWidth() / 2f;
+        float oppY = opponent.getBounds().getY1() + opponent.getBounds().getHeight() / 2f;
+        float dist = Math.abs(myX - oppX);
+        boolean oppRight = oppX > myX;
+
+        // Stuck detection every frame: haven't moved horizontally while trying to move
+        if (Math.abs(lastAmountMovedX) < 0.5f && aiMoveDirection != 0) {
+            stuckFrames++;
+        } else {
+            stuckFrames = 0;
         }
-        
-        // Decision tree based on health and distance
-        // AI ALWAYS knows where opponent is and goes to attack them
-        if (myHealth <= RETREAT_HEALTH && distance < AGGRO_RANGE) {
-            // Low health - try to retreat
-            currentAction = opponentIsRight ? ACTION_MOVE_LEFT : ACTION_MOVE_RIGHT;
-            
-            // If opponent is above, jump to escape
-            if (opponentIsAbove && airGroundState == AirGroundState.GROUND) {
-                currentAction = ACTION_JUMP;
+
+        decisionTimer++;
+        if (decisionTimer < DECISION_INTERVAL) {
+            return;
+        }
+        decisionTimer = 0;
+
+        if (random.nextFloat() < HESITATION_CHANCE) {
+            aiMoveDirection = 0;
+            aiWantsToJump = false;
+            return;
+        }
+
+        aiMoveDirection = 0;
+        aiWantsToJump = false;
+
+        // Stuck recovery: reverse direction and/or jump to get unstuck
+        if (stuckFrames >= STUCK_THRESHOLD && airGroundState == AirGroundState.GROUND) {
+            int prevDir = (aiMoveDirection != 0) ? aiMoveDirection : (oppRight ? 1 : -1);
+            aiMoveDirection = -Integer.signum(prevDir);
+            aiWantsToJump = random.nextFloat() < 0.5f;
+            stuckFrames = 0;
+            facingDirection = aiMoveDirection > 0 ? Direction.RIGHT : Direction.LEFT;
+            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            return;
+        }
+
+        if (getPlayerHealth() <= RETREAT_HEALTH) {
+            aiMoveDirection = oppRight ? -1 : 1;
+            facingDirection = oppRight ? Direction.LEFT : Direction.RIGHT;
+            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            return;
+        }
+
+        facingDirection = oppRight ? Direction.RIGHT : Direction.LEFT;
+
+        // Overlap prevention: when too close, back off instead of chasing
+        if (dist < TOO_CLOSE_DISTANCE) {
+            aiMoveDirection = oppRight ? -1 : 1;
+            facingDirection = oppRight ? Direction.LEFT : Direction.RIGHT;
+            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            return;
+        }
+
+        // At preferred distance: stand off, sometimes strafe for variety (don't overlap)
+        if (dist >= PREFERRED_DISTANCE - 15 && dist <= PREFERRED_DISTANCE + 40) {
+            if (dist <= SHOOT_RANGE && shootTimer == 0) {
+                aiShoot();
+            }
+            if (random.nextFloat() < 0.35f) {
+                aiMoveDirection = 0;
+                return;
+            }
+            if (random.nextFloat() < 0.25f) {
+                aiMoveDirection = random.nextBoolean() ? 1 : -1;
+                return;
+            }
+        }
+
+        // Target position offset from opponent - aim for preferred distance, not exact overlap
+        float targetX = oppX + (oppRight ? -PREFERRED_DISTANCE : PREFERRED_DISTANCE);
+        if (Math.abs(targetX - oppX) > 400) targetX = oppX;
+
+        // Deadzone: already at good position, don't jitter
+        if (Math.abs(myX - targetX) < 25 && dist >= PREFERRED_DISTANCE - 20) {
+            aiMoveDirection = 0;
+            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            return;
+        }
+
+        if (navigationSystem != null && navigationSystem.getNodes().size() > 0) {
+            NavigationNode pathNode = navigationSystem.findPathToTarget(myX, myY, targetX, oppY);
+            if (pathNode != null) {
+                float nodeX = pathNode.getCenterX();
+                float nodeY = pathNode.getY();
+                if (myX < nodeX - 20) {
+                    aiMoveDirection = 1;
+                } else if (myX > nodeX + 20) {
+                    aiMoveDirection = -1;
+                } else {
+                    aiMoveDirection = (targetX > myX) ? 1 : -1;
+                }
+                if (airGroundState == AirGroundState.GROUND && nodeY < myY - 20) {
+                    aiWantsToJump = true;
+                }
+            } else {
+                aiMoveDirection = (targetX > myX) ? 1 : -1;
+                if (airGroundState == AirGroundState.GROUND && myY - oppY > JUMP_UP_THRESHOLD) {
+                    aiWantsToJump = true;
+                }
             }
         } else {
-            // Chase and attack the opponent - ALWAYS go toward opponent
-            // If in shooting range, shoot!
-            if (distance <= SHOOT_RANGE) {
-                // In shooting range - ALWAYS attack when in range!
-                if (opponentIsAbove) {
-                    // Opponent above - jump and shoot
-                    currentAction = ACTION_JUMP_SHOOT;
-                } else {
-                    // Opponent at same level - shoot
-                    currentAction = ACTION_SHOOT;
+            aiMoveDirection = (targetX > myX) ? 1 : -1;
+            if (airGroundState == AirGroundState.GROUND) {
+                if (checkForObstacle(aiMoveDirection > 0) || checkForEdge(aiMoveDirection > 0)) {
+                    aiWantsToJump = true;
+                } else if (myY - oppY > JUMP_UP_THRESHOLD) {
+                    aiWantsToJump = true;
                 }
-            } else {
-                // Not in shooting range - ALWAYS chase the opponent
-                currentAction = opponentIsRight ? ACTION_MOVE_RIGHT : ACTION_MOVE_LEFT;
-                
-                // Only add jump occasionally - but keep moving!
-                // Don't overwrite movement with jump, just add jump to the movement
             }
         }
-        
-        // Fallback: if somehow no action was set, chase the opponent
-        if (currentAction == ACTION_NONE) {
-            currentAction = opponentIsRight ? ACTION_MOVE_RIGHT : ACTION_MOVE_LEFT;
+
+        if (dist <= SHOOT_RANGE && shootTimer == 0) {
+            aiShoot();
         }
     }
-    
-    /**
-     * Override handlePlayerState to use AI movement instead of keyboard
-     */
+
     @Override
     protected void handlePlayerState() {
-        // For AI player, we handle movement in executeAIAction(), not keyboard
-        // But we need to handle state transitions based on our AI actions
-        
-        // If AI set a jump action, enter JUMPING state
-        if (currentAction == ACTION_JUMP || currentAction == ACTION_JUMP_SHOOT) {
-            if (airGroundState == AirGroundState.GROUND && playerState != PlayerState.JUMPING) {
-                playerState = PlayerState.JUMPING;
-            }
+        switch (playerState) {
+            case STANDING:
+                aiPlayerStanding();
+                break;
+            case WALKING:
+                aiPlayerWalking();
+                break;
+            case CROUCHING:
+                aiPlayerStanding();
+                break;
+            case JUMPING:
+                aiPlayerJumping();
+                break;
         }
-        
-        // If AI is moving, enter WALKING state
-        if (currentAction == ACTION_MOVE_LEFT || currentAction == ACTION_MOVE_RIGHT) {
+    }
+
+    private void aiPlayerStanding() {
+        if (aiWantsToJump && airGroundState == AirGroundState.GROUND) {
+            playerState = PlayerState.JUMPING;
+        } else if (aiMoveDirection != 0) {
             playerState = PlayerState.WALKING;
         }
-        
-        // If no movement action and on ground, enter STANDING
-        if (currentAction == ACTION_NONE || currentAction == ACTION_SHOOT) {
-            if (airGroundState == AirGroundState.GROUND) {
-                playerState = PlayerState.STANDING;
-            }
-        }
     }
-    
-    /**
-     * Execute the current AI action
-     */
-    private void executeAIAction() {
-        if (opponent == null) return;
-        
-        // Continuously track opponent position for better aiming
-        float myX = this.getX();
-        float myY = this.getY();
-        float opponentX = opponent.getX();
-        float opponentY = opponent.getY();
-        
-        float distance = Math.abs(myX - opponentX);
-        float verticalDistance = myY - opponentY;
-        boolean opponentIsRight = opponentX > myX;
-        
-        // Platform detection - check for obstacles
-        boolean shouldJump = checkForObstacle(opponentIsRight);
-        
-        // If opponent is on higher ground, try to jump up to them
-        // More aggressive jumping to reach opponent on platforms
-        if (verticalDistance > 20 && airGroundState == AirGroundState.GROUND) {
-            // Opponent is above us, ALWAYS jump to reach them
-            shouldJump = true;
-        }
-        
-        // If there's a gap/edge ahead, jump to cross it
-        if (airGroundState == AirGroundState.GROUND) {
-            boolean edgeAhead = checkForEdge(opponentIsRight);
-            if (edgeAhead) {
-                shouldJump = true;
-            }
-        }
-        
-        // Always face the opponent
-        if (opponentIsRight) {
-            facingDirection = Direction.RIGHT;
-        } else {
+
+    private void aiPlayerWalking() {
+        moveAmountX = aiMoveDirection * walkSpeed;
+        if (aiMoveDirection < 0) {
             facingDirection = Direction.LEFT;
+        } else if (aiMoveDirection > 0) {
+            facingDirection = Direction.RIGHT;
         }
-        
-        // Execute action based on current decision
-        switch (currentAction) {
-            case ACTION_MOVE_LEFT:
-                this.aiMoveLeft();
-                if (shouldJump) this.aiJump();
-                break;
-                
-            case ACTION_MOVE_RIGHT:
-                this.aiMoveRight();
-                if (shouldJump) this.aiJump();
-                break;
-                
-            case ACTION_JUMP:
-                this.aiJump();
-                break;
-                
-            case ACTION_SHOOT:
-                // Face opponent and shoot when in range
-                if (distance <= SHOOT_RANGE && shootTimer == 0) {
-                    this.aiShoot();
-                }
-                break;
-                
-            case ACTION_JUMP_SHOOT:
-                // Jump and shoot simultaneously
-                if (airGroundState == AirGroundState.GROUND) {
-                    this.aiJump();
-                }
-                if (distance <= SHOOT_RANGE && shootTimer == 0) {
-                    this.aiShoot();
-                }
-                break;
-                
-            case ACTION_NONE:
-            default:
-                // Stand still, but still face opponent and shoot if in range
-                if (distance <= SHOOT_RANGE && shootTimer == 0) {
-                    this.aiShoot();
-                }
-                // Random jump for platform exploration
-                if (random.nextFloat() < RANDOM_JUMP_CHANCE && airGroundState == AirGroundState.GROUND) {
-                    this.aiJump();
-                }
-                break;
-        }
-        
-        // Random jump for unpredictability - chance based on difficulty
-        if (random.nextFloat() < RANDOM_JUMP_CHANCE && airGroundState == AirGroundState.GROUND) {
-            this.aiJump();
+        if (aiWantsToJump && airGroundState == AirGroundState.GROUND) {
+            playerState = PlayerState.JUMPING;
+        } else if (aiMoveDirection == 0 && airGroundState == AirGroundState.GROUND) {
+            playerState = PlayerState.STANDING;
         }
     }
-    
-    /**
-     * Check if there's an obstacle in the direction we're moving
-     * Returns true if AI should jump to get over it
-     */
+
+    private void aiPlayerJumping() {
+        if (previousAirGroundState == AirGroundState.GROUND && airGroundState == AirGroundState.GROUND) {
+            currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
+            airGroundState = AirGroundState.AIR;
+            jumpForce = jumpHeight;
+            if (jumpForce > 0) {
+                moveAmountY -= jumpForce;
+                jumpForce -= jumpDegrade;
+                if (jumpForce < 0) jumpForce = 0;
+            }
+        } else if (airGroundState == AirGroundState.AIR) {
+            if (jumpForce > 0) {
+                moveAmountY -= jumpForce;
+                jumpForce -= jumpDegrade;
+                if (jumpForce < 0) jumpForce = 0;
+            }
+            moveAmountX += aiMoveDirection * walkSpeed;
+            if (moveAmountY > 0) {
+                increaseMomentum();
+            }
+        } else if (previousAirGroundState == AirGroundState.AIR && airGroundState == AirGroundState.GROUND) {
+            playerState = PlayerState.STANDING;
+        }
+    }
+
     private boolean checkForObstacle(boolean movingRight) {
-        if (map == null || airGroundState != AirGroundState.GROUND) {
-            return false;
-        }
-        
-        // Check tiles in front of and above the AI
-        float checkX = movingRight ? this.getX() + 30 : this.getX() - 30;
-        float checkY = this.getY();
-        
-        // Get tile in front of us
+        if (map == null || airGroundState != AirGroundState.GROUND) return false;
+        float checkX = movingRight ? getBounds().getX2() + 20 : getBounds().getX1() - 20;
+        float checkY = getBounds().getY1() + getBounds().getHeight() / 2f;
         MapTile frontTile = map.getTileByPosition(checkX, checkY);
-        
-        // Check if there's a solid tile in front
-        if (frontTile != null && frontTile.getTileType() != TileType.PASSABLE) {
-            // There's an obstacle, we should jump!
-            return true;
-        }
-        
-        // Check a bit higher as well (for taller obstacles)
-        MapTile frontTileHigh = map.getTileByPosition(checkX, checkY - 20);
-        if (frontTileHigh != null && frontTileHigh.getTileType() != TileType.PASSABLE) {
-            return true;
-        }
-        
-        // Random platform jumping based on difficulty
-        // If we're on ground and random chance, jump to explore higher platforms
-        if (random.nextFloat() < RANDOM_JUMP_CHANCE) {
-            return true;
-        }
-        
-        return false;
+        if (frontTile != null && frontTile.getTileType() == TileType.NOT_PASSABLE) return true;
+        MapTile frontTileHigh = map.getTileByPosition(checkX, getBounds().getY1() - 10);
+        return frontTileHigh != null && frontTileHigh.getTileType() == TileType.NOT_PASSABLE;
     }
-    
-    /**
-     * Check if there's a gap/edge ahead that needs to be jumped
-     */
+
     private boolean checkForEdge(boolean movingRight) {
-        if (map == null || airGroundState != AirGroundState.GROUND) {
-            return false;
-        }
-        
-        // Check tiles in front of and below the AI
-        float checkX = movingRight ? this.getX() + 20 : this.getX() - 20;
-        float checkY = this.getY() + 50; // Check below feet level
-        
-        // Get tile below where we're about to step
+        if (map == null || airGroundState != AirGroundState.GROUND) return false;
+        int tileHeight = map.getTileset() != null ? map.getTileset().getScaledSpriteHeight() : 48;
+        float checkX = movingRight ? getBounds().getX2() + tileHeight : getBounds().getX1() - tileHeight;
+        float checkY = getBounds().getY2() + tileHeight;
         MapTile belowTile = map.getTileByPosition(checkX, checkY);
-        
-        // If there's no tile below (gap/edge), we should jump!
-        if (belowTile == null || belowTile.getTileType() == TileType.PASSABLE) {
-            return true;
-        }
-        
-        return false;
+        return belowTile == null || belowTile.getTileType() == TileType.PASSABLE;
     }
-    
-    /**
-     * Set the opponent for the AI to fight
-     */
+
     public void setOpponent(Player opponent) {
         this.opponent = opponent;
     }
-    
-    /**
-     * Get the current opponent
-     */
+
     public Player getOpponent() {
         return opponent;
     }
