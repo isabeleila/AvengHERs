@@ -4,43 +4,50 @@ import java.net.URL;
 import javax.sound.sampled.*;
 
 public class SoundEffect {
-    Clip clip;
+    // Pre-loaded clips — indexed to match soundURL slots
+    private Clip[] clips = new Clip[30];
+    private int currentIndex = -1;
     URL soundURL[] = new URL[30];
-    
+
     public SoundEffect(){
         soundURL[0] = getClass().getResource("/sound/death.wav");
         soundURL[1] = getClass().getResource("/sound/fireball.wav");
-        //soundURL[2] = getClass().getResource("/sound/AvengersThemeSong.wav");
-        // soundURL[3] = getClass().getResource("/sound/ChooseYourCharacter.wav");
 
+        for (int i = 0; i < soundURL.length; i++) {
+            if (soundURL[i] != null) {
+                try {
+                    AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+                    clips[i] = AudioSystem.getClip();
+                    clips[i].open(ais);
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
     public void setFile(int i){
-        try{
-
-            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
-            clip = AudioSystem.getClip();
-            clip.open(ais);
-
-        } catch(Exception e){
-
+        currentIndex = i;
+        if (clips[i] != null) {
+            clips[i].stop();
+            clips[i].setFramePosition(0);
         }
     }
+
     public void play(){
-
-        clip.start();
-
-
+        if (currentIndex >= 0 && clips[currentIndex] != null) {
+            clips[currentIndex].start();
+        }
     }
+
     public void loop(){
-
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-
+        if (currentIndex >= 0 && clips[currentIndex] != null) {
+            clips[currentIndex].loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
+
     public void stop(){
-
-        clip.stop();
-
+        if (currentIndex >= 0 && clips[currentIndex] != null) {
+            clips[currentIndex].stop();
+        }
     }
-
 }

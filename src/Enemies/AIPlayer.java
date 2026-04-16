@@ -15,7 +15,7 @@ import Level.Player;
 import Level.PlayerState;
 import Level.LevelState;
 import Level.TileType;
-import Utils.Direction;
+import Enemies.Cat.Direction;
 import Utils.AirGroundState;
 import Utils.Point;
 import java.util.Random;
@@ -43,18 +43,27 @@ public class AIPlayer extends Cat {
     private int aiMoveDirection = 0;  // -1=left, 0=none, 1=right
     private boolean aiWantsToJump = false;
 
+    // Smooth movement — interpolates toward aiMoveDirection * walkSpeed each frame
+    private float aiSmoothSpeedX = 0f;
+    private static final float AI_ACCEL = 0.25f; // fraction of gap closed per frame
+
     // Behavior parameters
     private int SHOOT_RANGE;
     private int RETREAT_HEALTH;
     private int DECISION_INTERVAL;
     private int JUMP_UP_THRESHOLD;
     private float HESITATION_CHANCE;
-    private int PREFERRED_DISTANCE;   // Stay this far from opponent (avoid overlap)
-    private int TOO_CLOSE_DISTANCE;   // When closer, back off immediately
+    private int PREFERRED_DISTANCE;
+    private int TOO_CLOSE_DISTANCE;
+    private int shootCooldownFrames;
+    private int strafeSpeed;
     
     // Stuck detection
     private int stuckFrames;
-    private static final int STUCK_THRESHOLD = 10;
+    private int STUCK_THRESHOLD;
+    private int reactionDelay;
+    private int shootAnimationTimer = 0;
+    private int currentShootCooldown = 0;
 
     public AIPlayer(float x, float y, int playerNumber, String character, Player opponent) {
         this(x, y, playerNumber, character, opponent, Difficulty.REGULAR);
@@ -67,36 +76,58 @@ public class AIPlayer extends Cat {
         this.decisionTimer = 0;
         this.difficulty = difficulty;
         setDifficultyParameters();
+        normalizeAIStats();
+    }
+    
+    private void normalizeAIStats() {
+        gravity = 1f;
+        terminalVelocityY = 7f;
+        jumpHeight = 28f;
+        jumpDegrade = 2f;
+        walkSpeed = 3.5f;
+        momentumYIncrease = 0.6f;
     }
 
     private void setDifficultyParameters() {
         switch (difficulty) {
             case REGULAR:
-                SHOOT_RANGE = 100;
-                RETREAT_HEALTH = 30;
-                DECISION_INTERVAL = 8;
-                JUMP_UP_THRESHOLD = 90;
-                HESITATION_CHANCE = 0.20f;
-                PREFERRED_DISTANCE = 85;
-                TOO_CLOSE_DISTANCE = 45;
+                SHOOT_RANGE = 120;
+                RETREAT_HEALTH = 50;
+                DECISION_INTERVAL = 10;
+                JUMP_UP_THRESHOLD = 180;
+                HESITATION_CHANCE = 0.40f;
+                PREFERRED_DISTANCE = 50;
+                TOO_CLOSE_DISTANCE = 20;
+                STUCK_THRESHOLD = 25;
+                reactionDelay = 5;
+                shootCooldownFrames = 45;
+                strafeSpeed = 0;
                 break;
             case HARD:
-                SHOOT_RANGE = 150;
-                RETREAT_HEALTH = 20;
-                DECISION_INTERVAL = 4;
-                JUMP_UP_THRESHOLD = 60;
-                HESITATION_CHANCE = 0.08f;
-                PREFERRED_DISTANCE = 75;
-                TOO_CLOSE_DISTANCE = 40;
+                SHOOT_RANGE = 130;
+                RETREAT_HEALTH = 30;
+                DECISION_INTERVAL = 3;
+                JUMP_UP_THRESHOLD = 120;
+                HESITATION_CHANCE = 0.15f;
+                PREFERRED_DISTANCE = 55;
+                TOO_CLOSE_DISTANCE = 25;
+                STUCK_THRESHOLD = 12;
+                reactionDelay = 2;
+                shootCooldownFrames = 25;
+                strafeSpeed = 1;
                 break;
             case IMPOSSIBLE:
-                SHOOT_RANGE = 220;
+                SHOOT_RANGE = 200;
                 RETREAT_HEALTH = 10;
                 DECISION_INTERVAL = 1;
-                JUMP_UP_THRESHOLD = 40;
+                JUMP_UP_THRESHOLD = 80;
                 HESITATION_CHANCE = 0.0f;
-                PREFERRED_DISTANCE = 65;
-                TOO_CLOSE_DISTANCE = 35;
+                PREFERRED_DISTANCE = 30;
+                TOO_CLOSE_DISTANCE = 15;
+                STUCK_THRESHOLD = 5;
+                reactionDelay = 0;
+                shootCooldownFrames = 10;
+                strafeSpeed = 2;
                 break;
         }
     }
@@ -115,18 +146,60 @@ public class AIPlayer extends Cat {
 
     @Override
     public void update() {
-        if (opponent != null) {
-            updateAIDecisions();
+        try {
+            if (currentShootCooldown > 0) {
+                currentShootCooldown--;
+            }
+            
+            if (opponent != null && levelState == LevelState.RUNNING && getBounds() != null) {
+                updateAIDecisions();
+            }
+        } catch (Exception e) {
         }
-        super.update();
+        
+        // Smoothly interpolate horizontal speed toward the current intent each frame.
+        // This prevents instant starts, stops, and direction reversals.
+        float targetSpeedX = aiMoveDirection * walkSpeed;
+        aiSmoothSpeedX += (targetSpeedX - aiSmoothSpeedX) * AI_ACCEL;
+        if (Math.abs(aiSmoothSpeedX) < 0.05f) aiSmoothSpeedX = 0f;
+
+        try {
+            super.update();
+        } catch (Exception e) {
+        }
+        
+        if (shootAnimationTimer > 0) {
+            shootAnimationTimer--;
+            currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
+        } else if (opponent != null && levelState == LevelState.RUNNING) {
+            try {
+                if (getBounds() != null && opponent.getBounds() != null) {
+                    float myX = getBounds().getX1() + getBounds().getWidth() / 2f;
+                    float oppX = opponent.getBounds().getX1() + opponent.getBounds().getWidth() / 2f;
+                    facingDirection = oppX > myX ? Direction.RIGHT : Direction.LEFT;
+                    
+                    if (playerState == PlayerState.STANDING) {
+                        currentAnimationName = facingDirection == Direction.RIGHT ? "STAND_RIGHT" : "STAND_LEFT";
+                    } else if (playerState == PlayerState.WALKING) {
+                        currentAnimationName = facingDirection == Direction.RIGHT ? "WALK_RIGHT" : "WALK_LEFT";
+                    } else if (playerState == PlayerState.JUMPING) {
+                        currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 
     /**
-     * Run AI decisions before physics. Uses pathfinding when available,
+     * Run AI decisions before physics. Uses A* pathfinding to navigate platforms,
      * sets aiMoveDirection and aiWantsToJump for the physics step.
-     * Avoids overlapping with opponent by maintaining preferred distance.
      */
     private void updateAIDecisions() {
+        if (getBounds() == null || opponent == null || opponent.getBounds() == null) {
+            return;
+        }
+
         float myX = getBounds().getX1() + getBounds().getWidth() / 2f;
         float myY = getBounds().getY1() + getBounds().getHeight() / 2f;
         float oppX = opponent.getBounds().getX1() + opponent.getBounds().getWidth() / 2f;
@@ -134,7 +207,19 @@ public class AIPlayer extends Cat {
         float dist = Math.abs(myX - oppX);
         boolean oppRight = oppX > myX;
 
-        // Stuck detection every frame: haven't moved horizontally while trying to move
+        // Always face the opponent regardless of movement direction
+        facingDirection = oppRight ? Direction.RIGHT : Direction.LEFT;
+
+        // While airborne, maintain the committed jump arc — don't re-plan movement.
+        // Only allow shooting mid-air.
+        if (airGroundState == AirGroundState.AIR) {
+            if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) {
+                aiShoot();
+            }
+            return;
+        }
+
+        // Stuck detection (only meaningful on ground)
         if (Math.abs(lastAmountMovedX) < 0.5f && aiMoveDirection != 0) {
             stuckFrames++;
         } else {
@@ -142,7 +227,10 @@ public class AIPlayer extends Cat {
         }
 
         decisionTimer++;
-        if (decisionTimer < DECISION_INTERVAL) {
+        if (decisionTimer < DECISION_INTERVAL + reactionDelay) {
+            if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) {
+                aiShoot();
+            }
             return;
         }
         decisionTimer = 0;
@@ -156,93 +244,75 @@ public class AIPlayer extends Cat {
         aiMoveDirection = 0;
         aiWantsToJump = false;
 
-        // Stuck recovery: reverse direction and/or jump to get unstuck
-        if (stuckFrames >= STUCK_THRESHOLD && airGroundState == AirGroundState.GROUND) {
-            int prevDir = (aiMoveDirection != 0) ? aiMoveDirection : (oppRight ? 1 : -1);
-            aiMoveDirection = -Integer.signum(prevDir);
-            aiWantsToJump = random.nextFloat() < 0.5f;
+        // Stuck recovery: reverse and jump to break free
+        if (stuckFrames >= STUCK_THRESHOLD) {
+            aiMoveDirection = oppRight ? -1 : 1;
+            aiWantsToJump = true;
             stuckFrames = 0;
-            facingDirection = aiMoveDirection > 0 ? Direction.RIGHT : Direction.LEFT;
-            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) aiShoot();
             return;
         }
 
+        // Retreat when low health
         if (getPlayerHealth() <= RETREAT_HEALTH) {
             aiMoveDirection = oppRight ? -1 : 1;
-            facingDirection = oppRight ? Direction.LEFT : Direction.RIGHT;
-            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) aiShoot();
             return;
         }
 
-        facingDirection = oppRight ? Direction.RIGHT : Direction.LEFT;
-
-        // Overlap prevention: when too close, back off instead of chasing
+        // Back off if overlapping
         if (dist < TOO_CLOSE_DISTANCE) {
             aiMoveDirection = oppRight ? -1 : 1;
-            facingDirection = oppRight ? Direction.LEFT : Direction.RIGHT;
-            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
+            if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) aiShoot();
             return;
         }
 
-        // At preferred distance: stand off, sometimes strafe for variety (don't overlap)
-        if (dist >= PREFERRED_DISTANCE - 15 && dist <= PREFERRED_DISTANCE + 40) {
-            if (dist <= SHOOT_RANGE && shootTimer == 0) {
-                aiShoot();
-            }
-            if (random.nextFloat() < 0.35f) {
-                aiMoveDirection = 0;
-                return;
-            }
-            if (random.nextFloat() < 0.25f) {
-                aiMoveDirection = random.nextBoolean() ? 1 : -1;
-                return;
-            }
-        }
+        float verticalDiff = myY - oppY; // positive means opponent is on a higher platform (smaller Y)
 
-        // Target position offset from opponent - aim for preferred distance, not exact overlap
-        float targetX = oppX + (oppRight ? -PREFERRED_DISTANCE : PREFERRED_DISTANCE);
-        if (Math.abs(targetX - oppX) > 400) targetX = oppX;
+        // --- Platform-aware navigation via A* ---
+        boolean navigated = false;
+        if (navigationSystem != null) {
+            NavigationNode nextNode = navigationSystem.findPathToTarget(myX, myY, oppX, oppY);
+            if (nextNode != null) {
+                float nodeX = nextNode.getCenterX();
+                float nodeY = nextNode.getY();
+                float distToNodeX = Math.abs(nodeX - myX);
 
-        // Deadzone: already at good position, don't jitter
-        if (Math.abs(myX - targetX) < 25 && dist >= PREFERRED_DISTANCE - 20) {
-            aiMoveDirection = 0;
-            if (dist <= SHOOT_RANGE && shootTimer == 0) aiShoot();
-            return;
-        }
+                // If the next node is on a higher platform, we must reach its X
+                // position first so the jump arc actually lands on it.
+                boolean nodeIsAbove = nodeY < myY - 40;
 
-        if (navigationSystem != null && navigationSystem.getNodes().size() > 0) {
-            NavigationNode pathNode = navigationSystem.findPathToTarget(myX, myY, targetX, oppY);
-            if (pathNode != null) {
-                float nodeX = pathNode.getCenterX();
-                float nodeY = pathNode.getY();
-                if (myX < nodeX - 20) {
-                    aiMoveDirection = 1;
-                } else if (myX > nodeX + 20) {
-                    aiMoveDirection = -1;
+                if (nodeIsAbove) {
+                    // Walk toward the jump-off X position
+                    aiMoveDirection = (nodeX > myX) ? 1 : -1;
+                    // Jump once we are close enough horizontally to arc onto the platform
+                    aiWantsToJump = distToNodeX < 80;
                 } else {
+                    // Same level or stepping down — use the opponent's actual position
+                    // for close-range pursuit, and the node for longer-range guidance.
+                    float targetX = (dist < 150) ? oppX : nodeX;
                     aiMoveDirection = (targetX > myX) ? 1 : -1;
+
+                    // Jump over solid walls that block horizontal movement
+                    if (checkForObstacle(aiMoveDirection > 0)) {
+                        aiWantsToJump = true;
+                    }
                 }
-                if (airGroundState == AirGroundState.GROUND && nodeY < myY - 20) {
-                    aiWantsToJump = true;
-                }
-            } else {
-                aiMoveDirection = (targetX > myX) ? 1 : -1;
-                if (airGroundState == AirGroundState.GROUND && myY - oppY > JUMP_UP_THRESHOLD) {
-                    aiWantsToJump = true;
-                }
-            }
-        } else {
-            aiMoveDirection = (targetX > myX) ? 1 : -1;
-            if (airGroundState == AirGroundState.GROUND) {
-                if (checkForObstacle(aiMoveDirection > 0) || checkForEdge(aiMoveDirection > 0)) {
-                    aiWantsToJump = true;
-                } else if (myY - oppY > JUMP_UP_THRESHOLD) {
-                    aiWantsToJump = true;
-                }
+                navigated = true;
             }
         }
 
-        if (dist <= SHOOT_RANGE && shootTimer == 0) {
+        // Fallback when no nav path is available: direct pursuit
+        if (!navigated) {
+            aiMoveDirection = oppRight ? 1 : -1;
+            if (verticalDiff > JUMP_UP_THRESHOLD) {
+                aiWantsToJump = true;
+            } else if (checkForObstacle(aiMoveDirection > 0) || checkForEdge(aiMoveDirection > 0)) {
+                aiWantsToJump = true;
+            }
+        }
+
+        if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) {
             aiShoot();
         }
     }
@@ -266,6 +336,14 @@ public class AIPlayer extends Cat {
     }
 
     private void aiPlayerStanding() {
+        // Use the facing direction already set by updateAIDecisions() based on opponent position
+        // facingDirection is already set to face the opponent (LEFT or RIGHT)
+        if (facingDirection == Direction.RIGHT) {
+            currentAnimationName = "STAND_RIGHT";
+        } else {
+            currentAnimationName = "STAND_LEFT";
+        }
+        
         if (aiWantsToJump && airGroundState == AirGroundState.GROUND) {
             playerState = PlayerState.JUMPING;
         } else if (aiMoveDirection != 0) {
@@ -274,21 +352,25 @@ public class AIPlayer extends Cat {
     }
 
     private void aiPlayerWalking() {
-        moveAmountX = aiMoveDirection * walkSpeed;
-        if (aiMoveDirection < 0) {
-            facingDirection = Direction.LEFT;
-        } else if (aiMoveDirection > 0) {
-            facingDirection = Direction.RIGHT;
+        moveAmountX = aiSmoothSpeedX;
+
+        if (facingDirection == Direction.RIGHT) {
+            currentAnimationName = "WALK_RIGHT";
+        } else {
+            currentAnimationName = "WALK_LEFT";
         }
+
         if (aiWantsToJump && airGroundState == AirGroundState.GROUND) {
             playerState = PlayerState.JUMPING;
-        } else if (aiMoveDirection == 0 && airGroundState == AirGroundState.GROUND) {
+        } else if (aiMoveDirection == 0 && aiSmoothSpeedX == 0f && airGroundState == AirGroundState.GROUND) {
+            // Only switch to STANDING once the deceleration has fully finished
             playerState = PlayerState.STANDING;
         }
     }
 
     private void aiPlayerJumping() {
         if (previousAirGroundState == AirGroundState.GROUND && airGroundState == AirGroundState.GROUND) {
+            // Use the facing direction already set by updateAIDecisions() based on opponent position
             currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
             airGroundState = AirGroundState.AIR;
             jumpForce = jumpHeight;
@@ -298,12 +380,15 @@ public class AIPlayer extends Cat {
                 if (jumpForce < 0) jumpForce = 0;
             }
         } else if (airGroundState == AirGroundState.AIR) {
+            // Continue using the facing direction to face the opponent while jumping
+            currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
+            
             if (jumpForce > 0) {
                 moveAmountY -= jumpForce;
                 jumpForce -= jumpDegrade;
                 if (jumpForce < 0) jumpForce = 0;
             }
-            moveAmountX += aiMoveDirection * walkSpeed;
+            moveAmountX += aiSmoothSpeedX;
             if (moveAmountY > 0) {
                 increaseMomentum();
             }
@@ -337,5 +422,33 @@ public class AIPlayer extends Cat {
 
     public Player getOpponent() {
         return opponent;
+    }
+
+    @Override
+    public void aiShoot() {
+        if (shootTimer == 0 && currentShootCooldown <= 0) {
+            catState = CatState.SHOOT;
+            shootAnimationTimer = 20;
+            currentShootCooldown = shootCooldownFrames;
+        }
+    }
+    
+    @Override
+    protected void handlePlayerAnimation() {
+        if (shootAnimationTimer > 0) {
+            currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
+        } else if (playerState == PlayerState.STANDING) {
+            currentAnimationName = facingDirection == Direction.RIGHT ? "STAND_RIGHT" : "STAND_LEFT";
+        } else if (playerState == PlayerState.WALKING) {
+            currentAnimationName = facingDirection == Direction.RIGHT ? "WALK_RIGHT" : "WALK_LEFT";
+        } else if (playerState == PlayerState.CROUCHING) {
+            currentAnimationName = facingDirection == Direction.RIGHT ? "CROUCH_RIGHT" : "CROUCH_LEFT";
+        } else if (playerState == PlayerState.JUMPING) {
+            if (lastAmountMovedY <= 0) {
+                currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
+            } else {
+                currentAnimationName = facingDirection == Direction.RIGHT ? "FALL_RIGHT" : "FALL_LEFT";
+            }
+        }
     }
 }

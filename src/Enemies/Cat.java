@@ -64,7 +64,7 @@ public class Cat extends Player {
             walkSpeed = 6f;
             momentumYIncrease = .5f;
             characterNum = 2;
-        }else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
+        }else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") || character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
             //medium jump, medium walk speed, (regualar damage: 2)
             gravity = 1f;
             terminalVelocityY = 6f;
@@ -73,7 +73,7 @@ public class Cat extends Player {
             walkSpeed = 4f;
             momentumYIncrease = .5f;
             characterNum =3;
-        }else{
+        }else if(character.equals("spidermanSpriteSheetPlayer1.png") || character.equals("spidermanSpriteSheetPlayer2.png") || character.equals("GirlspidermanSpriteSheetPlayer1.png") || character.equals("GirlspidermanSpriteSheetPlayer2.png")){
             //spideerman is fastest and has highest jumping height (lowest damage: 1)
             gravity = 1f;
             terminalVelocityY = 12f;
@@ -175,7 +175,7 @@ public class Cat extends Player {
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
+}else if(character.equals("CAPTAMERICAsheetPlayer1.png") || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") || character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
@@ -194,7 +194,7 @@ public class Cat extends Player {
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "IronBall.png");
                     map.addEnemy(ball);
 
-                }else if(character.equals("CAPTAMERICAsheetPlayer1.png")  || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") | character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
+                }else if(character.equals("CAPTAMERICAsheetPlayer1.png")  || character.equals("CAPTAMERICAsheetPlayer2.png") || character.equals("GirlCAPTAMERICAsheetPlayer1.png") || character.equals("GirlCAPTAMERICAsheetPlayer2.png")){
                     Ball ball = new Ball(new Point(ballX, ballY), movementSpeed, 250, this, "CaptBall.png");
                     map.addEnemy(ball);
 
@@ -251,41 +251,41 @@ public class Cat extends Player {
             });
 
             put("WALK_RIGHT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 0), 20)
                     .withScale(3)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 1), 20)
                     .withScale(3)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 2), 20)
                     .withScale(3)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 3), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 3), 20)
                     .withScale(3)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("WALK_LEFT", new Frame[] {
-                new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 0), 20)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 1), 20)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 2), 20)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build(),
-                new FrameBuilder(spriteSheet.getSprite(1, 3), 14)
+                new FrameBuilder(spriteSheet.getSprite(1, 3), 20)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
@@ -365,16 +365,14 @@ public class Cat extends Player {
             });
 
             put("SHOOT_RIGHT", new Frame[] {
-                //adds delay to shooting animation. 
-                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 25)
                     .withScale(3)
                     .withBounds(4, 1, spriteWidth, spriteHeight)
                     .build()
             });
 
             put("SHOOT_LEFT", new Frame[] {
-                //adds delay to shooting animation. 
-                new FrameBuilder(spriteSheet.getSprite(6, 0), 5)
+                new FrameBuilder(spriteSheet.getSprite(6, 0), 25)
                     .withScale(3)
                     .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                     .withBounds(4, 1, spriteWidth, spriteHeight)

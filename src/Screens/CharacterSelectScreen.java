@@ -55,11 +55,16 @@ public class CharacterSelectScreen extends Screen {
     protected SpriteFont difficultyRegular;
     protected SpriteFont difficultyHard;
     protected SpriteFont difficultyImpossible;
-    protected SpriteFont p2ModeLabel;
+    protected SpriteFont p2PanelTitle;
     protected SpriteFont modePlayer2Option;
     protected SpriteFont modeSeparator;
     protected SpriteFont modeVsCpuOption;
     protected SpriteFont toggleHint;
+    protected SpriteFont confirmHint;
+    protected boolean p2SetupModalOpen = true;
+    private static final int P2_CARD_WIDTH = 352;
+    private static final int P2_CARD_HEIGHT_LOCAL = 124;
+    private static final int P2_CARD_HEIGHT_VS_CPU = 200;
 
     public CharacterSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -180,35 +185,37 @@ public class CharacterSelectScreen extends Screen {
         player1 = new SpriteFont("Player 1", 130, 533, "Arial", 30, new Color(255,255,255));
         player1.setOutlineColor(Color.black);
         player1.setOutlineThickness(4);
-        // P2 Mode panel - entirely in RIGHT half (x>=410) to avoid divider overlap
-        // Tab-style: "Player 2" | "vs CPU" with active one highlighted
-        p2ModeLabel = new SpriteFont("P2:", 410, 538, "Arial", 22, new Color(100, 100, 100));
-        p2ModeLabel.setOutlineColor(Color.black);
-        p2ModeLabel.setOutlineThickness(2);
-        modePlayer2Option = new SpriteFont("Player 2", 455, 538, "Arial", 20, new Color(150, 150, 150));
+        // P2 / CPU setup
+        p2PanelTitle = new SpriteFont("2nd player & CPU", 0, 0, "Arial", 18, new Color(45, 55, 75));
+        p2PanelTitle.setOutlineColor(new Color(255, 255, 255));
+        p2PanelTitle.setOutlineThickness(2);
+        p2PanelTitle.setFontStyle(Font.BOLD);
+        modePlayer2Option = new SpriteFont("Player 2", 0, 0, "Arial", 17, new Color(150, 150, 150));
         modePlayer2Option.setOutlineColor(Color.black);
         modePlayer2Option.setOutlineThickness(2);
-        modeSeparator = new SpriteFont("|", 520, 538, "Arial", 18, new Color(180, 180, 180));
+        modeSeparator = new SpriteFont("|", 0, 0, "Arial", 16, new Color(160, 160, 160));
         modeSeparator.setOutlineColor(Color.black);
         modeSeparator.setOutlineThickness(1);
-        modeVsCpuOption = new SpriteFont("vs CPU", 535, 538, "Arial", 20, new Color(150, 150, 150));
+        modeVsCpuOption = new SpriteFont("vs CPU", 0, 0, "Arial", 17, new Color(150, 150, 150));
         modeVsCpuOption.setOutlineColor(Color.black);
         modeVsCpuOption.setOutlineThickness(2);
-        toggleHint = new SpriteFont("C to switch", 410, 562, "Arial", 14, new Color(130, 130, 130));
-        toggleHint.setOutlineColor(Color.black);
+        toggleHint = new SpriteFont("Press C to switch mode", 0, 0, "Arial", 15, new Color(90, 90, 110));
+        toggleHint.setOutlineColor(Color.white);
         toggleHint.setOutlineThickness(1);
-        
-        // Difficulty (vs CPU only) - right half, below mode
-        difficultyText = new SpriteFont("Difficulty:", 410, 588, "Arial", 16, new Color(100, 100, 100));
-        difficultyText.setOutlineColor(Color.black);
-        difficultyText.setOutlineThickness(2);
-        difficultyRegular = new SpriteFont("1-Regular", 500, 588, "Arial", 15, new Color(0, 255, 0));
+        confirmHint = new SpriteFont("Press ENTER to confirm", 0, 0, "Arial", 16, new Color(25, 80, 140));
+        confirmHint.setOutlineColor(new Color(255, 255, 255));
+        confirmHint.setOutlineThickness(2);
+        confirmHint.setFontStyle(Font.BOLD);
+        difficultyText = new SpriteFont("CPU difficulty:", 0, 0, "Arial", 15, new Color(70, 70, 90));
+        difficultyText.setOutlineColor(Color.white);
+        difficultyText.setOutlineThickness(1);
+        difficultyRegular = new SpriteFont("[1] Regular", 0, 0, "Arial", 15, new Color(0, 200, 0));
         difficultyRegular.setOutlineColor(Color.black);
         difficultyRegular.setOutlineThickness(2);
-        difficultyHard = new SpriteFont("2-Hard", 585, 588, "Arial", 15, new Color(150, 150, 150));
+        difficultyHard = new SpriteFont("[2] Hard", 0, 0, "Arial", 15, new Color(150, 150, 150));
         difficultyHard.setOutlineColor(Color.black);
         difficultyHard.setOutlineThickness(2);
-        difficultyImpossible = new SpriteFont("3-Impossible", 655, 588, "Arial", 15, new Color(150, 150, 150));
+        difficultyImpossible = new SpriteFont("[3] Impossible", 0, 0, "Arial", 15, new Color(150, 150, 150));
         difficultyImpossible.setOutlineColor(Color.black);
         difficultyImpossible.setOutlineThickness(2);
         // Character Text Left
@@ -245,8 +252,10 @@ public class CharacterSelectScreen extends Screen {
         menuItemSelectedL = -1;
         menuItemSelectedR = -1;
         aiDifficulty = 0;  // Reset each time - P1 must select difficulty
+        p2SetupModalOpen = true;
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.C);
+        keyLocker.lockKey(Key.ENTER);
         keyLocker.lockKey(Key.ONE);
         keyLocker.lockKey(Key.TWO);
         keyLocker.lockKey(Key.THREE);
@@ -257,26 +266,41 @@ public class CharacterSelectScreen extends Screen {
         // update background map (to play tile animations)
         //background.update(null);
 
-        // if keys are pressed, change menu item "hovered" over
-        if(Keyboard.isKeyDown(Key.S)){
+        // --- P2 / CPU setup modal (must confirm with ENTER before character select) ---
+        if (Keyboard.isKeyUp(Key.ENTER)) {
+            keyLocker.unlockKey(Key.ENTER);
+        }
+        if (p2SetupModalOpen && !keyLocker.isKeyLocked(Key.ENTER) && Keyboard.isKeyDown(Key.ENTER)) {
+            p2SetupModalOpen = false;
+            keyLocker.lockKey(Key.ENTER);
+            // vs CPU: P2 is ready immediately (character finalized when P1 confirms with Q)
+            if (vsComputerMode) {
+                player2Ready = true;
+                menuItemSelectedR = 0;
+                ReadyScreen(0, 1);
+            }
+        }
+
+        // if keys are pressed, change menu item "hovered" over (blocked until modal dismissed)
+        if (!p2SetupModalOpen && Keyboard.isKeyDown(Key.S)){
             if(currentMenuItemHoveredL == 0){
                 currentMenuItemHoveredL = 2;
             }else if(currentMenuItemHoveredL == 1){
                 currentMenuItemHoveredL = 3;
             }
-        }else if(Keyboard.isKeyDown(Key.W)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.W)){
             if(currentMenuItemHoveredL == 2){
                 currentMenuItemHoveredL = 0;
             }else if(currentMenuItemHoveredL == 3){
                 currentMenuItemHoveredL = 1;
             }
-        }else if(Keyboard.isKeyDown(Key.A)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.A)){
             if(currentMenuItemHoveredL == 1){
                 currentMenuItemHoveredL = 0;
             }else if(currentMenuItemHoveredL == 3){
                 currentMenuItemHoveredL = 2;
             }
-        }else if(Keyboard.isKeyDown(Key.D)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.D)){
             if(currentMenuItemHoveredL == 0){
                 currentMenuItemHoveredL = 1;
             }else if(currentMenuItemHoveredL == 2){
@@ -284,25 +308,25 @@ public class CharacterSelectScreen extends Screen {
             }
         }
 
-        if(Keyboard.isKeyDown(Key.DOWN)){
+        if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.DOWN)){
             if(currentMenuItemHoveredR == 0){
                 currentMenuItemHoveredR = 2;
             }else if(currentMenuItemHoveredR == 1){
                 currentMenuItemHoveredR = 3;
             }
-        }else if(Keyboard.isKeyDown(Key.UP)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.UP)){
             if(currentMenuItemHoveredR == 2){
                 currentMenuItemHoveredR = 0;
             }else if(currentMenuItemHoveredR == 3){
                 currentMenuItemHoveredR = 1;
             }
-        }else if(Keyboard.isKeyDown(Key.LEFT)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.LEFT)){
             if(currentMenuItemHoveredR == 1){
                 currentMenuItemHoveredR = 0;
             }else if(currentMenuItemHoveredR == 3){
                 currentMenuItemHoveredR = 2;
             }
-        }else if(Keyboard.isKeyDown(Key.RIGHT)){
+        }else if(!p2SetupModalOpen && Keyboard.isKeyDown(Key.RIGHT)){
             if(currentMenuItemHoveredR == 0){
                 currentMenuItemHoveredR = 1;
             }else if(currentMenuItemHoveredR == 2){
@@ -319,16 +343,16 @@ public class CharacterSelectScreen extends Screen {
         if (Keyboard.isKeyUp(Key.C)) {
             keyLocker.unlockKey(Key.C);
         }
-        if (!keyLocker.isKeyLocked(Key.C) && Keyboard.isKeyDown(Key.C) && !player1Ready) {
+        if (!keyLocker.isKeyLocked(Key.C) && Keyboard.isKeyDown(Key.C) && p2SetupModalOpen && !player1Ready) {
             vsComputerMode = !vsComputerMode;
             keyLocker.lockKey(Key.C);
         }
         
-        // Difficulty selection with 1, 2, 3 keys (only when vs Computer mode is enabled)
+        // Difficulty selection with 1, 2, 3 keys (only on modal + vs CPU)
         if (Keyboard.isKeyUp(Key.ONE)) keyLocker.unlockKey(Key.ONE);
         if (Keyboard.isKeyUp(Key.TWO)) keyLocker.unlockKey(Key.TWO);
         if (Keyboard.isKeyUp(Key.THREE)) keyLocker.unlockKey(Key.THREE);
-        if (vsComputerMode && !player1Ready && !player2Ready) {
+        if (p2SetupModalOpen && vsComputerMode && !player1Ready && !player2Ready) {
             if (!keyLocker.isKeyLocked(Key.ONE) && Keyboard.isKeyDown(Key.ONE)) {
                 aiDifficulty = 0;
                 keyLocker.lockKey(Key.ONE);
@@ -414,7 +438,7 @@ public class CharacterSelectScreen extends Screen {
         if (Keyboard.isKeyUp(Key.Q)) {
             keyLocker.unlockKey(Key.Q);
         }
-        if (!keyLocker.isKeyLocked(Key.Q) && Keyboard.isKeyDown(Key.Q)) {
+        if (!p2SetupModalOpen && !keyLocker.isKeyLocked(Key.Q) && Keyboard.isKeyDown(Key.Q)) {
             if(playerPressedStart2){
                 menuItemSelectedL = currentMenuItemHoveredL;
                 stopMusic();
@@ -440,7 +464,7 @@ public class CharacterSelectScreen extends Screen {
         if (Keyboard.isKeyUp(Key.SHIFT)) {
             keyLocker.unlockKey(Key.SHIFT);
         }
-        if (!keyLocker.isKeyLocked(Key.SHIFT) && Keyboard.isKeyDown(Key.SHIFT)) {
+        if (!p2SetupModalOpen && !keyLocker.isKeyLocked(Key.SHIFT) && Keyboard.isKeyDown(Key.SHIFT)) {
             if(playerPressedStart1){
                 // If vs CPU mode, don't update player 2 selection - it's already set
                 if (!vsComputerMode) {
@@ -470,19 +494,6 @@ public class CharacterSelectScreen extends Screen {
         character32.draw(graphicsHandler);
         character42.draw(graphicsHandler);
         player1.draw(graphicsHandler);
-        // P2 mode panel (replaces redundant "Player 2" label - single clean indicator)
-        p2ModeLabel.draw(graphicsHandler);
-        modePlayer2Option.draw(graphicsHandler);
-        modeSeparator.draw(graphicsHandler);
-        modeVsCpuOption.draw(graphicsHandler);
-        toggleHint.draw(graphicsHandler);
-        // Difficulty selection when vs CPU
-        if (vsComputerMode) {
-            difficultyText.draw(graphicsHandler);
-            difficultyRegular.draw(graphicsHandler);
-            difficultyHard.draw(graphicsHandler);
-            difficultyImpossible.draw(graphicsHandler);
-        }
         line.draw(graphicsHandler);
         hulkL.draw(graphicsHandler);
         ironmanL.draw(graphicsHandler);
@@ -498,7 +509,52 @@ public class CharacterSelectScreen extends Screen {
         c2.draw(graphicsHandler);
         c3.draw(graphicsHandler);
         c4.draw(graphicsHandler);
+
+        // Centered setup modal — only until ENTER; dim rest of screen
+        if (p2SetupModalOpen) {
+            int sw = ScreenManager.getScreenWidth();
+            int sh = ScreenManager.getScreenHeight();
+            graphicsHandler.drawFilledRectangle(0, 0, sw, sh, new Color(0, 0, 0, 110));
+            int cardH = vsComputerMode ? P2_CARD_HEIGHT_VS_CPU : P2_CARD_HEIGHT_LOCAL;
+            int cardW = Math.min(P2_CARD_WIDTH, Math.max(200, sw - 8));
+            int px = Math.max(4, (sw - cardW) / 2);
+            int py = Math.max(4, (sh - cardH) / 2);
+            layoutP2SetupCard(px, py, vsComputerMode);
+            graphicsHandler.drawFilledRectangle(px + 4, py + 4, cardW, cardH, new Color(0, 0, 0, 45));
+            graphicsHandler.drawFilledRectangleWithBorder(px, py, cardW, cardH,
+                    new Color(248, 249, 252), new Color(55, 70, 105), 2);
+            p2PanelTitle.draw(graphicsHandler);
+            modePlayer2Option.draw(graphicsHandler);
+            modeSeparator.draw(graphicsHandler);
+            modeVsCpuOption.draw(graphicsHandler);
+            toggleHint.draw(graphicsHandler);
+            if (vsComputerMode) {
+                difficultyText.draw(graphicsHandler);
+                difficultyRegular.draw(graphicsHandler);
+                difficultyHard.draw(graphicsHandler);
+                difficultyImpossible.draw(graphicsHandler);
+            }
+            confirmHint.draw(graphicsHandler);
         }
+    }
+
+    /** Places all P2/CPU labels inside the centered card (coordinates = card top-left). */
+    private void layoutP2SetupCard(int px, int py, boolean vsCpu) {
+        p2PanelTitle.setLocation(px + 14, py + 8);
+        modePlayer2Option.setLocation(px + 14, py + 36);
+        modeSeparator.setLocation(px + 100, py + 36);
+        modeVsCpuOption.setLocation(px + 118, py + 36);
+        toggleHint.setLocation(px + 14, py + 60);
+        if (vsCpu) {
+            difficultyText.setLocation(px + 14, py + 84);
+            difficultyRegular.setLocation(px + 18, py + 106);
+            difficultyHard.setLocation(px + 18, py + 126);
+            difficultyImpossible.setLocation(px + 18, py + 146);
+            confirmHint.setLocation(px + 14, py + 172);
+        } else {
+            confirmHint.setLocation(px + 14, py + 88);
+        }
+    }
 
         public void playMusic(int i){
             sound.setFile(i);

@@ -44,41 +44,40 @@ public class ScreenCoordinator extends Screen {
 		gameState = GameState.MENU;
 	}
 
-	@Override
-	public void update() {
-		do {
-			// if previousGameState does not equal gameState, it means there was a change in gameState
-			// this triggers ScreenCoordinator to bring up a new Screen based on what the gameState is
-			if (previousGameState != gameState) {
-				switch(gameState) {
-					case MENU:
-						currentScreen = new MenuScreen(this);
-						break;
-					case LEVEL:
-						currentScreen = new PlayLevelScreen(this, CharacterSelectScreen.isVsComputerMode(), CharacterSelectScreen.getAIDifficulty());
-						break;
-					case CREDITS:
-						currentScreen = new CreditsScreen(this);
-						break;
-					case TUTORIAL:
-						currentScreen = new TutorialScreen(this);
-						break;
-					case CHARACTER:
-						currentScreen = new CharacterSelectScreen(this);
-						break;
-					case LEVELSELECT:
-						currentScreen = new LevelSelectScreen(this);
-						break;
-				}
-				currentScreen.initialize();
-				if(currentScreen instanceof PlayLevelScreen){ ((PlayLevelScreen)(currentScreen)).setMap(levelMapStorage); }
-			}
-			previousGameState = gameState;
-
-			// call the update method for the currentScreen
-			currentScreen.update();
-		} while (previousGameState != gameState);
-	}
+@Override
+    public void update() {
+        int loopCount = 0;
+        int maxLoops = 5;
+        do {
+            if (previousGameState != gameState) {
+                switch(gameState) {
+                    case MENU:
+                        currentScreen = new MenuScreen(this);
+                        break;
+                    case LEVEL:
+                        currentScreen = new PlayLevelScreen(this, CharacterSelectScreen.isVsComputerMode(), CharacterSelectScreen.getAIDifficulty());
+                        break;
+                    case CREDITS:
+                        currentScreen = new CreditsScreen(this);
+                        break;
+                    case TUTORIAL:
+                        currentScreen = new TutorialScreen(this);
+                        break;
+                    case CHARACTER:
+                        currentScreen = new CharacterSelectScreen(this);
+                        break;
+                    case LEVELSELECT:
+                        currentScreen = new LevelSelectScreen(this);
+                        break;
+                }
+                currentScreen.initialize();
+                if(currentScreen instanceof PlayLevelScreen){ ((PlayLevelScreen)(currentScreen)).setMap(levelMapStorage); }
+            }
+            previousGameState = gameState;
+            currentScreen.update();
+            loopCount++;
+        } while (previousGameState != gameState && loopCount < maxLoops);
+    }
 
 	@Override
 	public void draw(GraphicsHandler graphicsHandler) {

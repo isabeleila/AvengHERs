@@ -406,10 +406,6 @@ public abstract class Map {
     public void draw(GraphicsHandler graphicsHandler) {
         camera.draw(graphicsHandler);
         
-        // Debug: draw navigation nodes if available
-        if (navigationSystem != null) {
-            navigationSystem.draw(graphicsHandler);
-        }
     }
 
     public int getEndBoundX() { return endBoundX; }

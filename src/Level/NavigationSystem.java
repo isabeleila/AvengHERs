@@ -44,33 +44,21 @@ public class NavigationSystem {
         nodes.clear();
         platformNodes.clear();
         
-        // Debug: check if map has tiles
         if (map.getMapTiles() == null) {
-            System.out.println("ERROR: Map tiles are null!");
             return;
         }
         
-        // Scan the map for walkable surfaces
-        // A walkable surface is a non-passable tile that has passable tile above it
         MapTile[] mapTiles = map.getMapTiles();
         int mapWidth = map.getWidth();
         int mapHeight = map.getHeight();
         
-        // Debug: print map info
-        System.out.println("Generating nodes for map: " + mapWidth + "x" + mapHeight);
-        
-        // Track which tiles we've already created nodes for (to avoid duplicates)
         boolean[][] nodeCreated = new boolean[mapWidth][mapHeight];
         
-        // First pass: identify platform surfaces
-        int surfacesFound = 0;
         for (int y = 0; y < mapHeight - 1; y++) {
             for (int x = 0; x < mapWidth; x++) {
                 MapTile currentTile = map.getMapTile(x, y);
                 MapTile tileAbove = map.getMapTile(x, y - 1);
                 
-                // Check if current tile is solid and tile above is passable
-                // Solid tiles are NOT_PASSABLE, JUMP_THROUGH_PLATFORM, or SLOPE
                 boolean isSolid = currentTile != null && 
                     (currentTile.getTileType() == TileType.NOT_PASSABLE ||
                      currentTile.getTileType() == TileType.JUMP_THROUGH_PLATFORM ||
@@ -79,29 +67,17 @@ public class NavigationSystem {
                 boolean aboveIsPassable = tileAbove == null || tileAbove.getTileType() == TileType.PASSABLE;
                 
                 if (isSolid && aboveIsPassable) {
-                    // This is a platform surface
                     if (!nodeCreated[x][y]) {
                         createNodeAt(x, y);
                         nodeCreated[x][y] = true;
-                        surfacesFound++;
                     }
                 }
             }
         }
         
-        System.out.println("Platform surfaces found: " + surfacesFound);
-        
-        // Second pass: identify platform edges (left and right ends of each platform segment)
         identifyPlatformEdges(mapWidth, mapHeight);
-        
-        // Third pass: create connections between nodes
         connectNodes();
-        
-        // Fourth pass: create jump connections between platforms
         createJumpConnections();
-        
-        // Debug: print number of nodes created
-        System.out.println("Navigation nodes created: " + nodes.size());
     }
     
     /**
@@ -224,24 +200,28 @@ public class NavigationSystem {
      * Create jump connections between different platforms
      */
     private void createJumpConnections() {
-        // For each node, find reachable nodes on other platforms by jumping
-        for (NavigationNode node : nodes) {
+        if (nodes == null || nodes.isEmpty()) return;
+        
+        int nodeCount = nodes.size();
+        int maxIterations = Math.min(nodeCount, 100);
+        
+        for (int i = 0; i < maxIterations; i++) {
+            NavigationNode node = nodes.get(i);
+            if (node == null) continue;
+            
             NavigationNode bestJumpTarget = null;
             float bestScore = Float.MAX_VALUE;
             
-            for (NavigationNode other : nodes) {
-                if (node == other) continue;
-                if (node.isSameLevel(other)) continue; // Same level, no need to jump
+            for (int j = 0; j < maxIterations; j++) {
+                if (i == j) continue;
+                NavigationNode other = nodes.get(j);
+                if (other == null) continue;
+                if (node.isSameLevel(other)) continue;
                 
-                // Check if we can reach this node by jumping
                 float horizontalDist = node.distanceTo(other);
                 float verticalDist = node.verticalDistanceTo(other);
                 
-                // AI can jump roughly 100-150 pixels high and can reach horizontally
-                // Check if this is a reachable jump target
                 if (verticalDist > 0 && verticalDist < 150 && horizontalDist < 200) {
-                    // Check if the other node is at a good approach angle
-                    // (not too high that we can't reach, not too far horizontally)
                     float score = horizontalDist + verticalDist * 2;
                     if (score < bestScore) {
                         bestScore = score;
@@ -374,11 +354,17 @@ public class NavigationSystem {
      * Find the closest node to a given position
      */
     public NavigationNode getClosestNode(float x, float y) {
+        if (nodes == null || nodes.isEmpty()) return null;
+        
         NavigationNode closest = null;
         float closestDist = Float.MAX_VALUE;
         
         for (NavigationNode node : nodes) {
-            float dist = (float) Math.sqrt(Math.pow(node.getX() - x, 2) + Math.pow(node.getY() - y, 2));
+            if (node == null) continue;
+            float nodeX = node.getX();
+            float nodeY = node.getY();
+            if (Float.isNaN(nodeX) || Float.isInfinite(nodeX)) continue;
+            float dist = (float) Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
             if (dist < closestDist) {
                 closestDist = dist;
                 closest = node;
@@ -392,16 +378,21 @@ public class NavigationSystem {
      * Find the closest node to a given position, preferring ground nodes
      */
     public NavigationNode getClosestGroundNode(float x, float y) {
+        if (nodes == null || nodes.isEmpty()) return null;
+        
         NavigationNode closest = null;
         float closestDist = Float.MAX_VALUE;
         
         for (NavigationNode node : nodes) {
-            // Prefer non-edge nodes (ground/platform nodes)
-            float dist = (float) Math.sqrt(Math.pow(node.getX() - x, 2) + Math.pow(node.getY() - y, 2));
+            if (node == null) continue;
+            float nodeX = node.getX();
+            float nodeY = node.getY();
+            if (Float.isNaN(nodeX) || Float.isInfinite(nodeX)) continue;
             
-            // Give preference to non-edge nodes (they represent walkable platform surfaces)
+            float dist = (float) Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
+            
             if (!node.isEdge()) {
-                dist *= 0.5f; // Half the distance for non-edge nodes
+                dist *= 0.5f;
             }
             
             if (dist < closestDist) {
@@ -433,7 +424,10 @@ public class NavigationSystem {
      * A* pathfinding to find the shortest path through navigation nodes.
      */
     private NavigationNode findShortestPath(float currentX, float currentY, float targetX, float targetY) {
-        // Find start and goal nodes
+        if (nodes == null || nodes.isEmpty()) {
+            return null;
+        }
+        
         NavigationNode startNode = getClosestGroundNode(currentX, currentY);
         NavigationNode goalNode = getClosestNodeToTarget(targetX, targetY);
         
@@ -441,46 +435,42 @@ public class NavigationSystem {
             return null;
         }
         
-        // If already at goal, no movement needed
         if (startNode == goalNode) {
             return null;
         }
         
-        // A* algorithm
         java.util.PriorityQueue<AStarNode> openSet = new java.util.PriorityQueue<>(
             (a, b) -> Float.compare(a.fScore, b.fScore));
         java.util.HashSet<NavigationNode> closedSet = new java.util.HashSet<>();
         
-        // Cost from start to each node
         java.util.HashMap<NavigationNode, Float> gScore = new java.util.HashMap<>();
         gScore.put(startNode, 0f);
         
-        // Estimated total cost from start to goal through this node
         float hStart = heuristic(startNode, goalNode);
-        gScore.put(startNode, 0f);
         openSet.add(new AStarNode(startNode, 0f, hStart, null));
         
-        while (!openSet.isEmpty()) {
+        int iterations = 0;
+        int maxIterations = 500;
+        
+        while (!openSet.isEmpty() && iterations < maxIterations) {
+            iterations++;
             AStarNode current = openSet.poll();
             NavigationNode currentNode = current.node;
             
             if (currentNode == goalNode) {
-                // Reconstruct path and return the first step
                 return reconstructPath(current);
             }
             
             closedSet.add(currentNode);
             
-            // Get neighbors (left, right, and jump targets)
             java.util.ArrayList<NavigationNode> neighbors = new java.util.ArrayList<>();
             if (currentNode.getLeftNode() != null) neighbors.add(currentNode.getLeftNode());
             if (currentNode.getRightNode() != null) neighbors.add(currentNode.getRightNode());
             if (currentNode.getJumpTarget() != null) neighbors.add(currentNode.getJumpTarget());
             
             for (NavigationNode neighbor : neighbors) {
-                if (closedSet.contains(neighbor)) continue;
+                if (neighbor == null || closedSet.contains(neighbor)) continue;
                 
-                // Calculate distance cost to neighbor
                 float moveCost = currentNode.distanceTo(neighbor);
                 float tentativeGScore = gScore.get(currentNode) + moveCost;
                 
@@ -493,7 +483,6 @@ public class NavigationSystem {
             }
         }
         
-        // No path found - fall back to simple approach
         return goalNode;
     }
     
@@ -504,12 +493,15 @@ public class NavigationSystem {
         java.util.ArrayList<NavigationNode> path = new java.util.ArrayList<>();
         AStarNode current = goalNode;
         
-        while (current != null) {
+        int iterations = 0;
+        int maxIterations = 100;
+        while (current != null && iterations < maxIterations) {
+            if (current.node == null) return null;
             path.add(0, current.node);
             current = current.parent;
+            iterations++;
         }
         
-        // Return the second node (first is where we are)
         return path.size() > 1 ? path.get(1) : null;
     }
     
@@ -667,34 +659,31 @@ public class NavigationSystem {
      * Prefers edge nodes (nodes at platform ends) for better jumping
      */
     public NavigationNode findBestJumpNode(float currentX, float currentY, float targetX, float targetY) {
-        NavigationNode currentNode = getClosestNode(currentX, currentY);
-        if (currentNode == null) return null;
-        
-        // If target is on same level or below, no need to jump
-        if (targetY >= currentY) {
-            // Just move towards target
+        if (nodes == null || nodes.isEmpty()) {
             return null;
         }
         
-        // First, look for edge nodes (preferred jump points)
+        NavigationNode currentNode = getClosestNode(currentX, currentY);
+        if (currentNode == null) return null;
+        
+        if (targetY >= currentY) {
+            return null;
+        }
+        
         NavigationNode bestEdgeNode = null;
         float bestEdgeScore = Float.MAX_VALUE;
         
         for (NavigationNode node : nodes) {
-            // Only consider edge nodes
-            if (!node.isEdge()) continue;
-            
-            // Skip nodes that are lower than our current position
+            if (node == null || !node.isEdge()) continue;
             if (node.getY() >= currentY) continue;
             
-            // Check if this node can reach the target X position
-            float horizontalDist = Math.abs(node.getCenterX() - targetX);
+            float nodeCenterX = node.getCenterX();
+            if (Float.isNaN(nodeCenterX) || Float.isInfinite(nodeCenterX)) continue;
             
-            // Check vertical - can we reach from this node to target?
+            float horizontalDist = Math.abs(nodeCenterX - targetX);
             float verticalDist = Math.abs(node.getY() - targetY);
             
             if (horizontalDist < 250 && verticalDist < 150) {
-                // Prefer edge nodes - they are better jump points
                 float score = horizontalDist + verticalDist * 0.5f;
                 if (score < bestEdgeScore) {
                     bestEdgeScore = score;

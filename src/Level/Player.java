@@ -72,17 +72,21 @@ public abstract class Player extends GameObject {
         if (levelState == LevelState.RUNNING) {
             applyGravity();
 
-            // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
+            int stateLoopCount = 0;
+            int maxStateLoops = 10;
             do {
                 previousPlayerState = playerState;
                 handlePlayerState();
-            } while (previousPlayerState != playerState);
+                stateLoopCount++;
+            } while (previousPlayerState != playerState && stateLoopCount < maxStateLoops);
 
             previousAirGroundState = airGroundState;
 
             // move player with respect to map collisions based on how much player needs to move this frame
             lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
             lastAmountMovedY = super.moveYHandleCollision(moveAmountY);
+
+            enforceMapBounds();
 
             handlePlayerAnimation();
 
@@ -247,6 +251,38 @@ public abstract class Player extends GameObject {
     protected void updateLockedKeys() {
         if (Keyboard.isKeyUp(JUMP_KEY)) {
             keyLocker.unlockKey(JUMP_KEY);
+        }
+    }
+
+    protected void enforceMapBounds() {
+        if (map == null) return;
+
+        // Left wall
+        if (getX() < 0) {
+            moveX(-getX());
+        }
+
+        // Right wall
+        float rightOverflow = (getX() + getWidth()) - map.getEndBoundX();
+        if (rightOverflow > 0) {
+            moveX(-rightOverflow);
+        }
+
+        // Ceiling — cancel upward jump force so the player doesn't clip through
+        if (getY() < 0) {
+            moveY(-getY());
+            jumpForce = 0;
+        }
+
+        // Floor — treat like landing on a solid tile
+        float bottomOverflow = (getY() + getHeight()) - map.getEndBoundY();
+        if (bottomOverflow > 0) {
+            moveY(-bottomOverflow);
+            momentumY = 0;
+            airGroundState = AirGroundState.GROUND;
+            if (playerState == PlayerState.JUMPING) {
+                playerState = PlayerState.STANDING;
+            }
         }
     }
 
