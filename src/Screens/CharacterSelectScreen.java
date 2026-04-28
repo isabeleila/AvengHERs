@@ -61,6 +61,8 @@ public class CharacterSelectScreen extends Screen {
     protected SpriteFont modeVsCpuOption;
     protected SpriteFont toggleHint;
     protected SpriteFont confirmHint;
+    protected SpriteFont player2Label;
+    protected SpriteFont cpuSelectHint;
     protected boolean p2SetupModalOpen = true;
     private static final int P2_CARD_WIDTH = 352;
     private static final int P2_CARD_HEIGHT_LOCAL = 124;
@@ -185,6 +187,15 @@ public class CharacterSelectScreen extends Screen {
         player1 = new SpriteFont("Player 1", 130, 533, "Arial", 30, new Color(255,255,255));
         player1.setOutlineColor(Color.black);
         player1.setOutlineThickness(4);
+        // Player 2 / CPU label (right side)
+        player2Label = new SpriteFont("Player 2", 530, 533, "Arial", 30, new Color(255,255,255));
+        player2Label.setOutlineColor(Color.black);
+        player2Label.setOutlineThickness(4);
+        // Hint shown after P1 confirms, prompting CPU character selection
+        cpuSelectHint = new SpriteFont("Pick CPU: arrows  |  SHIFT to confirm", 400, 555, "Arial", 14, new Color(255, 220, 0));
+        cpuSelectHint.setOutlineColor(Color.black);
+        cpuSelectHint.setOutlineThickness(2);
+        cpuSelectHint.setFontStyle(Font.BOLD);
         // P2 / CPU setup
         p2PanelTitle = new SpriteFont("2nd player & CPU", 0, 0, "Arial", 18, new Color(45, 55, 75));
         p2PanelTitle.setOutlineColor(new Color(255, 255, 255));
@@ -273,12 +284,6 @@ public class CharacterSelectScreen extends Screen {
         if (p2SetupModalOpen && !keyLocker.isKeyLocked(Key.ENTER) && Keyboard.isKeyDown(Key.ENTER)) {
             p2SetupModalOpen = false;
             keyLocker.lockKey(Key.ENTER);
-            // vs CPU: P2 is ready immediately (character finalized when P1 confirms with Q)
-            if (vsComputerMode) {
-                player2Ready = true;
-                menuItemSelectedR = 0;
-                ReadyScreen(0, 1);
-            }
         }
 
         // if keys are pressed, change menu item "hovered" over (blocked until modal dismissed)
@@ -439,25 +444,17 @@ public class CharacterSelectScreen extends Screen {
             keyLocker.unlockKey(Key.Q);
         }
         if (!p2SetupModalOpen && !keyLocker.isKeyLocked(Key.Q) && Keyboard.isKeyDown(Key.Q)) {
-            if(playerPressedStart2){
+            if (!vsComputerMode && playerPressedStart2) {
                 menuItemSelectedL = currentMenuItemHoveredL;
                 stopMusic();
                 screenCoordinator.setGameState(GameState.LEVELSELECT);
-            }else if(!player1Ready){
+            } else if (!player1Ready) {
                 playerPressedStart1 = true;
                 menuItemSelectedL = currentMenuItemHoveredL;
                 ReadyScreen(currentMenuItemHoveredL, 0);
                 player1Ready = true;
-                
-                // If vs CPU mode is enabled, auto-select player 2 as CPU
-                if (vsComputerMode) {
-                    // Auto-select a different character for AI (cycles through characters)
-                    int aiCharacter = (currentMenuItemHoveredL + 1) % 4;
-                    menuItemSelectedR = aiCharacter;
-                    ReadyScreen(aiCharacter, 1);
-                    player2Ready = true;
-                    // Don't auto-advance - let user see the selection
-                }
+                // In vs CPU mode the player now picks the CPU character on the right
+                // side with arrow keys and confirms with SHIFT — no auto-assignment.
             }
         }
 
@@ -465,19 +462,25 @@ public class CharacterSelectScreen extends Screen {
             keyLocker.unlockKey(Key.SHIFT);
         }
         if (!p2SetupModalOpen && !keyLocker.isKeyLocked(Key.SHIFT) && Keyboard.isKeyDown(Key.SHIFT)) {
-            if(playerPressedStart1){
-                // If vs CPU mode, don't update player 2 selection - it's already set
-                if (!vsComputerMode) {
+            if (vsComputerMode) {
+                // SHIFT confirms the CPU character — only allowed after P1 has picked theirs
+                if (player1Ready) {
                     menuItemSelectedR = currentMenuItemHoveredR;
+                    ReadyScreen(currentMenuItemHoveredR, 1);
+                    stopMusic();
+                    screenCoordinator.setGameState(GameState.LEVELSELECT);
                 }
-                stopMusic();
-                screenCoordinator.setGameState(GameState.LEVELSELECT);
-            }else if(!player2Ready){
-                playerPressedStart2 = true;
-                menuItemSelectedR = currentMenuItemHoveredR;
-                // Make a screen show up saying player ready // or call a method to do it
-                ReadyScreen(currentMenuItemHoveredR, 1);
-                player2Ready = true;
+            } else {
+                if (playerPressedStart1) {
+                    menuItemSelectedR = currentMenuItemHoveredR;
+                    stopMusic();
+                    screenCoordinator.setGameState(GameState.LEVELSELECT);
+                } else if (!player2Ready) {
+                    playerPressedStart2 = true;
+                    menuItemSelectedR = currentMenuItemHoveredR;
+                    ReadyScreen(currentMenuItemHoveredR, 1);
+                    player2Ready = true;
+                }
             }
         }
 
@@ -494,6 +497,17 @@ public class CharacterSelectScreen extends Screen {
         character32.draw(graphicsHandler);
         character42.draw(graphicsHandler);
         player1.draw(graphicsHandler);
+        if (vsComputerMode) {
+            if (player1Ready) {
+                cpuSelectHint.draw(graphicsHandler);
+            } else {
+                player2Label.setText("CPU");
+                player2Label.draw(graphicsHandler);
+            }
+        } else {
+            player2Label.setText("Player 2");
+            player2Label.draw(graphicsHandler);
+        }
         line.draw(graphicsHandler);
         hulkL.draw(graphicsHandler);
         ironmanL.draw(graphicsHandler);

@@ -9,6 +9,7 @@ import Level.TileType;
 import Level.Tileset;
 import Utils.SlopeTileLayoutUtils;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 // This class represents a "common" tileset of standard tiles defined in the CommonTileset.png file
@@ -191,23 +192,27 @@ public class CommonTileset extends Tileset {
 
         mapTiles.add(treeTrunkHoleBottomTile);
 
-        // top water
-        Frame topWaterFrame = new FrameBuilder(getSubImage(3, 0))
-                .withScale(tileScale)
-                .build();
-
-        MapTileBuilder topWaterTile = new MapTileBuilder(topWaterFrame);
-
+        // top water (animated surface)
+        BufferedImage[] topWaterImgs = createTopWaterFrames();
+        Frame[] topWaterFrames = new Frame[topWaterImgs.length];
+        for (int i = 0; i < topWaterImgs.length; i++) {
+            topWaterFrames[i] = new FrameBuilder(topWaterImgs[i], 25)
+                    .withScale(tileScale)
+                    .build();
+        }
+        MapTileBuilder topWaterTile = new MapTileBuilder(topWaterFrames);
         mapTiles.add(topWaterTile);
 
-        // water
-        Frame waterFrame = new FrameBuilder(getSubImage(3, 1))
-                .withScale(tileScale)
-                .build();
-
-        MapTileBuilder waterTile = new MapTileBuilder(waterFrame)
+        // water (animated fill)
+        BufferedImage[] waterImgs = createWaterFillFrames();
+        Frame[] waterFrames = new Frame[waterImgs.length];
+        for (int i = 0; i < waterImgs.length; i++) {
+            waterFrames[i] = new FrameBuilder(waterImgs[i], 25)
+                    .withScale(tileScale)
+                    .build();
+        }
+        MapTileBuilder waterTile = new MapTileBuilder(waterFrames)
                 .withTileType(TileType.WATER);
-
         mapTiles.add(waterTile);
 
         // grey rock
@@ -275,5 +280,97 @@ public class CommonTileset extends Tileset {
         mapTiles.add(leftSupportTile);
 
         return mapTiles;
+    }
+
+    // Generates 4 frames of animated underwater fill — horizontal ripples scroll upward
+    private BufferedImage[] createWaterFillFrames() {
+        int w = spriteWidth;
+        int h = spriteHeight;
+        int[] pal = {
+            0xFF0A3560,  // 0 deep
+            0xFF155B9E,  // 1 medium
+            0xFF2E83C4,  // 2 light
+            0xFF5BAEE0,  // 3 highlight
+            0xFF8FD0F0   // 4 shimmer
+        };
+        BufferedImage[] frames = new BufferedImage[4];
+        for (int f = 0; f < 4; f++) {
+            BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            for (int y = 0; y < h; y++) {
+                int rowPhase = (y + f) % 4;
+                for (int x = 0; x < w; x++) {
+                    int color;
+                    if (rowPhase == 0) {
+                        int xp = (x + y / 4) % 8;
+                        if (xp == 0)      color = pal[4];
+                        else if (xp < 2)  color = pal[3];
+                        else if (xp < 4)  color = pal[2];
+                        else              color = pal[1];
+                    } else if (rowPhase == 1) {
+                        color = ((x + 2) % 8 < 3) ? pal[2] : pal[1];
+                    } else if (rowPhase == 2) {
+                        color = pal[1];
+                    } else {
+                        color = pal[0];
+                    }
+                    img.setRGB(x, y, color);
+                }
+            }
+            frames[f] = img;
+        }
+        return frames;
+    }
+
+    // Generates 4 frames for the top water tile — surface waves with foam crests
+    private BufferedImage[] createTopWaterFrames() {
+        int w = spriteWidth;
+        int h = spriteHeight;
+        int[] pal = {
+            0xFF0A3560,  // 0 deep
+            0xFF155B9E,  // 1 medium
+            0xFF2E83C4,  // 2 light
+            0xFF5BAEE0,  // 3 highlight
+            0xFF8FD0F0   // 4 shimmer/foam
+        };
+        BufferedImage[] frames = new BufferedImage[4];
+        for (int f = 0; f < 4; f++) {
+            BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int color;
+                    if (y < 3) {
+                        // Surface rows — moving foam/wave crests
+                        int xp = (x + f * 4) % 16;
+                        if (y == 1) {
+                            if (xp < 2)       color = pal[4];
+                            else if (xp < 4)  color = pal[3];
+                            else if (xp < 7)  color = pal[2];
+                            else if (xp == 8) color = pal[4];
+                            else              color = pal[1];
+                        } else if (y == 2) {
+                            color = (xp < 5) ? pal[2] : pal[1];
+                        } else {
+                            color = pal[1];
+                        }
+                    } else {
+                        // Below surface — same ripple fill as water tile
+                        int rowPhase = (y + f) % 4;
+                        if (rowPhase == 0) {
+                            int xp = (x + y / 4) % 8;
+                            color = (xp == 0) ? pal[4] : (xp < 2) ? pal[3] : (xp < 4) ? pal[2] : pal[1];
+                        } else if (rowPhase == 1) {
+                            color = ((x + 2) % 8 < 3) ? pal[2] : pal[1];
+                        } else if (rowPhase == 2) {
+                            color = pal[1];
+                        } else {
+                            color = pal[0];
+                        }
+                    }
+                    img.setRGB(x, y, color);
+                }
+            }
+            frames[f] = img;
+        }
+        return frames;
     }
 }

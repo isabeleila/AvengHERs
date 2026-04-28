@@ -1,12 +1,5 @@
 package Enemies;
 
-import Engine.GraphicsHandler;
-import Engine.ImageLoader;
-import Engine.Keyboard;
-import Engine.Key;
-import Engine.KeyLocker;
-import Engine.SoundEffect;
-import GameObject.SpriteSheet;
 import Level.Map;
 import Level.MapTile;
 import Level.NavigationNode;
@@ -15,9 +8,7 @@ import Level.Player;
 import Level.PlayerState;
 import Level.LevelState;
 import Level.TileType;
-import Enemies.Cat.Direction;
 import Utils.AirGroundState;
-import Utils.Point;
 import java.util.Random;
 
 /**
@@ -171,23 +162,6 @@ public class AIPlayer extends Cat {
         if (shootAnimationTimer > 0) {
             shootAnimationTimer--;
             currentAnimationName = facingDirection == Direction.RIGHT ? "SHOOT_RIGHT" : "SHOOT_LEFT";
-        } else if (opponent != null && levelState == LevelState.RUNNING) {
-            try {
-                if (getBounds() != null && opponent.getBounds() != null) {
-                    float myX = getBounds().getX1() + getBounds().getWidth() / 2f;
-                    float oppX = opponent.getBounds().getX1() + opponent.getBounds().getWidth() / 2f;
-                    facingDirection = oppX > myX ? Direction.RIGHT : Direction.LEFT;
-                    
-                    if (playerState == PlayerState.STANDING) {
-                        currentAnimationName = facingDirection == Direction.RIGHT ? "STAND_RIGHT" : "STAND_LEFT";
-                    } else if (playerState == PlayerState.WALKING) {
-                        currentAnimationName = facingDirection == Direction.RIGHT ? "WALK_RIGHT" : "WALK_LEFT";
-                    } else if (playerState == PlayerState.JUMPING) {
-                        currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
-                    }
-                }
-            } catch (Exception e) {
-            }
         }
     }
 
@@ -244,9 +218,9 @@ public class AIPlayer extends Cat {
         aiMoveDirection = 0;
         aiWantsToJump = false;
 
-        // Stuck recovery: reverse and jump to break free
+        // Stuck recovery: jump toward the opponent to break free
         if (stuckFrames >= STUCK_THRESHOLD) {
-            aiMoveDirection = oppRight ? -1 : 1;
+            aiMoveDirection = oppRight ? 1 : -1;
             aiWantsToJump = true;
             stuckFrames = 0;
             if (dist <= SHOOT_RANGE && shootTimer == 0 && currentShootCooldown <= 0) aiShoot();
@@ -285,8 +259,8 @@ public class AIPlayer extends Cat {
                 if (nodeIsAbove) {
                     // Walk toward the jump-off X position
                     aiMoveDirection = (nodeX > myX) ? 1 : -1;
-                    // Jump once we are close enough horizontally to arc onto the platform
-                    aiWantsToJump = distToNodeX < 80;
+                    // Jump when close enough to arc onto the platform, or when a wall is blocking the path
+                    aiWantsToJump = distToNodeX < 120 || checkForObstacle(aiMoveDirection > 0);
                 } else {
                     // Same level or stepping down — use the opponent's actual position
                     // for close-range pursuit, and the node for longer-range guidance.
@@ -305,9 +279,35 @@ public class AIPlayer extends Cat {
         // Fallback when no nav path is available: direct pursuit
         if (!navigated) {
             aiMoveDirection = oppRight ? 1 : -1;
-            if (verticalDiff > JUMP_UP_THRESHOLD) {
+            if (checkForWater(aiMoveDirection > 0)) {
+                // Water tile at the same ground level directly ahead — impassable, reverse
+                aiMoveDirection = -aiMoveDirection;
+            } else if (verticalDiff > JUMP_UP_THRESHOLD) {
                 aiWantsToJump = true;
-            } else if (checkForObstacle(aiMoveDirection > 0) || checkForEdge(aiMoveDirection > 0)) {
+            } else if (checkForObstacle(aiMoveDirection > 0)) {
+                aiWantsToJump = true;
+            } else if (checkForEdge(aiMoveDirection > 0)) {
+                // Edge ahead: if water is below AND no solid landing exists on the other
+                // side within jump range, reverse (impassable water expanse).
+                // Otherwise jump — could be a narrow water pit with ground beyond it.
+                if (isWaterBelowEdge(aiMoveDirection > 0) && !hasLandingBeyondWater(aiMoveDirection > 0)) {
+                    aiMoveDirection = -aiMoveDirection;
+                } else {
+                    aiWantsToJump = true;
+                }
+            }
+        }
+
+        // Override navigated path when water is immediately ahead or an edge drops into
+        // inescapable water; narrow water pits with solid ground beyond should be jumped.
+        if (navigated && checkForWater(aiMoveDirection > 0)) {
+            aiMoveDirection = -aiMoveDirection;
+            aiWantsToJump = false;
+        } else if (navigated && checkForEdge(aiMoveDirection > 0)) {
+            if (isWaterBelowEdge(aiMoveDirection > 0) && !hasLandingBeyondWater(aiMoveDirection > 0)) {
+                aiMoveDirection = -aiMoveDirection;
+                aiWantsToJump = false;
+            } else {
                 aiWantsToJump = true;
             }
         }
@@ -407,13 +407,68 @@ public class AIPlayer extends Cat {
         return frontTileHigh != null && frontTileHigh.getTileType() == TileType.NOT_PASSABLE;
     }
 
+    private boolean checkForWater(boolean movingRight) {
+        if (map == null || airGroundState != AirGroundState.GROUND) return false;
+        int tileWidth = map.getTileset() != null ? map.getTileset().getScaledSpriteWidth() : 48;
+        float checkX = movingRight ? getBounds().getX2() + tileWidth : getBounds().getX1() - tileWidth;
+        // Use Y2+2 so the probe lands inside the tile row the player is standing on,
+        // catching water tiles at the same elevation as the current ground.
+        float feetY = getBounds().getY2() + 2f;
+        MapTile ahead = map.getTileByPosition(checkX, feetY);
+        if (ahead != null && ahead.getTileType() == TileType.WATER) return true;
+        MapTile below = map.getTileByPosition(checkX, feetY + tileWidth);
+        return below != null && below.getTileType() == TileType.WATER;
+    }
+
     private boolean checkForEdge(boolean movingRight) {
         if (map == null || airGroundState != AirGroundState.GROUND) return false;
         int tileHeight = map.getTileset() != null ? map.getTileset().getScaledSpriteHeight() : 48;
         float checkX = movingRight ? getBounds().getX2() + tileHeight : getBounds().getX1() - tileHeight;
         float checkY = getBounds().getY2() + tileHeight;
         MapTile belowTile = map.getTileByPosition(checkX, checkY);
-        return belowTile == null || belowTile.getTileType() == TileType.PASSABLE;
+        // Treat water the same as open air — both are fatal drops
+        return belowTile == null
+            || belowTile.getTileType() == TileType.PASSABLE
+            || belowTile.getTileType() == TileType.WATER;
+    }
+
+    // Scans straight down from the tile ahead to find water before finding solid ground.
+    // Used to distinguish a safe platform edge (land below) from a water-pit edge (death below).
+    private boolean isWaterBelowEdge(boolean movingRight) {
+        if (map == null || airGroundState != AirGroundState.GROUND) return false;
+        int tileSize = map.getTileset() != null ? map.getTileset().getScaledSpriteWidth() : 48;
+        float checkX = movingRight ? getBounds().getX2() + tileSize : getBounds().getX1() - tileSize;
+        for (int i = 0; i <= 5; i++) {
+            float checkY = getBounds().getY2() + 2f + tileSize * i;
+            MapTile tile = map.getTileByPosition(checkX, checkY);
+            if (tile == null) continue;
+            if (tile.getTileType() == TileType.WATER) return true;
+            if (tile.getTileType() == TileType.NOT_PASSABLE
+                    || tile.getTileType() == TileType.JUMP_THROUGH_PLATFORM
+                    || tile.getTileType() == TileType.SLOPE) return false;
+        }
+        return false;
+    }
+
+    // Returns true when solid ground exists within 8 tiles in the given direction at foot
+    // level. Used to tell a narrow jumpable water pit (ground on the other side) from a
+    // wide impassable water expanse (no ground within reach).
+    private boolean hasLandingBeyondWater(boolean movingRight) {
+        if (map == null) return false;
+        int tileSize = map.getTileset() != null ? map.getTileset().getScaledSpriteWidth() : 48;
+        for (int i = 1; i <= 8; i++) {
+            float checkX = movingRight
+                    ? getBounds().getX2() + tileSize * i
+                    : getBounds().getX1() - tileSize * i;
+            float feetY = getBounds().getY2() + 2f;
+            MapTile ahead = map.getTileByPosition(checkX, feetY);
+            if (ahead != null && (ahead.getTileType() == TileType.NOT_PASSABLE
+                    || ahead.getTileType() == TileType.JUMP_THROUGH_PLATFORM
+                    || ahead.getTileType() == TileType.SLOPE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setOpponent(Player opponent) {

@@ -3,6 +3,8 @@ package Level;
 import Engine.Config;
 import Engine.GraphicsHandler;
 import Engine.ScreenManager;
+import Engine.FighterJets;
+import Engine.StarField;
 import Utils.Point;
 
 import java.io.File;
@@ -64,6 +66,12 @@ public abstract class Map {
     
     // navigation system for AI pathfinding
     protected NavigationSystem navigationSystem;
+
+    // twinkling star overlay drawn on every level
+    protected StarField starField = new StarField();
+
+    // fighter jets flying in the background
+    protected FighterJets fighterJets = new FighterJets();
 
     public Map(String mapFileName, Tileset tileset) {
         this.mapFileName = mapFileName;
@@ -338,6 +346,8 @@ public abstract class Map {
     }
 
     public void update(Player player) {
+        starField.update();
+        fighterJets.update();
         if (adjustCamera) {
             adjustMovementY(player);
             adjustMovementX(player);
@@ -404,8 +414,9 @@ public abstract class Map {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
+        fighterJets.draw(graphicsHandler);
         camera.draw(graphicsHandler);
-        
+        starField.draw(graphicsHandler);
     }
 
     public int getEndBoundX() { return endBoundX; }

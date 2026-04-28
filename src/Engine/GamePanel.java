@@ -6,6 +6,7 @@ import Utils.Colors;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /*
  * This is where the game loop process and render back buffer is setup
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel {
 	private boolean showFPS = false;
 	private int currentFPS;
 	private boolean doPaint;
+	private BufferedImage gameBuffer;
 
 	// The JPanel and various important class instances are setup here
 	public GamePanel() {
@@ -116,6 +118,7 @@ public class GamePanel extends JPanel {
 	}
 
 	public void draw() {
+		graphicsHandler.drawFilledRectangle(0, 0, Config.GAME_WINDOW_WIDTH, Config.GAME_WINDOW_HEIGHT, Color.BLACK);
 		screenManager.draw(graphicsHandler);
 
 		// if game is paused, draw pause gfx over Screen gfx
@@ -133,10 +136,29 @@ public class GamePanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (doPaint) {
-			// every repaint call will schedule this method to be called
-			// when called, it will setup the graphics handler and then call this class's draw method
-			graphicsHandler.setGraphics((Graphics2D) g);
+			// Render the game at the fixed logical resolution into an off-screen buffer.
+			// paintComponent then scales that buffer to fill the actual panel, so
+			// fullscreen (or any panel size) works without touching any game coordinates.
+			if (gameBuffer == null) {
+				gameBuffer = new BufferedImage(Config.GAME_WINDOW_WIDTH, Config.GAME_WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+			}
+			graphicsHandler.setGraphics((Graphics2D) gameBuffer.getGraphics());
 			draw();
+
+			// Scale buffer to panel, preserving aspect ratio with black bars.
+			int pw = getWidth(), ph = getHeight();
+			double scale = Math.min((double) pw / Config.GAME_WINDOW_WIDTH,
+					(double) ph / Config.GAME_WINDOW_HEIGHT);
+			int dw = (int) (Config.GAME_WINDOW_WIDTH * scale);
+			int dh = (int) (Config.GAME_WINDOW_HEIGHT * scale);
+			int dx = (pw - dw) / 2, dy = (ph - dh) / 2;
+
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, pw, ph);
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+					RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+			g2.drawImage(gameBuffer, dx, dy, dw, dh, null);
 		}
 	}
 

@@ -24,9 +24,11 @@ public class TutorialScreen extends Screen {
     protected Sprite player2;
     protected SpriteFont creditsLabel;
     protected SpriteFont returnInstructionsLabel;
+    private boolean fromPlayGame;
 
-    public TutorialScreen(ScreenCoordinator screenCoordinator) {
+    public TutorialScreen(ScreenCoordinator screenCoordinator, boolean fromPlayGame) {
         this.screenCoordinator = screenCoordinator;
+        this.fromPlayGame = fromPlayGame;
     }
 
     @Override
@@ -47,7 +49,9 @@ public class TutorialScreen extends Screen {
         player2.setLocation(400, 65);
         player2.setWidth(player2.getWidth() - 340);
         player2.setHeight(player2.getHeight() - 430);
-        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 115, 515, "Times New Roman", 40, Color.BLACK);
+        String hint = fromPlayGame ? "Press Space to select your character" : "Press Space to return to the menu";
+        int hintX = fromPlayGame ? 60 : 115;
+        returnInstructionsLabel = new SpriteFont(hint, hintX, 515, "Times New Roman", 40, Color.BLACK);
         returnInstructionsLabel.setOutlineColor(Color.WHITE);
         returnInstructionsLabel.setOutlineThickness(2);
         keyLocker.lockKey(Key.SPACE);
@@ -60,9 +64,8 @@ public class TutorialScreen extends Screen {
             keyLocker.unlockKey(Key.SPACE);
         }
 
-        // if space is pressed, go back to main menu
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
-            screenCoordinator.setGameState(GameState.MENU);
+            screenCoordinator.setGameState(fromPlayGame ? GameState.CHARACTER : GameState.MENU);
         }
     }
 

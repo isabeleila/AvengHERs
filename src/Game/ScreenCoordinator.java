@@ -18,6 +18,7 @@ import Screens.TutorialScreen;
 public class ScreenCoordinator extends Screen {
 
 	protected Map levelMapStorage;
+	protected boolean tutorialFromPlayGame = false;
 	// currently shown Screen
 	protected Screen currentScreen = new DefaultScreen();
 
@@ -38,9 +39,12 @@ public class ScreenCoordinator extends Screen {
 		levelMapStorage = levelMap;
 	}
 
+	public void setTutorialFromPlayGame(boolean value) {
+		tutorialFromPlayGame = value;
+	}
+
 	@Override
 	public void initialize() {
-		// start game off with Menu Screen
 		gameState = GameState.MENU;
 	}
 
@@ -61,7 +65,7 @@ public class ScreenCoordinator extends Screen {
                         currentScreen = new CreditsScreen(this);
                         break;
                     case TUTORIAL:
-                        currentScreen = new TutorialScreen(this);
+                        currentScreen = new TutorialScreen(this, tutorialFromPlayGame);
                         break;
                     case CHARACTER:
                         currentScreen = new CharacterSelectScreen(this);
