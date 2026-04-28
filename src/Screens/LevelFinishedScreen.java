@@ -41,7 +41,7 @@ public class LevelFinishedScreen extends Screen {
         //y=260
         instructionsP3.setFontStyle(Font.BOLD);
         keyLocker.lockKey(Key.SPACE);
-        keyLocker.lockKey(Key.ESC);
+        keyLocker.lockKey(Key.M);
     }
 
     @Override
@@ -49,15 +49,15 @@ public class LevelFinishedScreen extends Screen {
         if (Keyboard.isKeyUp(Key.SPACE)) {
             keyLocker.unlockKey(Key.SPACE);
         }
-        if (Keyboard.isKeyUp(Key.ESC)) {
-            keyLocker.unlockKey(Key.ESC);
+        if (Keyboard.isKeyUp(Key.M)) {
+            keyLocker.unlockKey(Key.M);
         }
 
-        // if space is pressed, reset level. if escape is pressed, go back to main menu
+        // if space is pressed, reset level. if M is pressed, go back to main menu
         // if (Keyboard.isKeyDown(Key.SPACE) && !keyLocker.isKeyLocked(Key.SPACE)) {
         //     playLevelScreen.initialize();
-        // } else if 
-        if(Keyboard.isKeyDown(Key.ESC) && !keyLocker.isKeyLocked(Key.ESC)) {
+        // } else if
+        if(Keyboard.isKeyDown(Key.M) && !keyLocker.isKeyLocked(Key.M)) {
             playLevelScreen.goBackToMenu();
         }
     }

@@ -91,6 +91,11 @@ Main Menu
 | Crouch | S | Down arrow |
 | Shoot | Q | Shift |
 
+### End of Round
+| Key | Action |
+|---|---|
+| M | Return to main menu |
+
 ### Misc
 | Key | Action |
 |---|---|
