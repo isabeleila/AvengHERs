@@ -4,11 +4,11 @@ A Marvel-themed 2D fighting platformer created for Quinnipiac University's SER22
 
 ## Team
 
+- Isabela Ayers
 - Tripp Menhall
 - Tyler Rinko
 - Reeya Patel
 - Megan Mohr
-- Isabela Ayers
 
 ---
 
